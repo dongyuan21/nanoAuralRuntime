@@ -34,7 +34,7 @@ Authoritative project documents:
 ## Install an audited development artifact
 
 Build the headless Python artifacts offline with the pinned setuptools 82.0.1
-backend. The command creates an isolated source snapshot, accepts only the four
+backend. The command creates an isolated source snapshot, accepts only the five
 declared Python package trees and five migration resources, audits every wheel
 and sdist member, refuses overwrite, and reports artifact SHA-256 values.
 
@@ -73,7 +73,9 @@ access:
 
 ```sh
 nano-aural --help
+nano-aural-controlfoley --help
 nano-aural-remote --help
+python -m nano_aural_runtime_cli --help
 python -m nano_aural_runtime_remote --help
 python -m nano_aural_runtime.durable.service --help
 python -m nano_aural_runtime.durable.reference_worker --help

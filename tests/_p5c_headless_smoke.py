@@ -364,6 +364,7 @@ def _worker_smoke() -> None:
 def _assert_snapshot_imports() -> None:
     headless_prefixes = (
         "nano_aural_runtime",
+        "nano_aural_runtime_cli",
         "nano_aural_runtime_controlfoley",
         "nano_aural_runtime_remote",
         "nano_aural_runtime_workers",

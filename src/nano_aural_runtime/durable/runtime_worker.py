@@ -37,6 +37,12 @@ class InvocationBuilder(Protocol):
     ) -> ModelInvocation: ...
 
 
+class ClaimGuard(Protocol):
+    """Optional deployment/job filter; implementations live above Durable."""
+
+    def validate(self, deployment: DeploymentRecord, job: Optional[JobRecord] = None) -> None: ...
+
+
 @dataclass(frozen=True)
 class RuntimeCandidate:
     lease: Lease
@@ -61,11 +67,13 @@ class DurableRuntimeWorker:
         workspace_root: Path,
         probe: MediaProbe,
         monitor_queue_factory: Callable[[], PostgresLeaseQueue],
+        guard: Optional[ClaimGuard] = None,
     ) -> None:
         self._queue, self._worker_id, self._lease_seconds = queue, worker_id, lease_seconds
         self._runtime, self._builder = runtime, builder
         self._canonical, self._workspace_root, self._probe = canonical, Path(workspace_root), probe
         self._monitor_queue_factory = monitor_queue_factory
+        self._guard = guard
         self._session = None
         self._fatal = False
 
@@ -115,8 +123,12 @@ class DurableRuntimeWorker:
         """Perform deployment, materialization, load, binding and invoke under monitoring."""
         durable_deployment = self._queue.load_ready_deployment(lease)
         token.raise_if_cancelled()
+        if self._guard is not None:
+            self._guard.validate(durable_deployment)
         job, attempt, evidence = self._queue.load_verified_input_evidence(lease)
         token.raise_if_cancelled()
+        if self._guard is not None:
+            self._guard.validate(durable_deployment, job)
         with AttemptInputMaterializer(
             job,
             attempt,

@@ -260,6 +260,7 @@ class DurableRuntimeWorkerTests(unittest.TestCase):
         adapter: FakeAudioAdapter,
         factory: Optional[Callable[[], object]] = None,
         builder: Optional[_Builder] = None,
+        guard: Optional[object] = None,
     ) -> tuple[DurableRuntimeWorker, _Builder, list[object]]:
         registry = AdapterRegistry()
         registry.register(adapter)
@@ -288,6 +289,7 @@ class DurableRuntimeWorkerTests(unittest.TestCase):
                 workspace,
                 WaveMediaProbe(),
                 cast(Callable[[], PostgresLeaseQueue], monitor_factory),
+                guard=guard,
             ),
             actual_builder,
             monitors,
@@ -315,6 +317,24 @@ class DurableRuntimeWorkerTests(unittest.TestCase):
         # AttemptInputMaterializer must remove the server-created workspace.
         workspace_root = worker._workspace_root  # type: ignore[attr-defined]
         self.assertEqual([], list(workspace_root.iterdir()))
+
+    def test_claim_guard_rejects_before_runtime_load(self) -> None:
+        class _Reject:
+            def validate(
+                self, deployment: DeploymentRecord, job: Optional[JobRecord] = None
+            ) -> None:
+                raise InvocationRejectedError("worker capability does not match deployment")
+
+        queue = _Queue([_lease()])
+        adapter = FakeAudioAdapter()
+        worker, _builder, _monitors = self._worker(queue, adapter, guard=_Reject())
+
+        with self.assertRaisesRegex(InvocationRejectedError, "capability"):
+            worker.run_once()
+
+        self.assertEqual(0, adapter.load_calls)
+        self.assertEqual(0, adapter.invoke_calls)
+        self.assertEqual(1, len(queue.fail_calls))
 
     def test_durable_deployment_identity_is_checked_before_runtime_load(self) -> None:
         queue = _Queue([_lease()])

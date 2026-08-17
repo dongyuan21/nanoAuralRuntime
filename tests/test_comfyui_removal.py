@@ -103,6 +103,7 @@ def _absolute_imports(path: Path) -> Iterator[str]:
 def test_headless_and_remote_packages_have_no_reverse_ui_or_model_imports() -> None:
     headless = (
         ROOT / "src/nano_aural_runtime",
+        ROOT / "src/nano_aural_runtime_cli",
         ROOT / "src/nano_aural_runtime_controlfoley",
         ROOT / "src/nano_aural_runtime_remote",
         ROOT / "src/nano_aural_runtime_workers",

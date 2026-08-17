@@ -29,6 +29,7 @@ _BUILD_BACKEND_VERSION = "82.0.1"
 _ROOT_INPUTS = ("pyproject.toml", "README.md", "LICENSE", "NOTICE")
 _PACKAGE_ROOTS = (
     "nano_aural_runtime",
+    "nano_aural_runtime_cli",
     "nano_aural_runtime_controlfoley",
     "nano_aural_runtime_remote",
     "nano_aural_runtime_workers",
