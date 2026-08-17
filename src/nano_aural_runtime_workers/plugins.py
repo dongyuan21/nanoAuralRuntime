@@ -60,7 +60,7 @@ STABLE_AUDIO_3_PLUGIN = AdapterPluginMetadata(
     operations=frozenset({"audio.text_to_sfx"}),
     backends=("pytorch",),
     package="nano_aural_runtime_stable_audio_3",
-    implemented=False,
+    implemented=True,
     default_backend="pytorch",
 )
 

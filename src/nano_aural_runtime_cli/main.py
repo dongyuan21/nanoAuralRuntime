@@ -51,6 +51,17 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if isinstance(error.code, int):
                 return error.code
             return 2
+    if plugin.frontend == "stable-audio-3":
+        from nano_aural_runtime_stable_audio_3.cli import main as stable_audio_main
+
+        try:
+            return stable_audio_main(arguments)
+        except SystemExit as error:
+            if error.code is None:
+                return 0
+            if isinstance(error.code, int):
+                return error.code
+            return 2
     sys.stderr.write("nano-aural: adapter frontend is not installed\n")
     return 2
 
