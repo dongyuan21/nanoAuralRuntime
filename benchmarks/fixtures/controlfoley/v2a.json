@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "fixture_id": "v2a-8s-pending-inputs",
+  "task": "V2A",
+  "duration_seconds": 8.0,
+  "seed": 0,
+  "num_steps": 25,
+  "guidance_scale": 4.5,
+  "inputs": [{"role": "video", "kind": "video", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}}]
+}

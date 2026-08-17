@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nano-aural-runtime"
+version = "0.1.0.dev0"
+description = "A model-agnostic runtime core for audio model adapters."
+readme = "README.md"
+requires-python = ">=3.9,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "nanoAuralRuntime contributors"}]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/dongyuan21/nanoAuralRuntime#readme"
+Issues = "https://github.com/dongyuan21/nanoAuralRuntime/issues"
+Source = "https://github.com/dongyuan21/nanoAuralRuntime"
+
+[project.scripts]
+nano-aural = "nano_aural_runtime_controlfoley.cli:main"
+nano-aural-remote = "nano_aural_runtime_remote.cli:main"
+
+[project.optional-dependencies]
+durable-postgres = [
+    "psycopg[binary]>=3.1,<4",
+]
+dev = [
+    "pytest>=7,<9",
+    "ruff>=0.6,<1",
+    "pyright>=1.1.380,<2",
+]
+postgres-test = [
+    "psycopg[binary]>=3.1,<4",
+]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.package-data]
+nano_aural_runtime = [
+    "durable/sql/0001_durable_foundation.sql",
+    "durable/sql/0002_verified_uploads.sql",
+    "durable/sql/0003_queue_leases.sql",
+    "durable/sql/0004_artifact_publications.sql",
+    "durable/sql/0005_upload_staging_cleanups.sql",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = [
+    "nano_aural_runtime",
+    "nano_aural_runtime.*",
+    "nano_aural_runtime_controlfoley",
+    "nano_aural_runtime_controlfoley.*",
+    "nano_aural_runtime_remote",
+    "nano_aural_runtime_remote.*",
+    "nano_aural_runtime_workers",
+    "nano_aural_runtime_workers.*",
+]
+exclude = ["integrations*", "tests*", "benchmarks*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "gpu: requires an available CUDA device",
+    "controlfoley: requires a validated ControlFoley source tree and weights",
+]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+exclude = ["docs/source-plans/**"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]
+
+[tool.pyright]
+include = ["src", "integrations", "tools", "tests"]
+pythonVersion = "3.9"
+typeCheckingMode = "basic"

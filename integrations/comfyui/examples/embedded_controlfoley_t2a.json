@@ -1,0 +1,57 @@
+{
+  "last_node_id": 2,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "NanoAuralControlFoleyEmbedded",
+      "title": "NanoAural ControlFoley (Local)",
+      "pos": [80, 120],
+      "size": [360, 230],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "NANO_AURAL_AUDIO",
+          "links": [1],
+          "slot_index": 0
+        }
+      ],
+      "properties": {},
+      "widgets_values": ["T2A", 42, "", "", "gentle rain on a window"]
+    },
+    {
+      "id": 2,
+      "type": "NanoAuralAudioOutput",
+      "title": "NanoAural Audio Output",
+      "pos": [520, 120],
+      "size": [280, 120],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "NANO_AURAL_AUDIO",
+          "link": 1
+        }
+      ],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": []
+    }
+  ],
+  "links": [[1, 1, 0, 2, 0, "NANO_AURAL_AUDIO"]],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "nano_aural_runtime": {
+      "route": "embedded-local",
+      "note": "Operator configures sealed deployment paths during frontend bootstrap."
+    }
+  },
+  "version": 0.4
+}

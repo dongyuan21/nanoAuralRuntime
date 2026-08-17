@@ -1,0 +1,34 @@
+nanoAuralRuntime
+Copyright 2026 nanoAuralRuntime contributors
+
+The original nanoAuralRuntime repository code and documentation are made
+available under the Apache License, Version 2.0, as stated in LICENSE.
+
+ControlFoley is an external project and remains the property of its respective
+authors. Its official repository reports that the ControlFoley source code is
+licensed under the Apache License, Version 2.0:
+
+    https://github.com/xiaomi-research/controlfoley
+
+The official ControlFoley model card reports that its model weights are
+licensed under the Creative Commons Attribution-NonCommercial 4.0
+International license (CC BY-NC 4.0):
+
+    https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md
+
+CC BY-NC 4.0 includes a NonCommercial restriction. nanoAuralRuntime does not
+grant commercial-use rights, or any other rights, to those weights. The
+nanoAuralRuntime Python distributions and optional ComfyUI archives do not
+contain the ControlFoley source checkout, model weights, checkpoints, Hugging
+Face cache, private fixtures, or generated media. They do not grant any right
+to obtain, use, or redistribute those external materials.
+
+Operators must obtain external materials separately and verify the license
+file at the exact pinned source revision, the current model-card terms at the
+time of acquisition and use, and every applicable model, dataset, and
+dependency license. A link or compatibility reference in nanoAuralRuntime does
+not incorporate an external work or replace that review.
+
+Third-party Python packages, PostgreSQL, container base images, ComfyUI, and
+other optional software retain their own copyright and license terms. No
+third-party trademark or project name in this repository implies endorsement.

@@ -1,0 +1,48 @@
+**
+
+# Explicit sensitive/large exclusions remain documented even though the first
+# rule defaults the complete context to excluded.
+.git
+.git/**
+.venv
+.venv/**
+benchmarks
+benchmarks/**
+docs/source-plans
+docs/source-plans/**
+model_weights
+model_weights/**
+weights
+weights/**
+checkpoints
+checkpoints/**
+hf_cache
+hf_cache/**
+.cache
+.cache/**
+secrets
+secrets/**
+.env
+.env.*
+*.wav
+*.flac
+*.mp3
+*.mp4
+*.safetensors
+*.pth
+*.pt
+*.ckpt
+
+# Minimal API/CPU-reference build context allowlist.
+!ops
+!ops/Dockerfile.api
+!ops/requirements-api.txt
+!ops/load_secrets.py
+!src
+!src/nano_aural_runtime
+!src/nano_aural_runtime/**
+
+# Generated files remain excluded even below an allowed source directory.
+**/__pycache__
+**/__pycache__/**
+**/*.py[cod]

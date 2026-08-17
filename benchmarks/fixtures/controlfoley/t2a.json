@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "fixture_id": "t2a-10s-pending-inputs",
+  "task": "T2A",
+  "duration_seconds": 10.0,
+  "seed": 0,
+  "num_steps": 25,
+  "guidance_scale": 4.5,
+  "inputs": [{"role": "prompt", "kind": "text", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}}]
+}

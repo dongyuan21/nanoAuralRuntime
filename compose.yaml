@@ -1,0 +1,195 @@
+{
+  "name": "nano-aural-reference",
+  "services": {
+    "postgres": {
+      "image": "postgres:16.3-bookworm@sha256:d0f363f8366fbc3f52d172c6e76bc27151c3d643b870e1062b4e8bfe65baf609",
+      "entrypoint": ["/opt/nano-aural/postgres-secret-entrypoint.sh"],
+      "environment": {
+        "POSTGRES_DB": "nano_aural",
+        "POSTGRES_USER": "nano_aural_migrator",
+        "POSTGRES_PASSWORD_FILE": "/run/secrets/postgres_migration_password"
+      },
+      "secrets": ["postgres_migration_password", "postgres_runtime_password"],
+      "volumes": [
+        "postgres-data:/var/lib/postgresql/data",
+        "./ops/postgres-secret-entrypoint.sh:/opt/nano-aural/postgres-secret-entrypoint.sh:ro",
+        "./ops/init-runtime-role.sh:/docker-entrypoint-initdb.d/20-runtime-role.sh:ro"
+      ],
+      "tmpfs": ["/run/nano-aural-secrets:rw,noexec,nosuid,nodev,size=64k,mode=0700"],
+      "healthcheck": {
+        "test": ["CMD-SHELL", "pg_isready -U nano_aural_migrator -d nano_aural"],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 12,
+        "start_period": "5s"
+      },
+      "restart": "unless-stopped"
+    },
+    "migrate": {
+      "platform": "linux/amd64",
+      "build": {
+        "context": ".",
+        "dockerfile": "ops/Dockerfile.api"
+      },
+      "entrypoint": ["python", "/opt/nano-aural/load_secrets.py"],
+      "command": [
+        "python",
+        "-m",
+        "nano_aural_runtime.durable.service",
+        "--migrate-only"
+      ],
+      "environment": {
+        "NANO_AURAL_MIGRATION_DATABASE_DSN_FILE": "/run/secrets/migration_database_dsn"
+      },
+      "secrets": ["migration_database_dsn"],
+      "depends_on": {
+        "postgres": {"condition": "service_healthy"}
+      },
+      "restart": "no",
+      "read_only": true,
+      "tmpfs": ["/tmp:rw,noexec,nosuid,size=64m"]
+    },
+    "grant-runtime-privileges": {
+      "platform": "linux/amd64",
+      "build": {
+        "context": ".",
+        "dockerfile": "ops/Dockerfile.api"
+      },
+      "entrypoint": ["python", "/opt/nano-aural/load_secrets.py"],
+      "command": [
+        "python",
+        "-m",
+        "nano_aural_runtime.durable.migration_admin",
+        "--grant-runtime-role",
+        "nano_aural_runtime"
+      ],
+      "environment": {
+        "NANO_AURAL_MIGRATION_DATABASE_DSN_FILE": "/run/secrets/migration_database_dsn"
+      },
+      "secrets": ["migration_database_dsn"],
+      "depends_on": {
+        "migrate": {"condition": "service_completed_successfully"}
+      },
+      "restart": "no",
+      "read_only": true,
+      "tmpfs": ["/tmp:rw,noexec,nosuid,size=64m"]
+    },
+    "api": {
+      "platform": "linux/amd64",
+      "build": {
+        "context": ".",
+        "dockerfile": "ops/Dockerfile.api"
+      },
+      "entrypoint": ["python", "/opt/nano-aural/load_secrets.py"],
+      "command": ["python", "-m", "nano_aural_runtime.durable.service"],
+      "environment": {
+        "NANO_AURAL_RUNTIME_DATABASE_DSN_FILE": "/run/secrets/runtime_database_dsn",
+        "NANO_AURAL_TOKEN_GRANTS_JSON_FILE": "/run/secrets/token_grants",
+        "NANO_AURAL_API_HOST": "0.0.0.0",
+        "NANO_AURAL_API_PORT": "8080",
+        "NANO_AURAL_CANONICAL_BLOB_ROOT": "/var/lib/nano-aural/canonical",
+        "NANO_AURAL_STAGING_BLOB_ROOT": "/var/lib/nano-aural/staging",
+        "NANO_AURAL_ATTEMPT_ARTIFACT_ROOT": "/var/lib/nano-aural/attempts"
+      },
+      "secrets": ["runtime_database_dsn", "token_grants"],
+      "volumes": [
+        "canonical-data:/var/lib/nano-aural/canonical",
+        "staging-data:/var/lib/nano-aural/staging",
+        "attempt-data:/var/lib/nano-aural/attempts"
+      ],
+      "ports": ["${NANO_AURAL_API_BIND:-127.0.0.1}:${NANO_AURAL_API_PORT:-8080}:8080"],
+      "depends_on": {
+        "grant-runtime-privileges": {"condition": "service_completed_successfully"}
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "python",
+          "-c",
+          "import socket; s=socket.create_connection(('127.0.0.1',8080),2); s.close()"
+        ],
+        "interval": "10s",
+        "timeout": "3s",
+        "retries": 6,
+        "start_period": "5s"
+      },
+      "restart": "unless-stopped",
+      "read_only": true,
+      "tmpfs": ["/tmp:rw,noexec,nosuid,size=64m"]
+    },
+    "cpu-reference-worker": {
+      "platform": "linux/amd64",
+      "build": {
+        "context": ".",
+        "dockerfile": "ops/Dockerfile.api"
+      },
+      "entrypoint": ["python", "/opt/nano-aural/load_secrets.py"],
+      "command": ["python", "-m", "nano_aural_runtime.durable.reference_worker"],
+      "environment": {
+        "NANO_AURAL_RUNTIME_DATABASE_DSN_FILE": "/run/secrets/runtime_database_dsn",
+        "NANO_AURAL_CANONICAL_BLOB_ROOT": "/var/lib/nano-aural/canonical",
+        "NANO_AURAL_ATTEMPT_ARTIFACT_ROOT": "/var/lib/nano-aural/attempts",
+        "NANO_AURAL_WORKSPACE_ROOT": "/var/lib/nano-aural/workspaces",
+        "NANO_AURAL_REFERENCE_DEPLOYMENT_ID": "00000000-0000-4000-8000-000000000301",
+        "NANO_AURAL_REFERENCE_WORKER_ID": "00000000-0000-4000-8000-000000000302"
+      },
+      "secrets": ["runtime_database_dsn"],
+      "volumes": [
+        "canonical-data:/var/lib/nano-aural/canonical",
+        "attempt-data:/var/lib/nano-aural/attempts"
+      ],
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=64m",
+        "/var/lib/nano-aural/workspaces:rw,noexec,nosuid,size=256m"
+      ],
+      "depends_on": {
+        "grant-runtime-privileges": {"condition": "service_completed_successfully"}
+      },
+      "healthcheck": {
+        "test": ["CMD", "python", "-c", "import os; os.kill(1,0)"],
+        "interval": "15s",
+        "timeout": "3s",
+        "retries": 3
+      },
+      "restart": "unless-stopped",
+      "read_only": true
+    },
+    "gpu-worker-placeholder": {
+      "profiles": ["gpu-deferred"],
+      "platform": "linux/amd64",
+      "build": {
+        "context": ".",
+        "dockerfile": "ops/Dockerfile.api"
+      },
+      "command": [
+        "python",
+        "-c",
+        "raise SystemExit('GPU worker is intentionally deferred; this profile does not execute a model')"
+      ],
+      "restart": "no"
+    }
+  },
+  "volumes": {
+    "postgres-data": {},
+    "canonical-data": {},
+    "staging-data": {},
+    "attempt-data": {}
+  },
+  "secrets": {
+    "postgres_migration_password": {
+      "file": "${NANO_AURAL_POSTGRES_MIGRATION_PASSWORD_FILE:?set a private migration-owner password file path}"
+    },
+    "postgres_runtime_password": {
+      "file": "${NANO_AURAL_POSTGRES_RUNTIME_PASSWORD_FILE:?set a private runtime password file path}"
+    },
+    "migration_database_dsn": {
+      "file": "${NANO_AURAL_MIGRATION_DATABASE_DSN_FILE:?set a private migration-owner DSN file path}"
+    },
+    "runtime_database_dsn": {
+      "file": "${NANO_AURAL_RUNTIME_DATABASE_DSN_FILE:?set a private runtime DSN file path}"
+    },
+    "token_grants": {
+      "file": "${NANO_AURAL_TOKEN_GRANTS_FILE:?set a private token-grants JSON file path}"
+    }
+  }
+}

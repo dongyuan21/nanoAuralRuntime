@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "deployment_id": "controlfoley-large44k-fp32-v1",
+  "upstream_repository": "https://github.com/xiaomi-research/controlfoley",
+  "source_revision": "6858cd12a48d141201e3266e7abe1f38357a133e",
+  "variant": "large_44k",
+  "precision": "fp32",
+  "checkpoint_relative_path": "weights/controlfoley.pth",
+  "checkpoint": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "external_weights": [
+    {"relative_path": "ext_weights/cav_mae_st.pth", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}},
+    {"relative_path": "ext_weights/music_speech_audioset_epoch_15_esc_89.98.pt", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}},
+    {"relative_path": "ext_weights/synchformer_state_dict.pth", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}},
+    {"relative_path": "ext_weights/v1-44.pth", "fingerprint": {"status": "pending", "sha256": null, "size_bytes": null}}
+  ]
+}
