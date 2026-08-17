@@ -184,7 +184,9 @@ def test_wheel_and_sdist_are_strict_headless_distributions(
         assert "https://github.com/xiaomi-research/controlfoley" in notice
         assert "https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md" in notice
         assert "CC BY-NC 4.0 includes a NonCommercial restriction" in notice
-        assert "exact pinned source revision" in notice
+        assert "https://github.com/Stability-AI/stable-audio-3" in notice
+        assert "https://github.com/SonyResearch/Woosh" in notice
+        assert "https://huggingface.co/hkchengrex/MMAudio" in notice
         assert {name.split("/", 1)[0] for name in wheel_names if ".dist-info/" not in name} == {
             "nano_aural_runtime",
             "nano_aural_runtime_cli",

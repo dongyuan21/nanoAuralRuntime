@@ -29,6 +29,35 @@ time of acquisition and use, and every applicable model, dataset, and
 dependency license. A link or compatibility reference in nanoAuralRuntime does
 not incorporate an external work or replace that review.
 
+Stable Audio 3 is an external project. Its official repository and model card
+identify a Stability AI Community License for the Small-SFX software/weights
+path, and the public model card identifies T5Gemma text conditioning subject to
+the Gemma Terms of Use:
+
+    https://github.com/Stability-AI/stable-audio-3
+    https://huggingface.co/stabilityai/stable-audio-3-small-sfx
+    https://ai.google.dev/gemma/terms
+
+Gated Hugging Face access is operator-owned. Tokens must be supplied through
+the operator environment (`HF_TOKEN` or `HUGGING_FACE_HUB_TOKEN`) outside this
+repository. nanoAuralRuntime must not log, commit, or ship those tokens.
+
+Sony Woosh is an external project. The pinned `v1.0.0` source README reports
+that the majority of the code is MIT, with adapted MM-AUDIO / MotionFormer
+code under Apache-2.0. Open weights on that release, including Woosh-AE,
+TextConditionerV, Woosh-VFlow-8s, and Woosh-DVFlow-8s, are identified as
+CC BY-NC 4.0. Synchformer video weights are obtained from Hugging Face
+`hkchengrex/MMAudio` (`ext_weights/synchformer_state_dict.pth`) and remain
+external:
+
+    https://github.com/SonyResearch/Woosh
+    https://huggingface.co/hkchengrex/MMAudio
+
+CC BY-NC 4.0 includes a NonCommercial restriction. nanoAuralRuntime does not
+grant commercial-use rights, or any other rights, to Stable Audio 3 or Woosh
+weights. Distributions do not contain those checkouts, archives, Synchformer
+files, Hugging Face caches, private fixtures, or generated media.
+
 Third-party Python packages, PostgreSQL, container base images, ComfyUI, and
 other optional software retain their own copyright and license terms. No
 third-party trademark or project name in this repository implies endorsement.
