@@ -190,6 +190,7 @@ def test_wheel_and_sdist_are_strict_headless_distributions(
             "nano_aural_runtime_cli",
             "nano_aural_runtime_controlfoley",
             "nano_aural_runtime_remote",
+            "nano_aural_runtime_stable_audio_3",
             "nano_aural_runtime_workers",
         }
     all_names = wheel_names + list(_file_names_in_sdist(release_fixture.sdist))
@@ -343,6 +344,7 @@ for name in (
     "nano_aural_runtime_cli",
     "nano_aural_runtime_controlfoley",
     "nano_aural_runtime_remote",
+    "nano_aural_runtime_stable_audio_3",
     "nano_aural_runtime_workers",
 ):
     importlib.import_module(name)

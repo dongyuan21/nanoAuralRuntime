@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "fixture_id": "t2sfx-120s-pending-prompt",
+  "operation": "audio.text_to_sfx",
+  "duration_seconds": 120.0,
+  "seed": 42,
+  "prompt": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  }
+}
