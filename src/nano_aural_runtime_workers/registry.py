@@ -51,7 +51,10 @@ class DurableInvocationBuilderRegistry:
         operations = builder.operations
         if not isinstance(operations, frozenset) or not operations:
             raise BuilderRegistryError("builder operations must be a non-empty frozenset")
-        plugin = DEFAULT_PLUGIN_CATALOG.get(adapter_id)
+        try:
+            plugin = DEFAULT_PLUGIN_CATALOG.get(adapter_id)
+        except KeyError as error:
+            raise BuilderRegistryError("unknown adapter: {0}".format(adapter_id)) from error
         if not plugin.implemented:
             raise BuilderRegistryError("adapter frontend is not installed: {0}".format(adapter_id))
         if not operations.issubset(plugin.operations):
