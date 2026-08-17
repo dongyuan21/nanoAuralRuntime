@@ -70,7 +70,7 @@ WOOSH_V2A_PLUGIN = AdapterPluginMetadata(
     operations=frozenset({"audio.video_to_sfx"}),
     backends=("dvflow-8s", "vflow-8s"),
     package="nano_aural_runtime_woosh",
-    implemented=False,
+    implemented=True,
     default_backend="dvflow-8s",
 )
 

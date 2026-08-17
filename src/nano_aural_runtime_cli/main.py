@@ -62,6 +62,17 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if isinstance(error.code, int):
                 return error.code
             return 2
+    if plugin.frontend == "woosh":
+        from nano_aural_runtime_woosh.cli import main as woosh_main
+
+        try:
+            return woosh_main(arguments)
+        except SystemExit as error:
+            if error.code is None:
+                return 0
+            if isinstance(error.code, int):
+                return error.code
+            return 2
     sys.stderr.write("nano-aural: adapter frontend is not installed\n")
     return 2
 

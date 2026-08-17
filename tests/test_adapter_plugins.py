@@ -59,7 +59,7 @@ def test_plugin_catalog_declares_three_adapters_without_implementing_new_models(
     assert set(plugins) == {"controlfoley", "stable-audio-3-small-sfx", "woosh-v2a"}
     assert plugins["controlfoley"].implemented is True
     assert plugins["stable-audio-3-small-sfx"].implemented is True
-    assert plugins["woosh-v2a"].implemented is False
+    assert plugins["woosh-v2a"].implemented is True
     assert plugins["woosh-v2a"].default_backend == "dvflow-8s"
     assert plugins["woosh-v2a"].backends == ("dvflow-8s", "vflow-8s")
     assert plugins["woosh-v2a"].operations == frozenset({"audio.video_to_sfx"})
@@ -90,7 +90,6 @@ def test_routing_modules_do_not_import_torch_or_new_model_packages():
         elif isinstance(node, ast.ImportFrom) and node.module:
             names.append(node.module.split(".", 1)[0])
     assert "torch" not in names
-    assert "nano_aural_runtime_woosh" not in names
 
 
 def test_cli_help_lists_declared_frontends(capsys):
@@ -102,11 +101,9 @@ def test_cli_help_lists_declared_frontends(capsys):
     assert "dflow" not in output.lower()
 
 
-def test_cli_unimplemented_frontends_fail_closed(capsys):
-    assert main(["woosh", "video-to-sfx"]) == 2
+def test_cli_woosh_rejects_text_to_sfx(capsys):
     assert main(["woosh", "text-to-sfx"]) == 2
-    err = capsys.readouterr().err
-    assert "not installed" in err
+    assert main(["woosh", "dflow"]) == 2
 
 
 def test_cli_unknown_frontend_fail_closed(capsys):
@@ -129,11 +126,11 @@ def test_builder_registry_registers_controlfoley_only():
         registry.get("woosh-v2a")
 
 
-def test_builder_registry_rejects_unimplemented_adapter():
+def test_builder_registry_rejects_unknown_adapter():
     class _Fake:
         @property
         def adapter_id(self) -> str:
-            return "woosh-v2a"
+            return "not-an-adapter"
 
         @property
         def operations(self) -> frozenset:
@@ -145,7 +142,7 @@ def test_builder_registry_rejects_unimplemented_adapter():
         def build(self, deployment, job, inputs):
             raise AssertionError("unreachable")
 
-    with pytest.raises(BuilderRegistryError, match="not installed"):
+    with pytest.raises(BuilderRegistryError, match="unknown adapter"):
         DurableInvocationBuilderRegistry().register(_Fake())
 
 
