@@ -20,8 +20,8 @@ tool copies a temporary source snapshot containing only:
 - `pyproject.toml`, `README.md`, `LICENSE`, and `NOTICE`;
 - Python files beneath `nano_aural_runtime`,
   `nano_aural_runtime_cli`, `nano_aural_runtime_controlfoley`,
-  `nano_aural_runtime_remote`, `nano_aural_runtime_stable_audio_3`, and
-  `nano_aural_runtime_workers`;
+  `nano_aural_runtime_remote`, `nano_aural_runtime_stable_audio_3`,
+  `nano_aural_runtime_woosh`, and `nano_aural_runtime_workers`;
 - the five declared `nano_aural_runtime/durable/sql/*.sql` migration resources.
 
 Unexpected package files, unknown migration resources, symlinks, special files,

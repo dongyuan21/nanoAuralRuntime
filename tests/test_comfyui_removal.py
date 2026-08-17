@@ -107,6 +107,7 @@ def test_headless_and_remote_packages_have_no_reverse_ui_or_model_imports() -> N
         ROOT / "src/nano_aural_runtime_controlfoley",
         ROOT / "src/nano_aural_runtime_remote",
         ROOT / "src/nano_aural_runtime_stable_audio_3",
+        ROOT / "src/nano_aural_runtime_woosh",
         ROOT / "src/nano_aural_runtime_workers",
     )
     for package in headless:
