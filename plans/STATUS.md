@@ -31,7 +31,7 @@ Last updated: 2026-08-18. The files in `docs/source-plans/` are archived researc
 | P9A Woosh V2A baseline | complete (non-hardware Gate passed) | Independent Gate PASS: VFlow/DVFlow provenance lock at `v1.0.0`/`f6ff658`, in-scope archive SHA-256s, 8s window fixtures, pending inner/Synchformer fingerprints, skip-clean GPU diagnostics; no Flow/DFlow/T2A | RTX 4090 **DEFERRED** |
 | P9B Woosh V2A adapter | complete (non-hardware Gate passed) | Independent Gate PASS: woosh-v2a local adapter, audio.video_to_sfx, dvflow-8s default, vflow-8s selectable, 8s fail-closed window, 48k mono WAV, CLI dispatcher | RTX 4090 parity **DEFERRED** |
 | P9C Woosh durable | complete (non-hardware Gate passed) | Independent Gate PASS: WooshV2ADurableInvocationBuilder, required video role, optional prompt, 8s media fail-closed, solver/CFG rejection, registry registration | RTX 4090 worker **DEFERRED** |
-| P9D Woosh profiler/cache | not started | Entry: P9B | RTX 4090 **DEFERRED** |
+| P9D Woosh profiler/cache | complete (non-hardware Gate passed) | Independent Gate PASS: default-off stage profiler, feature-only cache kinds, forbidden ODE/latent/step/cross-seed keys, backend-specific sampler stages | RTX 4090 **DEFERRED** |
 | P10A unified workflows | not started | Entry: P8B, P9B, and P5C | RTX 4090 UI **DEFERRED** |
 | P10B 4090 multi-adapter | blocked | Hardware host unavailable | RTX 4090 **DEFERRED — release-blocking** |
 | P11 second-adapter hardening | not started | Software slices 7A–9C; hardware may remain deferred | Deferred family evidence remains release-blocking for a combined release |
