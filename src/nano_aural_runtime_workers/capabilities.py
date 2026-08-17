@@ -99,6 +99,8 @@ class WorkerCapability:
         operation = request.get("operation")
         task = request.get("task")
         selected = operation if isinstance(operation, str) else task
+        if selected is None and len(self.supported_operations) == 1:
+            selected = next(iter(self.supported_operations))
         if not isinstance(selected, str) or selected not in self.supported_operations:
             raise WorkerCapabilityError("job operation is not supported by this worker")
 
