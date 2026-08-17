@@ -20,6 +20,8 @@ from nano_aural_runtime.durable.materialization import MaterializedInput
 from nano_aural_runtime_controlfoley.adapter import ControlFoleyAdapter
 from nano_aural_runtime_controlfoley.tasks import ControlFoleyLocalRequest, ControlFoleyTaskKind
 
+_CONTROLFOLEY_OPERATIONS = frozenset(task.value for task in ControlFoleyTaskKind)
+
 
 class ControlFoleyDurableBindingError(InvocationRejectedError):
     """The durable deployment, request, or materialized inputs are not sealed."""
@@ -117,6 +119,14 @@ class ControlFoleyDurableInvocationBuilder:
                     "operator configuration has an invalid fingerprint"
                 ) from error
         object.__setattr__(self, "operator_configuration", MappingProxyType(configuration))
+
+    @property
+    def adapter_id(self) -> str:
+        return "controlfoley"
+
+    @property
+    def operations(self) -> frozenset:
+        return _CONTROLFOLEY_OPERATIONS
 
     def core_deployment(self, deployment: DeploymentRecord) -> ModelDeployment:
         """Bind operator-only configuration exactly to a durable deployment row."""

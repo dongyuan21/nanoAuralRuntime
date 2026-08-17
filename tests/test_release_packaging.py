@@ -187,6 +187,7 @@ def test_wheel_and_sdist_are_strict_headless_distributions(
         assert "exact pinned source revision" in notice
         assert {name.split("/", 1)[0] for name in wheel_names if ".dist-info/" not in name} == {
             "nano_aural_runtime",
+            "nano_aural_runtime_cli",
             "nano_aural_runtime_controlfoley",
             "nano_aural_runtime_remote",
             "nano_aural_runtime_workers",
@@ -314,7 +315,9 @@ def test_fresh_venv_installs_wheel_scripts_headless_imports_and_sql_resources(
 
     commands = (
         (str(venv / binary / "nano-aural"), "--help"),
+        (str(venv / binary / "nano-aural-controlfoley"), "--help"),
         (str(venv / binary / "nano-aural-remote"), "--help"),
+        (str(python), "-m", "nano_aural_runtime_cli", "--help"),
         (str(python), "-m", "nano_aural_runtime_controlfoley.cli", "--help"),
         (str(python), "-m", "nano_aural_runtime_remote", "--help"),
         (str(python), "-m", "nano_aural_runtime.durable.service", "--help"),
@@ -337,6 +340,7 @@ import sys
 
 for name in (
     "nano_aural_runtime",
+    "nano_aural_runtime_cli",
     "nano_aural_runtime_controlfoley",
     "nano_aural_runtime_remote",
     "nano_aural_runtime_workers",
@@ -353,7 +357,8 @@ assert sorted(item.name for item in sql.iterdir() if item.name.endswith(".sql"))
 distribution = importlib.metadata.distribution("nano-aural-runtime")
 entries = {(item.name, item.value) for item in distribution.entry_points if item.group == "console_scripts"}
 assert entries == {
-    ("nano-aural", "nano_aural_runtime_controlfoley.cli:main"),
+    ("nano-aural", "nano_aural_runtime_cli.main:main"),
+    ("nano-aural-controlfoley", "nano_aural_runtime_cli.main:controlfoley_alias"),
     ("nano-aural-remote", "nano_aural_runtime_remote.cli:main"),
 }
 assert any(str(item).endswith("licenses/LICENSE") for item in distribution.files or ())

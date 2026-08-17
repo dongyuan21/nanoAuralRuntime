@@ -54,6 +54,7 @@ from .queue import Lease, PostgresLeaseQueue
 from .queue_worker import FakeLeaseWorker, InMemoryCandidate
 from .repository import DurableRepository, InMemoryDurableRepository
 from .runtime_worker import (
+    ClaimGuard,
     DurableRuntimeWorker,
     InvocationBuilder,
     RuntimeCandidate,
@@ -113,6 +114,7 @@ __all__ = [
     "FakeLeaseWorker",
     "InMemoryCandidate",
     "DurableRuntimeWorker",
+    "ClaimGuard",
     "InvocationBuilder",
     "RuntimeCandidate",
     "WorkerProcessFatal",

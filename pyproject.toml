@@ -28,7 +28,8 @@ Issues = "https://github.com/dongyuan21/nanoAuralRuntime/issues"
 Source = "https://github.com/dongyuan21/nanoAuralRuntime"
 
 [project.scripts]
-nano-aural = "nano_aural_runtime_controlfoley.cli:main"
+nano-aural = "nano_aural_runtime_cli.main:main"
+nano-aural-controlfoley = "nano_aural_runtime_cli.main:controlfoley_alias"
 nano-aural-remote = "nano_aural_runtime_remote.cli:main"
 
 [project.optional-dependencies]
@@ -61,6 +62,8 @@ where = ["src"]
 include = [
     "nano_aural_runtime",
     "nano_aural_runtime.*",
+    "nano_aural_runtime_cli",
+    "nano_aural_runtime_cli.*",
     "nano_aural_runtime_controlfoley",
     "nano_aural_runtime_controlfoley.*",
     "nano_aural_runtime_remote",

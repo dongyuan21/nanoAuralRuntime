@@ -652,6 +652,7 @@ def test_remote_package_has_no_model_cuda_durable_or_comfy_imports() -> None:
         "torch",
         "comfy",
         "nano_aural_runtime",
+        "nano_aural_runtime_cli",
         "nano_aural_runtime_controlfoley",
         "nano_aural_runtime_workers",
         "nano_aural_runtime.durable",

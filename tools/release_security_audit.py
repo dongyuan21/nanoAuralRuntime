@@ -82,6 +82,7 @@ _SDIST_TOP_FILES = frozenset(
 _PACKAGE_ROOTS = frozenset(
     (
         "nano_aural_runtime",
+        "nano_aural_runtime_cli",
         "nano_aural_runtime_controlfoley",
         "nano_aural_runtime_remote",
         "nano_aural_runtime_workers",
@@ -1279,7 +1280,8 @@ def _validate_entry_points(display: str, payload: bytes) -> None:
     except (configparser.Error, UnicodeDecodeError):
         raise ArtifactValidationError(display, "wheel.entry_points") from None
     expected = {
-        "nano-aural": "nano_aural_runtime_controlfoley.cli:main",
+        "nano-aural": "nano_aural_runtime_cli.main:main",
+        "nano-aural-controlfoley": "nano_aural_runtime_cli.main:controlfoley_alias",
         "nano-aural-remote": "nano_aural_runtime_remote.cli:main",
     }
     if (

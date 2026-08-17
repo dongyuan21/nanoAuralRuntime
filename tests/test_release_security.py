@@ -417,6 +417,7 @@ def _project_version(root: Path) -> str:
 def _package_payloads(source_root: Path | None = None) -> dict[str, bytes]:
     roots = (
         "nano_aural_runtime",
+        "nano_aural_runtime_cli",
         "nano_aural_runtime_controlfoley",
         "nano_aural_runtime_remote",
         "nano_aural_runtime_workers",
