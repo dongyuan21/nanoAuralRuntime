@@ -25,7 +25,7 @@ Last updated: 2026-08-18. The files in `docs/source-plans/` are archived researc
 | P7B plugin/worker routing | complete | Independent Gate PASS: torch-free plugin catalog, DurableInvocationBuilder registry, Worker capability matching, generic nano-aural dispatcher, ControlFoley compatibility, and Core-boundary checks | Not applicable |
 | P8A Stable Audio baseline | complete (non-hardware Gate passed) | Independent Gate PASS: Small-SFX provenance lock, 5s/30s/120s fixtures, pending weight fingerprints, skip-clean GPU diagnostics, and no gated download in CI | RTX 4090 **DEFERRED** |
 | P8B Stable Audio adapter | complete (non-hardware Gate passed) | Independent Gate PASS: audio.text_to_sfx local adapter, WAV 44.1k stereo contract, injected-runner CPU tests, official runner fail-closed without source, CLI dispatcher | RTX 4090 parity **DEFERRED** |
-| P8C Stable Audio durable | not started | Entry: P8B and P3E | RTX 4090 worker **DEFERRED** |
+| P8C Stable Audio durable | complete (non-hardware Gate passed) | Independent Gate PASS: text-to-sfx DurableInvocationBuilder, no binary inputs, operator-field rejection, registry registration | RTX 4090 worker **DEFERRED** |
 | P8D Stable Audio editing | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
 | P8E Stable Audio profiler/cache | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
 | P9A Woosh V2A baseline | not started | Entry: P7A | RTX 4090 **DEFERRED** |
