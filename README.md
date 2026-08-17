@@ -64,7 +64,9 @@ model card identifies the weights as
 which includes a NonCommercial restriction. This project grants no rights to
 those external materials. Operators must verify the license at their exact
 pinned source revision and the current model-card terms at acquisition and use;
-see [NOTICE](NOTICE).
+see [NOTICE](NOTICE). Stable Audio 3 Small-SFX and Woosh V2A weights are likewise
+operator-supplied, gated or CC BY-NC materials; they are not in the wheel. See
+[second-adapter license boundary](docs/second-adapter-license-boundary.md).
 
 ## Headless commands
 

@@ -34,7 +34,7 @@ Last updated: 2026-08-18. The files in `docs/source-plans/` are archived researc
 | P9D Woosh profiler/cache | complete (non-hardware Gate passed) | Independent Gate PASS: default-off stage profiler, feature-only cache kinds, forbidden ODE/latent/step/cross-seed keys, backend-specific sampler stages | RTX 4090 **DEFERRED** |
 | P10A unified workflows | complete (non-hardware Gate passed) | Independent Gate PASS: sfx.text_generate / sfx.video_generate / sfx.generate_and_mux catalog, mux is not an adapter step, optional ComfyUI mapping with no Woosh T2A nodes | RTX 4090 UI **DEFERRED** |
 | P10B 4090 multi-adapter | blocked | Hardware host unavailable | RTX 4090 **DEFERRED — release-blocking** |
-| P11 second-adapter hardening | not started | Software slices 7A–9C; hardware may remain deferred | Deferred family evidence remains release-blocking for a combined release |
+| P11 second-adapter hardening | complete (software slice; combined release not claimed) | Independent Gate PASS: Stability/Gemma and Woosh MIT/Apache/CC BY-NC notices, Synchformer attribution, HF token redaction, no weights in distributions | Deferred family 4090 evidence remains release-blocking |
 
 ## Current instruction
 
