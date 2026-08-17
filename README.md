@@ -34,7 +34,7 @@ Authoritative project documents:
 ## Install an audited development artifact
 
 Build the headless Python artifacts offline with the pinned setuptools 82.0.1
-backend. The command creates an isolated source snapshot, accepts only the five
+backend. The command creates an isolated source snapshot, accepts only the six
 declared Python package trees and five migration resources, audits every wheel
 and sdist member, refuses overwrite, and reports artifact SHA-256 values.
 
