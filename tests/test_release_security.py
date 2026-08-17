@@ -422,6 +422,7 @@ def _package_payloads(source_root: Path | None = None) -> dict[str, bytes]:
         "nano_aural_runtime_remote",
         "nano_aural_runtime_stable_audio_3",
         "nano_aural_runtime_woosh",
+        "nano_aural_runtime_workflows",
         "nano_aural_runtime_workers",
     )
     if source_root is None:

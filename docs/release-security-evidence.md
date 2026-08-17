@@ -154,9 +154,9 @@ Wheel validation binds the canonical filename to its sole dist-info directory
 and to the complete pyproject release contract: Name, Version, Summary, Author,
 Requires-Python, License-Expression/License-File, classifiers, project URLs,
 extras and Requires-Dist, README body, and dynamic metadata.  It permits exactly
-the seven declared package roots and the exact seven-file dist-info contract;
+the eight declared package roots and the exact seven-file dist-info contract;
 even commonly generated but uncontracted members such as `INSTALLER` are
-rejected.  It requires all seven `__init__.py` files, source-identical
+rejected.  It requires all eight `__init__.py` files, source-identical
 `LICENSE`/`NOTICE`, the three declared console entry points, top-level package
 metadata, and the exact build-backend generator/pure-Python tag.  It also rejects
 absolute paths, `..`, backslashes, duplicate members, symlinks/special files,
@@ -167,7 +167,7 @@ mismatch.  The `RECORD` self-row must have empty hash and size fields.
 
 Source-distribution validation binds its canonical filename, single root, and
 `PKG-INFO` Name/Version; requires source-identical `README.md`, `LICENSE`,
-`NOTICE`, `pyproject.toml`, generated `setup.cfg`, and all seven package trees.
+`NOTICE`, `pyproject.toml`, generated `setup.cfg`, and all eight package trees.
 The exact egg-info member set is mandatory: both `PKG-INFO` copies must equal
 the wheel metadata contract; entry points, optional requirements, top-level
 packages, dependency links, and `SOURCES.txt` must exactly describe the source
