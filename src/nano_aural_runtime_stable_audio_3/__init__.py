@@ -1,5 +1,6 @@
 """Stable Audio 3 Small-SFX provenance. No torch or gated-weight download."""
 
+from .adapter import StableAudio3Adapter, stable_audio_3_local_deployment
 from .baseline import (
     OPERATION,
     RUNTIME_ENVIRONMENT_ID,
@@ -19,6 +20,8 @@ from .baseline import (
 )
 
 __all__ = [
+    "StableAudio3Adapter",
+    "stable_audio_3_local_deployment",
     "OPERATION",
     "RUNTIME_ENVIRONMENT_ID",
     "SUPPORTED_HF_REPOSITORY",

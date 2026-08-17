@@ -58,7 +58,7 @@ def test_plugin_catalog_declares_three_adapters_without_implementing_new_models(
     plugins = {plugin.adapter_id: plugin for plugin in DEFAULT_PLUGIN_CATALOG.all_plugins()}
     assert set(plugins) == {"controlfoley", "stable-audio-3-small-sfx", "woosh-v2a"}
     assert plugins["controlfoley"].implemented is True
-    assert plugins["stable-audio-3-small-sfx"].implemented is False
+    assert plugins["stable-audio-3-small-sfx"].implemented is True
     assert plugins["woosh-v2a"].implemented is False
     assert plugins["woosh-v2a"].default_backend == "dvflow-8s"
     assert plugins["woosh-v2a"].backends == ("dvflow-8s", "vflow-8s")
@@ -71,7 +71,6 @@ def test_routing_modules_do_not_import_torch_or_new_model_packages():
         "src/nano_aural_runtime_workers/plugins.py",
         "src/nano_aural_runtime_workers/capabilities.py",
         "src/nano_aural_runtime_workers/registry.py",
-        "src/nano_aural_runtime_cli/main.py",
     ):
         tree = ast.parse((ROOT / relative).read_text(encoding="utf-8"))
         names = []
@@ -83,6 +82,15 @@ def test_routing_modules_do_not_import_torch_or_new_model_packages():
         assert "torch" not in names
         assert "nano_aural_runtime_stable_audio_3" not in names
         assert "nano_aural_runtime_woosh" not in names
+    tree = ast.parse((ROOT / "src/nano_aural_runtime_cli/main.py").read_text(encoding="utf-8"))
+    names = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            names.extend(alias.name.split(".", 1)[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            names.append(node.module.split(".", 1)[0])
+    assert "torch" not in names
+    assert "nano_aural_runtime_woosh" not in names
 
 
 def test_cli_help_lists_declared_frontends(capsys):
@@ -95,7 +103,6 @@ def test_cli_help_lists_declared_frontends(capsys):
 
 
 def test_cli_unimplemented_frontends_fail_closed(capsys):
-    assert main(["stable-audio-3", "text-to-sfx"]) == 2
     assert main(["woosh", "video-to-sfx"]) == 2
     assert main(["woosh", "text-to-sfx"]) == 2
     err = capsys.readouterr().err
