@@ -8,7 +8,7 @@ Gate blocks every dependent Phase; it must be fixed, narrowed, or explicitly
 replanned in the same Phase. Do not combine Phases in one PR.
 
 The source plans in `docs/source-plans/` are archived research input only. The
-files `plans/0001-runtime-core.md` through `plans/0005-comfyui-integration.md`
+files `plans/0001-runtime-core.md` through `plans/0006-stable-audio-3-and-woosh-v2a.md`
 are programme plans, not one-PR phase definitions. Their lettered slices map
 to the following delivery Phases exactly:
 
@@ -19,11 +19,18 @@ to the following delivery Phases exactly:
 | `0003-A` through `0003-E` | Phases 3A through 3E |
 | `0004-A` through `0004-D` | Phases 4A through 4D |
 | `0005-A` through `0005-C` | Phases 5A through 5C |
+| `0006-7A`, `0006-7B` | Phases 7A, 7B |
+| `0006-8A` through `0006-8E` | Phases 8A through 8E |
+| `0006-9A` through `0006-9D` | Phases 9A through 9D |
+| `0006-10A`, `0006-10B` | Phases 10A, 10B |
+| `0006-11` | Phase 11 |
 
 Phase 0 and Phase 6 are likewise one PR each. `plans/STATUS.md` reports these
 delivery phases and is not a substitute for their Gates. The phases below
 deliberately replace the research plan's ControlFoley-shaped Core with the
-model-agnostic architecture in `ARCHITECTURE.md`.
+model-agnostic architecture in `ARCHITECTURE.md`. Phases 7A–11 add Stable
+Audio 3 Small-SFX and Woosh V2A without widening that Core. Phase 6 hardware
+deferral does not block independent Phases 7A–9C software slices.
 
 ## Phase 0 — Architecture bootstrap
 
@@ -335,3 +342,211 @@ recovery matrix, release smoke tests, and the deferred hardware suite.
 **Gate:** every dependent Gate is green; deferred ControlFoley GPU parity and
 suitable-hardware benchmark evidence are completed; no release claim exceeds
 the evidence.
+
+## Phase 7A — Multi-adapter architecture freeze
+
+**Scope:** freeze the second-adapter programme in documents only: Stable Audio 3
+Small-SFX as text-to-SFX, Woosh as V2A-only with `dvflow-8s` / `vflow-8s`
+Deployments, isolated Worker environments, and plugin/routing ADRs.
+
+**Non-goals:** production Python, new adapters, torch in the root package,
+Woosh T2A/Flow/DFlow, Core contract changes, weights, and hardware claims.
+
+**Deliverables:** `plans/0006-stable-audio-3-and-woosh-v2a.md`, ADR 0003,
+ADR 0004, Roadmap/Status updates, and the source/dependency/license research
+note.
+
+**Tests:** terminology review. Core terms stay model-neutral. Woosh T2A terms
+appear only as explicit out-of-scope. One-Phase/one-PR mapping is complete.
+
+**Gate:** documents agree on the product split, environment isolation, Woosh
+V2A-only scope, DVFlow default, VFlow selectable, 8-second fail-closed window,
+and no production Python in this PR. This Phase depends on Phase 1 and does
+not wait for Phase 6 hardware evidence.
+
+## Phase 7B — Plugin, builder registry, and Worker routing
+
+**Scope:** implement torch-free adapter plugin metadata, a
+`DurableInvocationBuilder` registry, Worker capability descriptors,
+deployment-aware claim filtering, and a generic `nano-aural` dispatcher with
+ControlFoley compatibility.
+
+**Non-goals:** Stable Audio or Woosh model code, Core field additions, torch on
+the root package, and ComfyUI changes.
+
+**Deliverables:** plugin metadata, builder registry, capability routing, CLI
+dispatcher, and ControlFoley regression coverage.
+
+**Tests:** discovery without torch; ControlFoley `--help` and local CLI path;
+builder rejection of operator-only fields on Jobs; capability mismatch
+fail-closed; Core import-boundary scan.
+
+**Gate:** Phase 7A passes. No new model backend lands. ControlFoley remains the
+only executable adapter.
+
+## Phase 8A — Stable Audio 3 baseline and provenance
+
+**Scope:** lock the official Small-SFX source, gated HF identity, dependencies,
+and 5s / 30s / 120s baseline configs behind a direct runner.
+
+**Non-goals:** the production adapter, durable Worker, editing modes, LoRA,
+optimization, or a performance claim.
+
+**Deliverables:** manifests, prepare runbook, self-repeat schema, and
+conditional GPU collection.
+
+**Tests:** schema validation, absent-source/weight diagnostics, gated-access
+diagnostics, and skip-clean GPU tests.
+
+**Gate:** Phase 7A passes. Provenance is complete and no prohibited artifact is
+committed. Real 4090 evidence is `DEFERRED`.
+
+## Phase 8B — Stable Audio 3 local adapter and CLI
+
+**Scope:** implement `audio.text_to_sfx` on the Phase 1 Core with an isolated
+session, local CLI, and 44.1 kHz stereo WAV validation.
+
+**Non-goals:** A2A/inpaint/continuation, durable Worker, cache, ComfyUI, and
+unmeasured speed claims.
+
+**Deliverables:** `nano_aural_runtime_stable_audio_3`, sealed deployment, local
+CLI, and conditional GPU tests.
+
+**Tests:** CPU request/deployment validation, source/weight mismatch
+fail-closed, CLI serialization, Core isolation; GPU smoke skipped when absent.
+
+**Gate:** Phases 7B and 8A pass. Core remains model-neutral. GPU parity is
+`DEFERRED`.
+
+## Phase 8C — Stable Audio 3 durable Worker
+
+**Scope:** connect the durable Worker to the Small-SFX adapter through the
+Phase 7B registry, with an isolated environment and verified publication.
+
+**Non-goals:** editing modes, ComfyUI, batching, and treating a model call as
+job success.
+
+**Deliverables:** invocation builder, environment lock, capability routing,
+artifact validation, remote CLI, and recovery tests.
+
+**Tests:** fake/CPU worker integration, sealed-field rejection, publication
+uniqueness, and conditional GPU worker tests that skip without prerequisites.
+
+**Gate:** Phases 8B and 3E pass. Non-GPU integration tests pass. 4090 worker
+evidence remains `DEFERRED`.
+
+## Phase 8D — Stable Audio 3 editing extensions (optional)
+
+**Scope:** adapter-owned `audio_to_audio`, inpaint, and continuation.
+
+**Non-goals:** blocking Woosh V2A, Core changes, and default-path edits.
+
+**Gate:** Phase 8B passes. This Phase is optional and does not gate 9A–9C.
+
+## Phase 8E — Stable Audio 3 profiler and cache (optional)
+
+**Scope:** experimental, default-off profile stages and text-conditioning cache.
+
+**Non-goals:** blocking Woosh V2A, semantic change, and performance claims.
+
+**Gate:** Phase 8B passes. 4090 cache evidence is `DEFERRED`. This Phase is
+optional and does not gate 9A–9C.
+
+## Phase 9A — Woosh VFlow/DVFlow baseline and provenance
+
+**Scope:** lock SonyResearch/Woosh `v1.0.0` (or a later reviewed pin),
+Woosh-AE, TextConditionerV, Woosh-VFlow-8s, Woosh-DVFlow-8s, and the MMAudio
+Synchformer checkpoint. Official direct-run harness for the 8-second window.
+
+**Non-goals:** inspecting or adapting Woosh-Flow, Woosh-DFlow, TextConditionerA,
+or any T2A path; production adapter; durable Worker; profiler/cache.
+
+**Deliverables:** source/release/archive manifests, 8-second fixture contract,
+optional-prompt and same-seed comparison schema, and a 4090 runbook.
+
+**Tests:** manifest validation, absent-source/weight/Synchformer diagnostics,
+and skip-clean GPU collection. Do not commit weights or media.
+
+**Gate:** Phase 7A passes. Provenance is complete. GPU evidence is `DEFERRED`.
+
+## Phase 9B — Woosh V2A local adapter and CLI
+
+**Scope:** one `woosh-v2a` adapter, operation `audio.video_to_sfx`, sealed
+backends `dvflow-8s` (default) and `vflow-8s`, 8-second window from 0, reject
+shorter video, 48 kHz mono WAV, no mux.
+
+**Non-goals:** Woosh T2A, Flow/DFlow, exposing solver/CFG/renoise on
+`ModelInvocation`, Core fields, durable Worker, cache, and ComfyUI.
+
+**Deliverables:** `nano_aural_runtime_woosh`, local CLI, provenance
+revalidation, and conditional GPU tests.
+
+**Tests:** CPU schema and window policy, backend selection, source/checkpoint/
+Synchformer mismatch fail-closed, Core isolation; GPU parity skipped when
+absent.
+
+**Gate:** Phases 7B and 9A pass. Core remains model-neutral. GPU parity is
+`DEFERRED`.
+
+## Phase 9C — Woosh durable Worker
+
+**Scope:** Woosh V2A invocation builder, isolated environment, capability
+routing, verified video materialization, Runtime invoke, publication, and
+recovery.
+
+**Non-goals:** T2A, solver overrides on Jobs, ComfyUI, and in-adapter mux.
+
+**Deliverables:** Worker binding, environment lock, remote CLI, and recovery
+tests.
+
+**Tests:** fake/CPU integration, video-role requirements, sealed-field
+rejection, winning-result uniqueness, and conditional GPU tests that skip
+without prerequisites.
+
+**Gate:** Phases 9B and 3E pass. Non-GPU integration tests pass. 4090 worker
+evidence remains `DEFERRED`.
+
+## Phase 9D — Woosh profiler and cache
+
+**Scope:** experimental, default-off stages and caches for video preprocessing,
+Synchformer features, text tokens, and empty/unconditional conditions.
+
+**Non-goals:** ODE trajectory cache, latent reuse, step skipping, cross-seed
+reuse, default enablement, and performance claims.
+
+**Gate:** Phase 9B passes. Cache remains result-preserving and non-default.
+4090 evidence is `DEFERRED`.
+
+## Phase 10A — Unified SFX workflows and optional ComfyUI mapping
+
+**Scope:** workflows `sfx.text_generate` (Stable Audio 3 Small-SFX) and
+`sfx.video_generate` (ControlFoley, Woosh-DVFlow-8s, Woosh-VFlow-8s), plus an
+explicit `sfx.generate_and_mux` that is not a model adapter step.
+
+**Non-goals:** making ComfyUI a job authority, duplicating execution code, and
+adding Woosh T2A nodes.
+
+**Gate:** Phases 8B, 9B, and 5C pass. Integrations remain removable.
+
+## Phase 10B — RTX 4090 multi-adapter evidence
+
+**Scope:** record sanitized Stable Audio 5s/30s/120s, Woosh DVFlow/VFlow 8s,
+and existing ControlFoley workloads on the designated host.
+
+**Non-goals:** fabricating measurements, marking skipped tests passed, or
+claiming speedups.
+
+**Gate:** Phases 8B and 9B pass. This Gate remains `DEFERRED` until the host
+is available and does not block independent software slices.
+
+## Phase 11 — Second-adapter release hardening
+
+**Scope:** Stability Community License and Gemma notices, gated HF token
+handling, Woosh MIT/Apache-2.0 and CC BY-NC weight notices, Synchformer/
+MMAudio attribution, and release evidence for the new families.
+
+**Non-goals:** silently relaxing earlier Gates or claiming a combined product
+release while ControlFoley Phase 6 hardware evidence remains deferred.
+
+**Gate:** software slices for 7A–9C are green; hardware evidence for the new
+families is recorded or explicitly deferred; no release claim exceeds evidence.
