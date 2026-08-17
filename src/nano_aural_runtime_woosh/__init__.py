@@ -1,0 +1,41 @@
+"""Woosh V2A provenance. No torch, no weights, no Flow/DFlow/T2A paths."""
+
+from .baseline import (
+    ADAPTER_ID,
+    BACKEND_DVFLOW,
+    BACKEND_VFLOW,
+    OPERATION,
+    RUNTIME_ENVIRONMENT_ID,
+    SUPPORTED_SOURCE_REPOSITORY,
+    SUPPORTED_SOURCE_REVISION,
+    SUPPORTED_SOURCE_TAG,
+    Fingerprint,
+    GpuPrerequisitesUnavailable,
+    SchemaValidationError,
+    WooshV2ADeploymentManifest,
+    WooshV2AFixtureManifest,
+    collect_sanitized_environment,
+    detect_gpu_prerequisites,
+    manifest_sha256,
+    require_gpu_prerequisites,
+)
+
+__all__ = [
+    "ADAPTER_ID",
+    "BACKEND_DVFLOW",
+    "BACKEND_VFLOW",
+    "OPERATION",
+    "RUNTIME_ENVIRONMENT_ID",
+    "SUPPORTED_SOURCE_REPOSITORY",
+    "SUPPORTED_SOURCE_REVISION",
+    "SUPPORTED_SOURCE_TAG",
+    "Fingerprint",
+    "GpuPrerequisitesUnavailable",
+    "SchemaValidationError",
+    "WooshV2ADeploymentManifest",
+    "WooshV2AFixtureManifest",
+    "collect_sanitized_environment",
+    "detect_gpu_prerequisites",
+    "manifest_sha256",
+    "require_gpu_prerequisites",
+]

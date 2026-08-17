@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "fixture_id": "v2sfx-8s-video-prompt",
+  "operation": "audio.video_to_sfx",
+  "seed": 42,
+  "window_start_seconds": 0.0,
+  "window_end_seconds": 8.0,
+  "video": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "prompt": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  }
+}

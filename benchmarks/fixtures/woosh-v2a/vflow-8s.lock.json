@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "deployment_id": "woosh-v2a-vflow-8s-v1",
+  "adapter_id": "woosh-v2a",
+  "backend_id": "vflow-8s",
+  "upstream_repository": "https://github.com/SonyResearch/Woosh",
+  "source_tag": "v1.0.0",
+  "source_revision": "f6ff658efc6d63dee9959964cd75c63415910a19",
+  "runtime_environment_id": "woosh-v2a-pytorch-2.8.0-cu128",
+  "window_start_seconds": 0.0,
+  "window_end_seconds": 8.0,
+  "video_fps": 24,
+  "sample_rate": 48000,
+  "channels": 1,
+  "latent_channels": 128,
+  "latent_frames": 801,
+  "sampler_policy": {
+    "model_class": "VideoKontext",
+    "sampler": "flowmatching_integrate",
+    "num_steps": null,
+    "renoise": null,
+    "cfg": 4.5,
+    "solver_method": "dopri5",
+    "atol": 0.001,
+    "rtol": 0.001
+  },
+  "woosh_ae_archive": {
+    "filename": "Woosh-AE.zip",
+    "sha256": "d6f77e3792ee43c21da580f39d6576e0da3e4b46b949223259adf36036c1f9af",
+    "size_bytes": 822991075
+  },
+  "text_conditioner_v_archive": {
+    "filename": "TextConditionerV.zip",
+    "sha256": "64d8ba0d647d3e685365b37526c2c95790110823623b58fa1642dd8f2139f6ac",
+    "size_bytes": 1298488076
+  },
+  "backend_archive": {
+    "filename": "Woosh-VFlow-8s.zip",
+    "sha256": "b1d9193d611d33471c39a878c205d4fb52ca380c28abd3557d610439d23b583a",
+    "size_bytes": 1537130885
+  },
+  "woosh_ae_config": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "woosh_ae_weights": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "text_conditioner_v_config": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "text_conditioner_v_weights": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "backend_config": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "backend_weights": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "synchformer_repository": "hkchengrex/MMAudio",
+  "synchformer_filename": "ext_weights/synchformer_state_dict.pth",
+  "synchformer_revision": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  },
+  "synchformer_weights": {
+    "status": "pending",
+    "sha256": null,
+    "size_bytes": null
+  }
+}

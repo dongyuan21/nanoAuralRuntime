@@ -28,7 +28,7 @@ Last updated: 2026-08-18. The files in `docs/source-plans/` are archived researc
 | P8C Stable Audio durable | complete (non-hardware Gate passed) | Independent Gate PASS: text-to-sfx DurableInvocationBuilder, no binary inputs, operator-field rejection, registry registration | RTX 4090 worker **DEFERRED** |
 | P8D Stable Audio editing | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
 | P8E Stable Audio profiler/cache | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
-| P9A Woosh V2A baseline | not started | Entry: P7A | RTX 4090 **DEFERRED** |
+| P9A Woosh V2A baseline | complete (non-hardware Gate passed) | Independent Gate PASS: VFlow/DVFlow provenance lock at `v1.0.0`/`f6ff658`, in-scope archive SHA-256s, 8s window fixtures, pending inner/Synchformer fingerprints, skip-clean GPU diagnostics; no Flow/DFlow/T2A | RTX 4090 **DEFERRED** |
 | P9B Woosh V2A adapter | not started | Entry: P7B and P9A | RTX 4090 parity **DEFERRED** |
 | P9C Woosh durable | not started | Entry: P9B and P3E | RTX 4090 worker **DEFERRED** |
 | P9D Woosh profiler/cache | not started | Entry: P9B | RTX 4090 **DEFERRED** |

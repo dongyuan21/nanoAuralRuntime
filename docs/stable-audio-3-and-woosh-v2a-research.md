@@ -123,10 +123,11 @@ rtol = 1e-3
 dtype = float32 on MPS, float64 otherwise
 ```
 
-The public test does not name `dopri5` at the call site. Phase 9A must read
-`woosh.inference.flowmatching_sampler.flowmatching_integrate` at the pinned
-revision and freeze the actual integrator method. Remote Jobs cannot supply
-solver, CFG, re-noise, dtype, or checkpoint paths.
+The public test does not name `dopri5` at the call site. Phase 9A read
+`woosh.inference.flowmatching_sampler.flowmatching_integrate` at revision
+`f6ff658efc6d63dee9959964cd75c63415910a19` and confirmed the default
+`method="dopri5"` (torchdiffeq `odeint`). Remote Jobs cannot supply solver,
+CFG, re-noise, dtype, or checkpoint paths.
 
 V1 video policy: require duration `>= 8` seconds and use `[0, 8)`. Shorter
 videos fail closed. No silent pad, last-frame repeat, or automatic multi-segment
@@ -146,24 +147,28 @@ nanoAuralRuntime itself requires `>=3.9,<3.13`. Woosh's `>=3.12` constraint is
 an isolated Worker concern, not a reason to raise the Core package floor in
 Phase 7A.
 
-## Unresolved questions for Phases 8A and 9A
+## Unresolved questions after Phase 9A
 
 1. Hugging Face resolved revision and file SHA-256 for
    `stabilityai/stable-audio-3-small-sfx` (gated; requires operator token).
 2. T5Gemma tokenizer/model resolved revision and license confirmation at
    acquisition time.
-3. Inner Woosh archive member SHA-256 values after unzip.
+3. Inner Woosh archive member SHA-256 values after unzip (`config.yaml` and
+   `weights.safetensors` for Woosh-AE, TextConditionerV, Woosh-VFlow-8s, and
+   Woosh-DVFlow-8s).
 4. `hkchengrex/MMAudio` resolved revision and
    `ext_weights/synchformer_state_dict.pth` SHA-256.
-5. Exact `flowmatching_integrate` method name (`dopri5` or otherwise) at the
-   pinned Woosh revision.
-6. Whether official VFlow `cfg=4.5` and DVFlow `cfg=3` remain the operator pins
+5. Whether official VFlow `cfg=4.5` and DVFlow `cfg=3` remain the operator pins
    after a real 4090 baseline; until then they are the official-script defaults,
    not a quality claim.
-7. ControlFoley's exact torch pin on the designated host, so the
+6. ControlFoley's exact torch pin on the designated host, so the
    `controlfoley-pytorch-<locked>` identifier can be completed without guessing.
-8. Per-file licenses inside `samples.zip`; fixtures must not be committed if
+7. Per-file licenses inside `samples.zip`; fixtures must not be committed if
    redistribution is unclear.
+
+Resolved in Phase 9A: `v1.0.0` tag commit is
+`f6ff658efc6d63dee9959964cd75c63415910a19`; VFlow integrator default is
+`dopri5`; in-scope GitHub release archive SHA-256 and sizes are sealed.
 
 None of these unresolved items authorizes downloading weights into this
 repository or marking a hardware Gate passed.
