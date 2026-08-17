@@ -28,6 +28,8 @@ Authoritative project documents:
 - [Architecture](ARCHITECTURE.md)
 - [Roadmap](ROADMAP.md)
 - [Phase status and gates](plans/STATUS.md)
+- [ADR 0003: isolated Worker environments](docs/decisions/0003-model-specific-worker-environments.md)
+- [ADR 0004: adapter plugin and Worker routing](docs/decisions/0004-adapter-plugin-and-worker-routing.md)
 
 ## Install an audited development artifact
 

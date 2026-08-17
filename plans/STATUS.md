@@ -1,6 +1,6 @@
 # Execution Status
 
-Last updated: 2026-08-17. The files in `docs/source-plans/` are archived research inputs. `plans/0002`–`0005` are programme plans; their Roadmap Phase subitems are independently gated and each one equals one PR.
+Last updated: 2026-08-18. The files in `docs/source-plans/` are archived research inputs. `plans/0002`–`0006` are programme plans; their Roadmap Phase subitems are independently gated and each one equals one PR.
 
 | Phase | Current status | Entry condition | Hardware evidence |
 |---|---|---|---|
@@ -21,19 +21,37 @@ Last updated: 2026-08-17. The files in `docs/source-plans/` are archived researc
 | P5B ComfyUI remote | complete (non-hardware Gate passed) | Independent Gate PASS: public RemoteClient/API-only nodes, zero/single/multi-input flows, bounded wait/cancel, strict response schemas, redacted full exception chains, authorized checksum-verified downloads, linked OUTPUT workflow, Ruff/format, Pyright, and 17 tests with 1 expected GPU skip passed | RTX 4090 UI smoke **DEFERRED — release-blocking** |
 | P5C ComfyUI removability | complete | Independent Gate PASS: current official/Embedded/Remote node mappings coexist without collisions, three linked v0.4 OUTPUT workflows validate, origin conflicts fail closed, three repository-external physical-omission matrices execute headless Core/CLI/API/Worker paths, and Ruff/format/Pyright pass | Not applicable |
 | P6 Release hardening | blocked (non-hardware hardening passed; full Gate unrun) | Independent software slices passed for deterministic packaging, license/notices, checksum-sealed migration and real PostgreSQL 16 dump/restore, least-privilege runtime roles, release canaries, strict artifact/security evidence, digest-pinned reference images, and hash-locked API dependencies. Final frozen-tree validation: 519 passed with 9 explicit GPU skips; Ruff/format, Pyright, migration mirrors, fresh-wheel installs, external SPDX validation, and current API-lock vulnerability audit passed. This does not complete the Roadmap Phase. | Deferred RTX 4090 and real Embedded/Remote ComfyUI evidence remains release-blocking; Docker daemon build/start/restart evidence is **UNRUN** on this host |
+| P7A multi-adapter freeze | complete | Document Gate passed: Stable Audio 3 = T2SFX only; Woosh = V2SFX with `dvflow-8s`/`vflow-8s` only; no Woosh T2A/Flow/DFlow; isolated Worker environments; plugin/routing ADRs; Core unchanged; no production Python | Not applicable |
+| P7B plugin/worker routing | not started | Entry: P7A | Not applicable |
+| P8A Stable Audio baseline | not started | Entry: P7A | RTX 4090 **DEFERRED** |
+| P8B Stable Audio adapter | not started | Entry: P7B and P8A | RTX 4090 parity **DEFERRED** |
+| P8C Stable Audio durable | not started | Entry: P8B and P3E | RTX 4090 worker **DEFERRED** |
+| P8D Stable Audio editing | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
+| P8E Stable Audio profiler/cache | optional, not started | Entry: P8B; does not gate Woosh | RTX 4090 **DEFERRED** |
+| P9A Woosh V2A baseline | not started | Entry: P7A | RTX 4090 **DEFERRED** |
+| P9B Woosh V2A adapter | not started | Entry: P7B and P9A | RTX 4090 parity **DEFERRED** |
+| P9C Woosh durable | not started | Entry: P9B and P3E | RTX 4090 worker **DEFERRED** |
+| P9D Woosh profiler/cache | not started | Entry: P9B | RTX 4090 **DEFERRED** |
+| P10A unified workflows | not started | Entry: P8B, P9B, and P5C | RTX 4090 UI **DEFERRED** |
+| P10B 4090 multi-adapter | blocked | Hardware host unavailable | RTX 4090 **DEFERRED — release-blocking** |
+| P11 second-adapter hardening | not started | Software slices 7A–9C; hardware may remain deferred | Deferred family evidence remains release-blocking for a combined release |
 
 ## Current instruction
 
-The user explicitly permits continued development while RTX 4090 validation is unavailable. Therefore each hardware-only gate above is deferred, not failed and not passed. Agents may proceed only after the applicable non-hardware gates pass; they must not manufacture measurements, mark skipped tests as passing, claim parity, or claim performance improvement. This execution waiver does not waive the release Gate: P6 remains blocked until the deferred hardware evidence is actually recorded.
+The user explicitly permits continued development while RTX 4090 validation is unavailable. Therefore each hardware-only gate above is deferred, not failed and not passed. Agents may proceed only after the applicable non-hardware gates pass; they must not manufacture measurements, mark skipped tests as passing, claim parity, or claim performance improvement. This execution waiver does not waive the ControlFoley release Gate: P6 remains blocked until the deferred hardware evidence is actually recorded. Independent Phases 7A–9C may proceed under the same deferral.
+
+Woosh scope is strictly `Woosh-VFlow-8s` and `Woosh-DVFlow-8s`. Do not implement Woosh-Flow, Woosh-DFlow, TextConditionerA, or any Woosh text-to-audio path.
 
 ## Required 4090 follow-up
 
-On the designated host, set `CONTROLFOLEY_SOURCE_DIR`, `CONTROLFOLEY_WEIGHTS_DIR`, and `HF_HOME`, then run the documented `pytest -m "gpu and controlfoley" -v` suite plus the baseline/parity/remote commands supplied by the implemented phases. Record only sanitized manifests and result summaries—never weights, caches, user media, private paths, tokens, or host identity.
+On the designated host, set `CONTROLFOLEY_SOURCE_DIR`, `CONTROLFOLEY_WEIGHTS_DIR`, and `HF_HOME`, then run the documented `pytest -m "gpu and controlfoley" -v` suite plus the baseline/parity/remote commands supplied by the implemented phases. After Phases 8A/9A land, also run the Stable Audio and Woosh V2A commands from those runbooks on isolated environments. Record only sanitized manifests and result summaries—never weights, caches, user media, private paths, tokens, or host identity.
 
 ## Cross-phase invariants
 
 - Frontend → Workflow → Durable Service/Local Executor → Runtime Core → Adapter → original backend.
-- Core does not depend on ControlFoley, database/storage/API, or ComfyUI.
+- Core does not depend on ControlFoley, Stable Audio 3, Woosh, database/storage/API, or ComfyUI.
+- ControlFoley, Stable Audio 3, and Woosh V2A use isolated Worker environments; the root package has no torch dependency.
 - Only verified SHA-256 assets enter jobs; PostgreSQL is the durable state authority.
 - Attempts are at-least-once, fenced by monotonic lease epoch; only one verified artifact result may be visible.
 - ComfyUI may be removed without breaking Core, CLI, API, or Worker.
+- No Woosh T2A, Woosh-Flow, or Woosh-DFlow production path exists in this repository.

@@ -115,6 +115,12 @@ heartbeat, finalize, or expose artifacts. Only verified assets may be submitted
 as inputs, and `SUCCEEDED` implies every required artifact is verified, ready,
 and attached to the winning attempt.
 
+Model families do not share a Worker environment. ControlFoley, Stable Audio 3
+Small-SFX, and Woosh V2A each declare an isolated runtime environment, adapter
+id, and sealed Deployment fingerprint. Worker capability routing is an
+application concern; see ADR 0003 and ADR 0004. The Core still does not import
+torch, Hugging Face clients, or any upstream model package.
+
 ## Observability and caching
 
 Profiling is generic: it reports wall/GPU timing, resource usage, and

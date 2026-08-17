@@ -62,11 +62,12 @@ inputs. They are intentionally preserved, are not implementation authority,
 and must not be edited to track the project. This charter, `ARCHITECTURE.md`,
 the ADRs, and the gated `ROADMAP.md` are the authoritative bootstrap set.
 
-`plans/0001-runtime-core.md` through `plans/0005-comfyui-integration.md` are
-programme-plan files: they provide detailed work breakdowns. Their lettered
-PR slices map one-to-one to the delivery Phases in `ROADMAP.md`; their numbered
-file headings do not authorize combining the lettered slices into a single PR.
-`plans/STATUS.md` is an execution index, not a plan or a Gate authority.
+`plans/0001-runtime-core.md` through
+`plans/0006-stable-audio-3-and-woosh-v2a.md` are programme-plan files: they
+provide detailed work breakdowns. Their lettered PR slices map one-to-one to
+the delivery Phases in `ROADMAP.md`; their numbered file headings do not
+authorize combining the lettered slices into a single PR. `plans/STATUS.md` is
+an execution index, not a plan or a Gate authority.
 
 ## Success criteria
 

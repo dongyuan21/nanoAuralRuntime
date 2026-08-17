@@ -27,7 +27,13 @@ ADR or roadmap update when necessary.
 5. Respect entry conditions: Phase 3A depends only on Phase 1; Phase 3D also
    depends on Phase 2B; Phase 4A–4D are experimental/non-default while GPU
    parity is deferred; Phase 5A needs Phase 2B, Phase 5B needs Phase 3E, and
-   Phase 5C needs both. Read `ROADMAP.md` for the complete dependency graph.
+   Phase 5C needs both. Phase 7A depends on Phase 1 and does not wait for
+   Phase 6 hardware; Phase 7B needs 7A; Phase 8A needs 7A; Phase 8B needs 7B
+   and 8A; Phase 8C needs 8B and 3E; Phases 8D and 8E are optional and do not
+   gate Woosh; Phase 9A needs 7A; Phase 9B needs 7B and 9A; Phase 9C needs 9B
+   and 3E; Phase 9D needs 9B; Phase 10A needs 8B, 9B, and 5C. Read
+   `ROADMAP.md` for the complete dependency graph. Do not add Woosh T2A,
+   Woosh-Flow, or Woosh-DFlow paths.
 6. Finish each PR with changed files, commands run, test results, Gate-by-Gate
    status, known risks, and the next permitted Phase.
 
