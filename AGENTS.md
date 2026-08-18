@@ -99,12 +99,13 @@ ADR or roadmap update when necessary.
   available here; use the in-process durable tests instead of `compose.yaml`.
 - PostgreSQL 16 binaries, when installed, live at
   `/usr/lib/postgresql/16/bin`. Export `NANO_AURAL_POSTGRES_BIN` to that path
-  before the postgres suites; without it those tests skip. Several recovery
-  tests create clusters under `/private/tmp` (a macOS path). On Linux, create
-  `sudo ln -sfn /tmp /private/tmp` or setup errors with `FileNotFoundError`.
-  The Compose reference stack in `docs/durable-operations.md` needs five
-  owner-only secret files *outside* the repo — never write secrets into `.env`
-  or `compose.yaml`.
+  before the postgres suites; without it those tests skip. Recovery tests
+  create short Unix-socket clusters under `/tmp` (or `/private/tmp` if that is
+  the writable short root). They do not require a Linux `/private/tmp`
+  symlink; keep that note only as a historical macOS path. The Compose
+  reference stack in `docs/durable-operations.md` needs five owner-only
+  secret files *outside* the repo — never write secrets into `.env` or
+  `compose.yaml`.
 - Optional ComfyUI trees under `integrations/` are not in the wheel; removing
   them must not break headless tests.
 
@@ -115,16 +116,38 @@ run the full non-GPU software bar below. Do not ask the user to confirm each
 step; only stop for missing secrets, operator weights, or RTX 4090 hardware.
 
 1. `export NANO_AURAL_POSTGRES_BIN=/usr/lib/postgresql/16/bin` (Linux PG16).
-2. On Linux, ensure `/private/tmp` → `/tmp` symlink exists for recovery tests.
-3. `.venv/bin/python -m ruff format --check .`
-4. `.venv/bin/python -m ruff check .`
-5. `.venv/bin/python -m pyright`
-6. `.venv/bin/python -m pytest -q -m 'not gpu'`
-7. `.venv/bin/python -m pytest tests/test_release_packaging.py tests/test_release_security.py -q`
-8. P11 narrow slice when touched: second-adapter notices, release packaging,
-   release security, and related adapter/workflow tests from the review list.
+2. `.venv/bin/python -m ruff format --check .`
+3. `.venv/bin/python -m ruff check .`
+4. `.venv/bin/python -m pyright`
+5. `.venv/bin/python -m pytest -q -m 'not gpu'`
+6. `.venv/bin/python -m pytest tests/test_release_packaging.py tests/test_release_security.py -q`
+7. P11 narrow slice when those areas change:
+
+```bash
+.venv/bin/python -m pytest \
+  tests/test_second_adapter_notices.py \
+  tests/test_release_packaging.py \
+  tests/test_release_security.py \
+  tests/test_sfx_workflows.py \
+  tests/test_stable_audio_3_adapter.py \
+  tests/test_woosh_v2a_adapter.py \
+  tests/test_controlfoley_adapter.py \
+  tests/test_adapter_plugins.py \
+  -q
+```
+
+8. PostgreSQL 16 job equivalent (matches `.github/workflows/ci.yml`):
+
+```bash
+.venv/bin/python -m pytest -q \
+  tests/test_postgres_migration.py \
+  tests/test_release_migration_recovery.py \
+  tests/test_durable_service.py \
+  tests/test_publishing_worker_postgres.py
+```
 
 Treat GPU skips as **deferred**, never as pass. Do not claim 4090 parity,
 Docker daemon evidence, or combined P6/P10B release completion from Cloud
-sessions. Update `plans/STATUS.md` only with command counts and commit refs
-that match a green run in this environment.
+sessions. A local `pytest -m 'not gpu'` count is not a substitute for a green
+exact-PR GitHub Actions run. Update `plans/STATUS.md` only with command
+counts, commit SHAs, and Actions run IDs that match that green run.
