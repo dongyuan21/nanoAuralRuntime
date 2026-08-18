@@ -369,7 +369,7 @@ def _expected_entry_points(contract: _ProjectContract) -> bytes:
 
 
 def _expected_top_level() -> bytes:
-    return ("\n".join(_PACKAGE_ROOTS) + "\n").encode("utf-8")
+    return ("\n".join(sorted(_PACKAGE_ROOTS)) + "\n").encode("utf-8")
 
 
 def _audit_record(members: Mapping[str, bytes], record_name: str) -> None:

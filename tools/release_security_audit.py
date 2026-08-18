@@ -56,6 +56,8 @@ _DENIED_DIRECTORY_NAMES = frozenset(
     )
 )
 _DENIED_FILE_NAMES = frozenset((".env", ".pypirc", "credentials", "id_rsa", "id_ed25519"))
+_IGNORED_CONTAINER_DIRECTORY_NAMES = frozenset(("__pycache__",))
+_IGNORED_CONTAINER_SUFFIXES = frozenset((".pyc", ".pyo"))
 _DENIED_SUFFIXES = frozenset(
     (
         ".ckpt",
@@ -213,6 +215,11 @@ _REPOSITORY_SECRET_ALLOWLIST = frozenset(
             "tests/test_release_migration_recovery.py",
             "secret.hardcoded_assignment",
             "abb548089e6e7febc573d9f8edf00bf87c2797fc81e0a7435ed032ea4d742110",
+        ),
+        (
+            "tests/test_second_adapter_notices.py",
+            "secret.hardcoded_assignment",
+            "743a3d6bd2b4f0db674df13c462b337a3a8a0f36db10875b1dda13a3f291ba7c",
         ),
     )
 )
@@ -1185,6 +1192,45 @@ def _regular_files(root: Path) -> Tuple[Path, ...]:
     return tuple(files)
 
 
+def _ignored_container_noise(path: Path) -> bool:
+    """Bytecode caches are local residue, not a release-input finding."""
+
+    if path.is_symlink():
+        return False
+    if path.name in _IGNORED_CONTAINER_DIRECTORY_NAMES and path.is_dir():
+        return True
+    return path.suffix.lower() in _IGNORED_CONTAINER_SUFFIXES and path.is_file()
+
+
+def _container_security_paths(root: Path) -> Tuple[Path, ...]:
+    """Walk a COPY tree for deny/symlink findings without pruning security dirs.
+
+    Inventory generation uses :func:`_regular_files`, which skips denied
+    subtrees so bytecode and operator caches never enter ``copied_inputs``.
+    Security findings must still see ``weights/``, ``secrets/``, ``.venv/``,
+    and nested symlinks; only ``__pycache__`` and ``.pyc``/``.pyo`` are noise.
+    """
+
+    found: list[Path] = []
+    for directory, dirnames, filenames in os.walk(root, followlinks=False):
+        base = Path(directory)
+        keep: list[str] = []
+        for name in sorted(dirnames):
+            path = base / name
+            if _ignored_container_noise(path):
+                continue
+            found.append(path)
+            if not path.is_symlink():
+                keep.append(name)
+        dirnames[:] = keep
+        for name in sorted(filenames):
+            path = base / name
+            if _ignored_container_noise(path):
+                continue
+            found.append(path)
+    return tuple(found)
+
+
 def _denied_path(path: PurePath) -> Optional[str]:
     if any(part in _DENIED_DIRECTORY_NAMES for part in path.parts):
         return "artifact.denied_directory"
@@ -1856,13 +1902,18 @@ def _container_manifest(root: Path, dockerfile: Path) -> Mapping[str, object]:
                     findings.add(Finding(source_path.as_posix(), "container.symlink_input"))
                     continue
                 if candidate.is_dir():
-                    copy_sources.extend(_regular_files(candidate))
+                    copy_sources.extend(
+                        path
+                        for path in _regular_files(candidate)
+                        if not _ignored_container_noise(path)
+                    )
+                    checked = _container_security_paths(candidate)
                 elif candidate.is_file():
                     copy_sources.append(candidate)
+                    checked = (candidate,)
                 else:
                     findings.add(Finding(dockerfile_display, "container.missing_copy_source"))
                     continue
-                checked = (candidate,) if candidate.is_file() else tuple(candidate.rglob("*"))
                 for item in checked:
                     relative = item.relative_to(root)
                     display = relative.as_posix()

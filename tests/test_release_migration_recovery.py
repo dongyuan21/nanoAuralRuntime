@@ -766,6 +766,24 @@ _POSTGRES_READY = bool(
 )
 
 
+def _short_unix_socket_tempdir() -> tempfile.TemporaryDirectory[str]:
+    """Keep PostgreSQL Unix sockets under the ~108-byte sockaddr limit.
+
+    pytest's default tmp can be too long on CI. Prefer a short writable
+    ``/tmp`` (Linux and macOS) or ``/private/tmp`` without requiring a
+    host-specific symlink.
+    """
+
+    for candidate in ("/tmp", "/private/tmp"):
+        path = Path(candidate)
+        try:
+            if path.is_dir() and os.access(path, os.W_OK | os.X_OK):
+                return tempfile.TemporaryDirectory(prefix="nar-p6-", dir=str(path))
+        except OSError:
+            continue
+    return tempfile.TemporaryDirectory(prefix="nar-p6-")
+
+
 @pytest.fixture(scope="module")
 def postgres_cluster(
     tmp_path_factory: pytest.TempPathFactory,
@@ -775,7 +793,7 @@ def postgres_cluster(
         pytest.skip("isolated PostgreSQL 16 cluster prerequisites are unavailable")
     import psycopg
 
-    cluster = tempfile.TemporaryDirectory(prefix="nar-p6-", dir="/private/tmp")
+    cluster = _short_unix_socket_tempdir()
     root = Path(cluster.name)
     data_dir = root / "data"
     socket_dir = root / "socket"

@@ -246,6 +246,11 @@ class DurablePublishingWorker:
                         return
                     current = monitor.heartbeat(current, self._lease_seconds)
             except StateTransitionError:
+                # Heartbeat CAS fail-closes when cancel_requested_at is set.
+                # That is a durable cancel, not reaper ownership; treating it
+                # as lease-loss would leave the job running indefinitely.
+                if _monitor_saw_cancel(monitor, current, outcome, token):
+                    return
                 outcome.record_lost()
                 token.cancel("publication lease lost")
             except BaseException as error:
@@ -365,6 +370,33 @@ class DurablePublishingWorker:
 
 def _lease_identity(lease: Lease) -> tuple[str, str, str, int]:
     return lease.job_id, lease.attempt_id, lease.worker_id, lease.lease_epoch
+
+
+def _monitor_saw_cancel(
+    monitor: PublicationLeaseMonitor,
+    lease: Lease,
+    outcome: _MonitorOutcome,
+    token: CancellationToken,
+) -> bool:
+    """Classify a heartbeat StateTransitionError.
+
+    Return True when this probe already recorded an outcome and the monitor
+    must exit. That is not the same as “this was a cancel”.
+    """
+
+    try:
+        requested = monitor.cancellation_requested(lease)
+    except StateTransitionError:
+        return False
+    except BaseException as error:
+        outcome.record_fatal(error)
+        token.cancel("publication monitor failed")
+        return True
+    if not requested:
+        return False
+    outcome.record_cancel()
+    token.cancel("durable cancellation requested")
+    return True
 
 
 def postgres_publication_service_factory(

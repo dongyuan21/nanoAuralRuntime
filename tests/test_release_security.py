@@ -15,6 +15,7 @@ import tarfile
 import traceback
 import zipfile
 from datetime import datetime, timezone
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import ModuleType
 from typing import Callable, Mapping, Sequence, cast
@@ -42,7 +43,7 @@ _release_spec = importlib.util.spec_from_file_location(
 assert _release_spec is not None and _release_spec.loader is not None
 release_artifacts_module = importlib.util.module_from_spec(_release_spec)
 sys.modules[_release_spec.name] = release_artifacts_module
-_release_spec.loader.exec_module(release_artifacts_module)
+cast(SourceFileLoader, _release_spec.loader).exec_module(release_artifacts_module)
 
 
 @pytest.fixture(scope="module")
@@ -51,7 +52,7 @@ def audit() -> ModuleType:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    cast(SourceFileLoader, spec.loader).exec_module(module)
     return module
 
 
@@ -800,6 +801,67 @@ def test_container_base_image_digest_tamper_is_reported(audit: ModuleType, tmp_p
             "rule": "container.base_image_digest_invalid",
         },
     )
+
+
+def _pinned_copy_dockerfile(tmp_path: Path) -> Path:
+    ops = tmp_path / "ops"
+    ops.mkdir()
+    dockerfile = ops / "Dockerfile.api"
+    dockerfile.write_text(
+        "FROM python:3.12-slim-bookworm@sha256:" + ("a" * 64) + "\nCOPY payload /opt/app\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "payload").mkdir()
+    return dockerfile
+
+
+def test_container_copy_tree_ignores_bytecode_cache(audit: ModuleType, tmp_path: Path) -> None:
+    dockerfile = _pinned_copy_dockerfile(tmp_path)
+    payload = tmp_path / "payload"
+    (payload / "app.py").write_text("print('ok')\n", encoding="utf-8")
+    cache = payload / "__pycache__"
+    cache.mkdir()
+    (cache / "app.cpython-312.pyc").write_bytes(b"\0")
+    (payload / "app.pyc").write_bytes(b"\0")
+    manifest = audit._container_manifest(tmp_path, dockerfile)
+    assert manifest["findings"] == ()
+    copied = {item["file"] for item in manifest["copied_inputs"]}
+    assert copied == {"payload/app.py"}
+
+
+def test_container_copy_tree_reports_weights_model(audit: ModuleType, tmp_path: Path) -> None:
+    dockerfile = _pinned_copy_dockerfile(tmp_path)
+    weights = tmp_path / "payload" / "weights"
+    weights.mkdir()
+    (weights / "model.pth").write_bytes(b"stale")
+    rules = {item["rule"] for item in audit._container_manifest(tmp_path, dockerfile)["findings"]}
+    assert "container.artifact.denied_directory" in rules
+
+
+def test_container_copy_tree_reports_secrets_directory(audit: ModuleType, tmp_path: Path) -> None:
+    dockerfile = _pinned_copy_dockerfile(tmp_path)
+    secrets = tmp_path / "payload" / "secrets"
+    secrets.mkdir()
+    (secrets / "token").write_text("secret", encoding="utf-8")
+    rules = {item["rule"] for item in audit._container_manifest(tmp_path, dockerfile)["findings"]}
+    assert "container.artifact.denied_directory" in rules
+
+
+def test_container_copy_tree_reports_nested_symlink(audit: ModuleType, tmp_path: Path) -> None:
+    dockerfile = _pinned_copy_dockerfile(tmp_path)
+    payload = tmp_path / "payload"
+    target = tmp_path / "outside.txt"
+    target.write_text("leaked", encoding="utf-8")
+    (payload / "link.txt").symlink_to(target)
+    nested = payload / "nested"
+    nested.mkdir()
+    (nested / "dirlink").symlink_to(tmp_path / "payload")
+    findings = {
+        (item["file"], item["rule"])
+        for item in audit._container_manifest(tmp_path, dockerfile)["findings"]
+    }
+    assert ("payload/link.txt", "container.symlink_input") in findings
+    assert ("payload/nested/dirlink", "container.symlink_input") in findings
 
 
 def test_compose_and_ci_images_require_exact_digest_and_detect_tamper(
