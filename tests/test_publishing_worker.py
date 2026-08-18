@@ -319,6 +319,51 @@ def test_reaper_lease_loss_aborts_without_stale_state_mutation_or_visibility() -
     assert factory.services and not factory.services[0].published
 
 
+def test_heartbeat_blocked_by_cancel_flag_terminalizes_as_cancel() -> None:
+    lease, state = _lease(), SharedLeaseState()
+    factory = RecordingServiceFactory(work_steps=100, delay=0.003)
+
+    class HeartbeatCancelMonitor(FakeMonitorQueue):
+        def cancellation_requested(self, lease: Lease) -> bool:
+            assert isinstance(lease, Lease)
+            with self.state.lock:
+                if not self.state.current:
+                    raise StateTransitionError("lease lost")
+                return self.state.cancel_requested
+
+        def heartbeat(self, lease: Lease, lease_seconds: int) -> Lease:
+            with self.state.lock:
+                if not self.state.current:
+                    raise StateTransitionError("lease lost")
+                self.state.heartbeats += 1
+                if self.state.heartbeats >= 2:
+                    self.state.cancel_requested = True
+                    raise StateTransitionError("cancel_requested_at blocks heartbeat")
+            return Lease(
+                lease.job_id,
+                lease.attempt_id,
+                lease.worker_id,
+                lease.lease_epoch,
+                datetime.now(timezone.utc) + timedelta(seconds=lease_seconds),
+            )
+
+    worker = DurablePublishingWorker(
+        OneShotSource(_runtime_candidate(lease)),
+        FakeCommandQueue(state),
+        lambda: HeartbeatCancelMonitor(state),
+        factory,
+        SingleOutputArtifactPlanner(4 * 1024 * 1024, chunk_size=31),
+        lease_seconds=1,
+        heartbeat_interval_seconds=0.002,
+        monitor_start_timeout_seconds=1,
+    )
+    with pytest.raises(InvocationCancelledError, match="cancellation"):
+        worker.run_once()
+    assert state.cancelled == 1
+    assert state.failed == []
+    assert factory.services and not factory.services[0].published
+
+
 def test_monitor_fatal_aborts_before_visibility_and_requeues_current_attempt() -> None:
     lease, state = _lease(), SharedLeaseState()
     state.fatal_after = 2
