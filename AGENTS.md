@@ -79,3 +79,24 @@ ADR or roadmap update when necessary.
 - Add or update tests for behavior changes and run the narrowest relevant suite
   before broader validation. Do not push or create a PR unless explicitly
   instructed.
+
+## Cursor Cloud specific instructions
+
+- Development happens on `codex/multi-adapter-stable-woosh-v2a`, not `main`.
+  `main` is docs-only planning bootstrap. The implemented Runtime Core, CLI,
+  durable service, adapters, tests, and `compose.yaml` live on that Codex
+  integration branch. Open PRs against it unless the user says otherwise.
+- CPU install matches CI: `python -m pip install 'setuptools==82.0.1'` then
+  `python -m pip install --no-build-isolation -e '.[dev]'`. Canonical lint,
+  type-check, and CPU test commands are in `.github/workflows/ci.yml` and
+  `README.md` (`ruff format --check`, `ruff check`, `pyright`,
+  `pytest -m 'not gpu'`).
+- This Cloud Agent VM has no NVIDIA GPU and no operator-supplied ControlFoley,
+  Stable Audio 3, or Woosh V2A weights. GPU-marked tests skip; do not treat
+  skips as passed Gates. Keep the root package torch-free.
+- PostgreSQL 16 suites need `NANO_AURAL_POSTGRES_BIN` pointing at PG16 binaries
+  (`initdb`/`postgres`/`pg_ctl`); without it those tests skip. The Compose
+  reference stack in `docs/durable-operations.md` needs five owner-only secret
+  files *outside* the repo — never write secrets into `.env` or `compose.yaml`.
+- Optional ComfyUI trees under `integrations/` are not in the wheel; removing
+  them must not break headless tests.
