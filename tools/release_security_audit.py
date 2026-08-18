@@ -1902,7 +1902,11 @@ def _container_manifest(root: Path, dockerfile: Path) -> Mapping[str, object]:
                     findings.add(Finding(source_path.as_posix(), "container.symlink_input"))
                     continue
                 if candidate.is_dir():
-                    copy_sources.extend(_regular_files(candidate))
+                    copy_sources.extend(
+                        path
+                        for path in _regular_files(candidate)
+                        if not _ignored_container_noise(path)
+                    )
                     checked = _container_security_paths(candidate)
                 elif candidate.is_file():
                     copy_sources.append(candidate)
