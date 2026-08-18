@@ -77,6 +77,7 @@ _SPECS = (
         (
             "__init__.py",
             "coexistence.py",
+            "sfx_mapping.py",
             "examples/official_controlfoley_t2a_ab.json",
         ),
     ),

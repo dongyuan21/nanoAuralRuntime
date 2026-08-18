@@ -214,6 +214,11 @@ _REPOSITORY_SECRET_ALLOWLIST = frozenset(
             "secret.hardcoded_assignment",
             "abb548089e6e7febc573d9f8edf00bf87c2797fc81e0a7435ed032ea4d742110",
         ),
+        (
+            "tests/test_second_adapter_notices.py",
+            "secret.hardcoded_assignment",
+            "743a3d6bd2b4f0db674df13c462b337a3a8a0f36db10875b1dda13a3f291ba7c",
+        ),
     )
 )
 
@@ -1856,13 +1861,15 @@ def _container_manifest(root: Path, dockerfile: Path) -> Mapping[str, object]:
                     findings.add(Finding(source_path.as_posix(), "container.symlink_input"))
                     continue
                 if candidate.is_dir():
-                    copy_sources.extend(_regular_files(candidate))
+                    tree_files = _regular_files(candidate)
+                    copy_sources.extend(tree_files)
+                    checked = tree_files
                 elif candidate.is_file():
                     copy_sources.append(candidate)
+                    checked = (candidate,)
                 else:
                     findings.add(Finding(dockerfile_display, "container.missing_copy_source"))
                     continue
-                checked = (candidate,) if candidate.is_file() else tuple(candidate.rglob("*"))
                 for item in checked:
                     relative = item.relative_to(root)
                     display = relative.as_posix()
