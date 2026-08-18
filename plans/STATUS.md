@@ -38,7 +38,7 @@ Last updated: 2026-08-18. The files in `docs/source-plans/` are archived researc
 
 ## Current instruction
 
-The user explicitly permits continued development while RTX 4090 validation is unavailable. Therefore each hardware-only gate above is deferred, not failed and not passed. Agents may proceed only after the applicable non-hardware gates pass; they must not manufacture measurements, mark skipped tests as passing, claim parity, or claim performance improvement. This execution waiver does not waive the ControlFoley release Gate: P6 remains blocked until the deferred hardware evidence is actually recorded. Independent Phases 7A–9C may proceed under the same deferral.
+Follow `main`. P11 software Gate independently PASSed and merged (PR #14, `a974d8e`). Full release Gate remains blocked on RTX 4090, Docker daemon, and operator-owned weights/sealed GPU evidence. Hardware-only gates are deferred, not failed and not passed. Agents must not manufacture measurements, mark skipped tests as passing, claim parity, or claim performance improvement. This execution waiver does not waive the ControlFoley release Gate: P6 remains blocked until the deferred hardware evidence is actually recorded.
 
 Woosh scope is strictly `Woosh-VFlow-8s` and `Woosh-DVFlow-8s`. Do not implement Woosh-Flow, Woosh-DFlow, TextConditionerA, or any Woosh text-to-audio path.
 

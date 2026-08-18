@@ -82,10 +82,9 @@ ADR or roadmap update when necessary.
 
 ## Cursor Cloud specific instructions
 
-- Development happens on `codex/multi-adapter-stable-woosh-v2a`, not `main`.
-  `main` is docs-only planning bootstrap. The implemented Runtime Core, CLI,
-  durable service, adapters, tests, and `compose.yaml` live on that Codex
-  integration branch. Open PRs against it unless the user says otherwise.
+- Development happens on `main`. Historical `codex/*` and `cursor/*` phase
+  branches were merged and deleted; do not recreate them as the default
+  working branch. Open PRs against `main` unless the user says otherwise.
 - Cloud Agent sessions install into a repo-local `.venv` (Ubuntu's image lacks
   `ensurepip`, so `python3.12-venv` is installed first). Invoke tools as
   `.venv/bin/python -m …`. CPU extras match CI: `setuptools==82.0.1` then
