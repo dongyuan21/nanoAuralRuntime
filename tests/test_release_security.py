@@ -15,6 +15,7 @@ import tarfile
 import traceback
 import zipfile
 from datetime import datetime, timezone
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import ModuleType
 from typing import Callable, Mapping, Sequence, cast
@@ -42,7 +43,7 @@ _release_spec = importlib.util.spec_from_file_location(
 assert _release_spec is not None and _release_spec.loader is not None
 release_artifacts_module = importlib.util.module_from_spec(_release_spec)
 sys.modules[_release_spec.name] = release_artifacts_module
-_release_spec.loader.exec_module(release_artifacts_module)
+cast(SourceFileLoader, _release_spec.loader).exec_module(release_artifacts_module)
 
 
 @pytest.fixture(scope="module")
@@ -51,7 +52,7 @@ def audit() -> ModuleType:
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    cast(SourceFileLoader, spec.loader).exec_module(module)
     return module
 
 

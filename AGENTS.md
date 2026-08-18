@@ -107,3 +107,24 @@ ADR or roadmap update when necessary.
   or `compose.yaml`.
 - Optional ComfyUI trees under `integrations/` are not in the wheel; removing
   them must not break headless tests.
+
+## Recurring self-verify (Cloud Agent default)
+
+When fixing review findings or preparing a Gate handoff without user prompts,
+run the full non-GPU software bar below. Do not ask the user to confirm each
+step; only stop for missing secrets, operator weights, or RTX 4090 hardware.
+
+1. `export NANO_AURAL_POSTGRES_BIN=/usr/lib/postgresql/16/bin` (Linux PG16).
+2. On Linux, ensure `/private/tmp` → `/tmp` symlink exists for recovery tests.
+3. `.venv/bin/python -m ruff format --check .`
+4. `.venv/bin/python -m ruff check .`
+5. `.venv/bin/python -m pyright`
+6. `.venv/bin/python -m pytest -q -m 'not gpu'`
+7. `.venv/bin/python -m pytest tests/test_release_packaging.py tests/test_release_security.py -q`
+8. P11 narrow slice when touched: second-adapter notices, release packaging,
+   release security, and related adapter/workflow tests from the review list.
+
+Treat GPU skips as **deferred**, never as pass. Do not claim 4090 parity,
+Docker daemon evidence, or combined P6/P10B release completion from Cloud
+sessions. Update `plans/STATUS.md` only with command counts and commit refs
+that match a green run in this environment.

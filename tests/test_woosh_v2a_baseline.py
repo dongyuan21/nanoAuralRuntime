@@ -5,7 +5,9 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
+from typing import cast
 
 import pytest  # pyright: ignore[reportMissingImports]
 
@@ -146,7 +148,7 @@ class WooshV2ABaselineTests(unittest.TestCase):
         )
         assert spec is not None and spec.loader is not None
         module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        cast(SourceFileLoader, spec.loader).exec_module(module)
 
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "planned.json"

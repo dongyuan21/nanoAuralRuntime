@@ -35,6 +35,7 @@ from nano_aural_runtime.durable.domain import AttemptRecord, DeploymentRecord, J
 from nano_aural_runtime.durable.errors import StateTransitionError
 from nano_aural_runtime.durable.queue import Lease, PostgresLeaseQueue
 from nano_aural_runtime.durable.runtime_worker import (
+    ClaimGuard,
     DurableRuntimeWorker,
     RuntimeCandidate,
     WorkerProcessFatal,
@@ -260,7 +261,7 @@ class DurableRuntimeWorkerTests(unittest.TestCase):
         adapter: FakeAudioAdapter,
         factory: Optional[Callable[[], object]] = None,
         builder: Optional[_Builder] = None,
-        guard: Optional[object] = None,
+        guard: Optional[ClaimGuard] = None,
     ) -> tuple[DurableRuntimeWorker, _Builder, list[object]]:
         registry = AdapterRegistry()
         registry.register(adapter)
