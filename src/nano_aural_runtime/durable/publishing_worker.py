@@ -378,10 +378,20 @@ def _monitor_saw_cancel(
     outcome: _MonitorOutcome,
     token: CancellationToken,
 ) -> bool:
+    """Classify a heartbeat StateTransitionError.
+
+    Return True when this probe already recorded an outcome and the monitor
+    must exit. That is not the same as “this was a cancel”.
+    """
+
     try:
         requested = monitor.cancellation_requested(lease)
     except StateTransitionError:
         return False
+    except BaseException as error:
+        outcome.record_fatal(error)
+        token.cancel("publication monitor failed")
+        return True
     if not requested:
         return False
     outcome.record_cancel()

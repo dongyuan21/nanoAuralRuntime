@@ -319,6 +319,43 @@ def test_reaper_lease_loss_aborts_without_stale_state_mutation_or_visibility() -
     assert factory.services and not factory.services[0].published
 
 
+def test_cancel_probe_connection_failure_after_heartbeat_ste_is_fail_closed() -> None:
+    lease, state = _lease(), SharedLeaseState()
+    factory = RecordingServiceFactory(work_steps=100, delay=0.003)
+
+    class ProbeFatalAfterHeartbeatMonitor(FakeMonitorQueue):
+        def __init__(self, shared: SharedLeaseState) -> None:
+            super().__init__(shared)
+            self._probes = 0
+
+        def cancellation_requested(self, lease: Lease) -> bool:
+            assert isinstance(lease, Lease)
+            self._probes += 1
+            if self._probes == 1:
+                return False
+            raise RuntimeError("injected cancel probe connection failure")
+
+        def heartbeat(self, lease: Lease, lease_seconds: int) -> Lease:
+            del lease, lease_seconds
+            raise StateTransitionError("lease is no longer current")
+
+    worker = DurablePublishingWorker(
+        OneShotSource(_runtime_candidate(lease)),
+        FakeCommandQueue(state),
+        lambda: ProbeFatalAfterHeartbeatMonitor(state),
+        factory,
+        SingleOutputArtifactPlanner(4 * 1024 * 1024, chunk_size=31),
+        lease_seconds=1,
+        heartbeat_interval_seconds=0.002,
+        monitor_start_timeout_seconds=1,
+    )
+    with pytest.raises(PublicationMonitorError, match="monitor failed"):
+        worker.run_once()
+    assert state.cancelled == 0
+    assert state.failed == [(1, 3)]
+    assert factory.services == [] or not factory.services[0].published
+
+
 def test_heartbeat_blocked_by_cancel_flag_terminalizes_as_cancel() -> None:
     lease, state = _lease(), SharedLeaseState()
     factory = RecordingServiceFactory(work_steps=100, delay=0.003)
