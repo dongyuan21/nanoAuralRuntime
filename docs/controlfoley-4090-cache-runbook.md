@@ -1,45 +1,41 @@
-# ControlFoley Phase 4C L0/L1 cache runbook (RTX 4090)
+# ControlFoley Phase 4C L0/L1 缓存运行手册（RTX 4090）
 
-Status: **DEFERRED** until the designated RTX 4090 host has the verified Phase
-2A deployment, sealed fixture inputs, and a real staged backend that implements
-the Phase 4C safe-bytes preprocessing codec. A skip is not a passed hardware
-Gate.
+状态：**DEFERRED**，直至指定 RTX 4090 宿主具备已验证的 Phase
+2A 部署、密封 fixture 输入，以及实现 Phase 4C 安全字节预处理编解码器的真实分阶段后端。跳过不是已通过的硬件
+Gate。
 
-Phase 4C is experimental and disabled by default. `upstream_parity` remains the
-default/oracle; this command compares cache-off, cold-cache, and warm-cache runs
-of the same explicitly selected staged backend. It does not measure parity
-against the upstream oracle, define a threshold, or support a performance
-claim.
+Phase 4C 为实验性，默认禁用。`upstream_parity` 仍为
+默认/oracle；本命令比较同一显式选定分阶段后端的关缓存、冷缓存与热缓存运行。
+它不对照上游 oracle 测量一致性、不定义阈值，也不支持性能
+主张。
 
-## Cached values and safety boundary
+## 缓存值与安全边界
 
-- L0 stores only path-free canonical metadata JSON: full input SHA-256/size,
-  task and all invocation parameters, source/deployment/manifest/checkpoint
-  identity, precision, backend id, preprocessing version, and cache code
-  version.
-- L1 stores only immutable bytes exported by the staged backend for
-  `media_resolve_preprocess`. The backend must implement
-  `ControlFoleyPreprocessCacheCodec`; a cached deployment fails to load without
-  it.
-- Condition encoders, Flow Matching/integration, latents, solver state, decode,
-  vocoder, and final artifacts are never cached in Phase 4C.
-- Storage is a process-local, thread-safe byte/item-bounded memory LRU. Phase
-  4C writes no pickle or disk cache. Expired, corrupt, or undecodable entries
-  become misses and are removed; model execution continues with a cold stage.
+- L0 仅存储无路径的规范元数据 JSON：完整输入 SHA-256/大小、
+  任务及全部调用参数、源码/部署/清单/检查点
+  身份、精度、后端 id、预处理版本以及缓存代码
+  版本。
+- L1 仅存储分阶段后端为
+  `media_resolve_preprocess` 导出的不可变字节。后端必须实现
+  `ControlFoleyPreprocessCacheCodec`；没有它，已缓存部署将无法加载。
+- 条件编码器、Flow Matching/积分、潜变量、求解器状态、解码、
+  声码器以及最终产物在 Phase 4C 中永不缓存。
+- 存储为进程本地、线程安全、按字节/条目有界的内存 LRU。Phase
+  4C 不写入 pickle 或磁盘缓存。过期、损坏或无法解码的条目
+  成为未命中并被移除；模型执行以冷阶段继续。
 
-Writes use immutable conditional first-writer-wins semantics and are delayed
-until the entire invocation succeeds. Input files are full-hashed before
-preprocessing and again immediately before commit. Cancellation, model fault,
-or input drift commits no pending entry. Runtime same-session execution remains
-single-flight; concurrent cold requests in distinct sessions may duplicate
-deterministic preprocessing, after which the first successful immutable put
-wins.
+写入使用不可变的条件先写者胜出语义，并延迟
+直至整个调用成功。输入文件在预处理前进行完整哈希，并在提交前立即再次哈希。取消、模型故障
+或输入漂移不提交任何待写入条目。Runtime 同一会话执行保持
+single-flight；不同会话中的并发冷请求可能重复
+确定性预处理，之后第一次成功的不可变 put
+胜出。
 
-## Sealed operator configuration
+## 密封运营方配置
 
-Create an exact JSON object outside the repository. Extra fields are rejected.
-Every path is absolute; inputs must exist, the evidence output must not exist,
-and its parent must already exist.
+在仓库外创建精确的 JSON 对象。额外字段会被拒绝。
+每条路径均为绝对路径；输入必须存在，证据输出不得存在，
+且其父目录必须已经存在。
 
 ```json
 {
@@ -57,38 +53,37 @@ and its parent must already exist.
 }
 ```
 
-For `V2A`, omit `prompt`. For `AC-V2A`, add `audio` and omit `prompt`. For
-`T2A`, omit `video`. `TV2A` and `TC-V2A` both require `video` plus `prompt`.
+对于 `V2A`，省略 `prompt`。对于 `AC-V2A`，添加 `audio` 并省略 `prompt`。对于
+`T2A`，省略 `video`。`TV2A` 与 `TC-V2A` 均需要 `video` 加上 `prompt`。
 
-The backend module must expose:
+后端模块必须暴露：
 
 ```python
 def create_controlfoley_staged_backend() -> ControlFoleyStagedBackend: ...
 ```
 
-The returned backend must also structurally implement
-`ControlFoleyPreprocessCacheCodec`. The operator owns the declared
-`preprocess_version` and `code_version`; changing either produces a distinct
-sealed deployment and cache key.
+返回的后端还必须在结构上实现
+`ControlFoleyPreprocessCacheCodec`。运营方拥有所声明的
+`preprocess_version` 与 `code_version`；更改任一者会产生不同的
+密封部署与缓存键。
 
-## Exact command
+## 精确命令
 
-From the repository root, with the operator backend importable:
+在仓库根目录，且运营方后端可导入时：
 
 ```bash
 export CONTROLFOLEY_P4C_GPU_CONFIG="$($PWD/.venv/bin/python -c 'import json,sys; print(json.dumps(json.load(open(sys.argv[1], encoding="utf-8"))))' /absolute/path/to/p4c-config.json)"
 .venv/bin/pytest -q -m 'gpu and controlfoley' tests/test_controlfoley_cache.py::test_controlfoley_l0_l1_cache_equivalence_when_operator_configured
 ```
 
-Configured source origin/revision/dirty state, manifest, fixture, input,
-checkpoint, or external-weight failure is a test failure even when CUDA is
-also absent. Only an otherwise valid configuration on a host without actual
-torch/CUDA capability is skipped.
+已配置的源码来源/修订/脏状态、清单、fixture、输入、
+检查点或外部权重失败即使 CUDA 也缺失，仍为测试失败。
+仅当配置本身有效、但宿主没有实际
+torch/CUDA 能力时才会跳过。
 
-Before evidence is written, the harness repeats the full source/weight seals,
-re-reads the deployment and fixture manifests, and recalculates the canonical
-invocation fingerprint. The exclusive-created, path-free JSON records raw
-output SHA-256 values and truthful cold/warm `CacheReport` values. It contains
-no timing target, benchmark result, upstream parity verdict, or acceleration
-claim. RTX 4090 cache equivalence remains deferred until that evidence is
-actually captured and reviewed.
+在写入证据之前，harness 重复完整的源码/权重密封、
+重新读取部署与 fixture 清单，并重新计算规范
+调用指纹。独占创建、无路径的 JSON 记录原始
+输出 SHA-256 值以及如实的冷/热 `CacheReport` 值。它不包含
+计时目标、基准结果、上游一致性裁决或加速
+主张。RTX 4090 缓存等价性在该证据实际捕获并审查之前仍为延期。

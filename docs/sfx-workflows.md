@@ -1,15 +1,13 @@
-# Unified SFX workflows (Phase 10A)
+# 统一 SFX 工作流（Phase 10A）
 
-These workflows sit above adapters. They do not change Runtime Core
-`load()` / `invoke()` / `unload()`, and they are not a ComfyUI job authority.
+这些工作流位于适配器之上。它们不改变 Runtime Core 的
+`load()` / `invoke()` / `unload()`，也不是 ComfyUI 的作业权威。
 
-| Workflow | Adapter | Operation | Mux |
+| 工作流 | 适配器 | 操作 | Mux |
 | --- | --- | --- | --- |
-| `sfx.text_generate` | Stable Audio 3 Small-SFX | `audio.text_to_sfx` | no |
-| `sfx.video_generate` | ControlFoley, Woosh-DVFlow-8s (default), Woosh-VFlow-8s | ControlFoley tasks or `audio.video_to_sfx` | no |
-| `sfx.generate_and_mux` | same video backends, after WAV exists | not an adapter operation | yes |
+| `sfx.text_generate` | Stable Audio 3 Small-SFX | `audio.text_to_sfx` | 否 |
+| `sfx.video_generate` | ControlFoley、Woosh-DVFlow-8s（默认）、Woosh-VFlow-8s | ControlFoley 任务或 `audio.video_to_sfx` | 否 |
+| `sfx.generate_and_mux` | 相同的视频后端，在 WAV 已存在之后 | 不是适配器操作 | 是 |
 
-Mux is an explicit post-adapter step. Woosh and Stable Audio 3 adapters emit WAV
-only. ComfyUI node names in `integrations/comfyui_compat/sfx_mapping.py` are
-optional display mappings; omitting `integrations/` must not break headless
-paths. No Woosh T2A, Flow, or DFlow nodes are part of this mapping.
+Mux 是显式的适配器后步骤。Woosh 与 Stable Audio 3 适配器仅输出 WAV。
+`integrations/comfyui_compat/sfx_mapping.py` 中的 ComfyUI 节点名称是可选的显示映射；省略 `integrations/` 不得破坏无头路径。本映射不包含任何 Woosh T2A、Flow 或 DFlow 节点。

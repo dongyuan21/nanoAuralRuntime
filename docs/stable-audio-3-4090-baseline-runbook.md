@@ -1,18 +1,17 @@
-# Stable Audio 3 Small-SFX baseline runbook (Phase 8A)
+# Stable Audio 3 Small-SFX 基线运行手册（Phase 8A）
 
-This runbook is deferred validation, not a completed result. Run it only on the
-designated RTX 4090 host after the operator has accepted the gated Hugging Face
-terms and installed the pinned source and weights **outside** this repository.
-Do not commit weights, Hugging Face caches, tokens, prompts, or generated media.
+本运行手册是延期验证，不是已完成结果。仅在指定 RTX 4090 宿主上、运营方已接受门控 Hugging Face
+条款并将固定源码与权重安装到本仓库**之外**后运行。
+不得提交权重、Hugging Face 缓存、令牌、提示或生成的媒体。
 
-## Preconditions
+## 前置条件
 
-- Isolated environment `stable-audio-3-pytorch-2.7.1-cu126`.
-- Source revision `a0b57f5483c4588f827f3552b7d5c6ca2a9687be`.
-- Model id `small-sfx` from `stabilityai/stable-audio-3-small-sfx`.
-- Official post-trained policy: `steps=8`, `cfg_scale=1.0`, `sampler=pingpong`,
-  `batch_size=1`.
-- Output contract: 44.1 kHz stereo WAV.
+- 隔离环境 `stable-audio-3-pytorch-2.7.1-cu126`。
+- 源码修订 `a0b57f5483c4588f827f3552b7d5c6ca2a9687be`。
+- 模型 id `small-sfx`，来自 `stabilityai/stable-audio-3-small-sfx`。
+- 官方训后策略：`steps=8`、`cfg_scale=1.0`、`sampler=pingpong`、
+  `batch_size=1`。
+- 输出契约：44.1 kHz 立体声 WAV。
 
 ```bash
 export STABLE_AUDIO_3_SOURCE_DIR=/operator/controlled/stable-audio-3
@@ -20,7 +19,7 @@ export STABLE_AUDIO_3_WEIGHTS_DIR=/operator/controlled/stable-audio-3-weights
 export HF_HOME=/operator/controlled/hf-cache
 ```
 
-## Validate checked-in manifests without weights
+## 在无权重情况下验证已检入清单
 
 ```bash
 pytest -m "gpu" tests/test_stable_audio_3_baseline.py -v
@@ -33,10 +32,9 @@ for fixture in t2sfx-5s t2sfx-30s t2sfx-120s; do
 done
 ```
 
-Checked-in fingerprints remain `pending`. A skip is not a passed Gate.
+已检入指纹保持 `pending`。跳过不是已通过的 Gate。
 
-## Capture real evidence later
+## 稍后捕获真实证据
 
-Seal private copies of the deployment and fixtures from the exact installed
-weights and prompts, then record sanitized 5s / 30s / 120s cold/warm results.
-Do not mark this Gate passed until those files exist on the designated host.
+从精确安装的权重与提示密封部署与 fixture 的私有副本，然后记录脱敏的 5s / 30s / 120s 冷/热结果。
+在指定宿主上这些文件存在之前，不要将此 Gate 标记为通过。

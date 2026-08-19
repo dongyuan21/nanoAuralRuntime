@@ -1,87 +1,81 @@
-# ComfyUI compatibility and removal
+# ComfyUI 兼容性与移除
 
-The NanoAural ComfyUI frontends are optional, removable adapters. They do not
-replace the local Runtime or durable service as execution, job, or artifact
-authorities. ComfyUI itself is not a dependency of any package under `src/`.
+NanoAural 的 ComfyUI 前端是可选、可移除的适配器。它们不
+替代本地 Runtime 或持久服务作为执行、作业或产物
+权威。ComfyUI 本身不是 `src/` 下任何包的依赖。
 
-## Supported coexistence
+## 受支持的共存
 
-Phase 5C checks three independently owned node families in one host process:
+Phase 5C 在同一宿主进程中检查三组独立拥有的节点族：
 
-| Node family | Execution route | Model code in frontend |
+| 节点族 | 执行路径 | 前端中的模型代码 |
 | --- | --- | --- |
-| Official ControlFoley plugin | Official plugin | Official-plugin owned |
-| NanoAural Embedded | Existing local Runtime and adapter | No copied execution code |
-| NanoAural Remote | Public remote client and durable service | None |
+| 官方 ControlFoley 插件 | 官方插件 | 由官方插件拥有 |
+| NanoAural Embedded | 既有本地 Runtime 与适配器 | 无复制的执行代码 |
+| NanoAural Remote | 公开远程客户端与持久服务 | 无 |
 
-`integrations/comfyui_compat` records the official plugin's public
-`NODE_CLASS_MAPPINGS` names and validates the standard A/B workflow in
-`integrations/comfyui_compat/examples/official_controlfoley_t2a_ab.json`.
-The contract snapshot is based on the current public `nodes.py` in
-<https://github.com/YJX-Research/comfyui-controlfoley-official>. Re-run the
-coexistence tests before accepting an official-plugin update; a missing or
-renamed public node is an explicit compatibility failure, not a reason to
-silently relax discovery.
+`integrations/comfyui_compat` 记录官方插件的公开
+`NODE_CLASS_MAPPINGS` 名称，并校验标准 A/B 工作流
+`integrations/comfyui_compat/examples/official_controlfoley_t2a_ab.json`。
+契约快照基于当前公开的 `nodes.py`：
+<https://github.com/YJX-Research/comfyui-controlfoley-official>。在接受官方插件更新前须重新运行
+共存测试；缺失或重命名的公开节点是明确的兼容性失败，而不是
+静默放宽发现条件的理由。
 
-All official, embedded, and remote node names must be disjoint. The compatibility
-check refuses duplicate names before mappings can silently replace one another.
-The three example workflows use the standard ComfyUI `nodes`, `widgets_values`,
-six-field `links`, and terminal `OUTPUT_NODE` shape and are discoverable together.
-Private custom value types are not intended to cross between node families; use
-each example as a separate A/B execution route.
+所有官方、Embedded 与 Remote 节点名称必须互不相交。兼容性
+检查在映射可能静默互相替换之前拒绝重复名称。
+三个示例工作流使用标准 ComfyUI 的 `nodes`、`widgets_values`、
+六字段 `links` 以及终端 `OUTPUT_NODE` 形态，并可一并发现。
+私有自定义值类型无意在节点族之间交叉；将
+每个示例作为独立的 A/B 执行路径使用。
 
-## ControlFoley source-origin rule
+## ControlFoley 源码来源规则
 
-The official and NanoAural Embedded routes may coexist when every already-loaded
-upstream `controlfoley` module and `lib.flow_matching` resolves beneath the exact
-same ControlFoley checkout. The official plugin wrapper may remain in its own
-ComfyUI `custom_nodes` directory.
+当每个已加载的上游 `controlfoley` 模块与 `lib.flow_matching`
+都解析到完全相同的 ControlFoley 检出目录之下时，官方路径与 NanoAural Embedded 路径可以共存。官方插件包装器可以保留在其自己的
+ComfyUI `custom_nodes` 目录中。
 
-Before starting ComfyUI:
+启动 ComfyUI 之前：
 
-1. Set the official plugin's `CONTROLFOLEY_SOURCE_DIR` to the selected checkout.
-2. Set NanoAural Embedded's sealed operator JSON `source_dir` to that same
-   checkout and export `NANO_AURAL_COMFYUI_OPERATOR_CONFIG` as documented in
-   `integrations/comfyui/README.md`.
-3. Start a fresh process, discover the three mappings, and run
-   `inspect_controlfoley_coexistence()` with the official plugin modules and the
-   current `sys.modules` mapping before loading either model route.
+1. 将官方插件的 `CONTROLFOLEY_SOURCE_DIR` 设置为所选检出目录。
+2. 将 NanoAural Embedded 的密封运营方 JSON `source_dir` 设置为同一
+   检出目录，并按 `integrations/comfyui/README.md` 的文档导出
+   `NANO_AURAL_COMFYUI_OPERATOR_CONFIG`。
+3. 启动全新进程，发现三组映射，并在加载任一模型路径之前，使用官方插件模块与当前
+   `sys.modules` 映射运行
+   `inspect_controlfoley_coexistence()`。
 
-An unknown origin or a path outside the sealed checkout is rejected with the
-actual and expected origins and restart instructions. Do not catch that failure
-and continue loading: Python cannot safely replace already-imported modules in a
-live ComfyUI process. Stop the host, correct both source settings, and restart.
-The Remote frontend is unaffected because it imports no ControlFoley, Runtime,
-worker, torch, CUDA, or model package.
+未知来源或密封检出目录之外的路径会被拒绝，并给出
+实际与期望来源以及重启说明。不得捕获该失败
+并继续加载：Python 无法在活动的 ComfyUI 进程中安全替换已导入模块。停止宿主、纠正两侧源码设置后重启。
+Remote 前端不受影响，因为它不导入 ControlFoley、Runtime、
+worker、torch、CUDA 或模型包。
 
-## Removal and headless verification
+## 移除与无头验证
 
-Stop ComfyUI and call the frontend's documented teardown before removing a
-loaded Embedded package. Then delete or omit either optional directory:
+停止 ComfyUI，并在移除已加载的 Embedded 包之前调用前端文档中的拆除流程。然后删除或省略任一可选目录：
 
 - `integrations/comfyui/`
 - `integrations/comfyui_remote/`
-- `integrations/comfyui_compat/` when coexistence diagnostics are not deployed
+- 未部署共存诊断时的 `integrations/comfyui_compat/`
 
-No migration or durable-state cleanup is needed. Remote jobs and artifacts stay
-owned by the durable service; local Runtime state is process-local and is closed
-by Embedded teardown.
+无需迁移或持久状态清理。远程作业与产物仍由
+持久服务拥有；本地 Runtime 状态是进程本地的，并由
+Embedded 拆除关闭。
 
-The Phase 5C omission regression does not merely hide imports. It copies the
-headless `src/` tree outside the repository, physically leaves out Embedded,
-Remote, or both, changes to a detached working directory, removes Python path
-environment variables, and runs a fresh interpreter with `-E -S`. That process
-executes CPU smoke paths for Core, the local ControlFoley CLI, ApplicationService,
-ApplicationApi, the fake durable worker, and the ControlFoley durable invocation
-binding. It also proves that headless packages have no reverse integration or
-ComfyUI imports and that Remote has no model-side imports.
+Phase 5C 省略回归不仅隐藏导入。它将无头 `src/` 树复制到仓库之外，在物理上排除 Embedded、
+Remote 或两者，切换到分离的工作目录，移除 Python 路径
+环境变量，并用 `-E -S` 运行全新解释器。该进程
+执行 Core、本地 ControlFoley CLI、ApplicationService、
+ApplicationApi、伪持久 worker 以及 ControlFoley 持久调用
+绑定的 CPU 冒烟路径。它还证明无头包没有反向集成或
+ComfyUI 导入，且 Remote 没有模型侧导入。
 
-Run the scoped evidence with:
+使用以下命令运行范围内的证据：
 
 ```sh
 .venv/bin/pytest -q tests/test_comfyui_coexistence.py tests/test_comfyui_removal.py
 ```
 
-The designated 4090 ComfyUI validation remains **DEFERRED** when its hardware
-and sealed operator configuration are unavailable. A skip is not a passing GPU
-result and does not alter these CPU-only compatibility or removal claims.
+指定的 4090 ComfyUI 验证在其硬件与密封运营方配置不可用时仍为 **DEFERRED**。跳过不是通过的 GPU
+结果，也不改变这些仅 CPU 的兼容性或移除主张。
