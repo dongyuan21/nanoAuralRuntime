@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "nano-aural-runtime"
 version = "0.1.0.dev0"
-description = "A model-agnostic runtime core for audio model adapters."
+description = "面向音频模型适配器的模型无关 Runtime Core。"
 readme = "README.md"
 requires-python = ">=3.9,<3.13"
 license = "Apache-2.0"

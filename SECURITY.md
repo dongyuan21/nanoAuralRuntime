@@ -1,46 +1,29 @@
-# Security policy
+# 安全策略
 
-## Supported versions
+## 支持的版本
 
-nanoAuralRuntime is pre-alpha and has no production-supported release yet. The
-current development branch receives security fixes, but it does not carry a
-stability, availability, model-quality, or response-time guarantee.
+nanoAuralRuntime 目前是 pre-alpha，尚无生产支持的发行。当前开发分支会接收安全修复，但不提供稳定性、可用性、模型质量或响应时间保证。
 
-## Report a vulnerability privately
+## 私下报告漏洞
 
-Use the repository host's private security-advisory channel at
-<https://github.com/dongyuan21/nanoAuralRuntime/security/advisories/new>. If it
-is unavailable, contact the maintainers through an established private project
-channel before disclosing details publicly.
+请使用仓库宿主的私有安全公告通道：
+<https://github.com/dongyuan21/nanoAuralRuntime/security/advisories/new>。若不可用，请在公开披露细节前，通过已建立的私有项目渠道联系维护者。
 
-Do not place any of the following in a public issue, pull request, log excerpt,
-or reproduction archive:
+切勿将下列内容放入公开 issue、pull request、日志摘录或复现归档：
 
-- bearer tokens, token digests, DSNs, passwords, secret-file paths, or headers;
-- private source, weight, checkpoint, cache, fixture, or media paths;
-- model weights, user media, generated artifacts, or sanitized evidence source
-  files that can be linked back to a user or host;
-- production namespace, asset, job, attempt, artifact, or storage identifiers.
+- bearer token、token 摘要、DSN、密码、密钥文件路径或请求头；
+- 私有源码、权重、checkpoint、缓存、夹具或媒体路径；
+- 模型权重、用户媒体、生成产物，或可回溯到用户/主机的已脱敏证据源文件；
+- 生产命名空间、资产、任务、尝试、产物或存储标识。
 
-Provide a minimal description of the affected component/version, impact,
-preconditions, and a reproduction using synthetic values. Maintainers may ask
-for encrypted evidence through a separate private channel. Rotate any real
-credential that was accidentally exposed before continuing the report.
+请提供受影响组件/版本、影响、前置条件的最小描述，以及使用合成值的复现。维护者可能通过单独私有渠道索取加密证据。若真实凭据被意外暴露，请先轮换再继续报告。
 
-## Security boundaries
+## 安全边界
 
-- Remote requests accept verified asset identifiers, never server-local paths,
-  source directories, weights, Python modules, or arbitrary deployment flags.
-- The durable database is the job-state authority; successful model execution
-  alone never publishes a result.
-- ComfyUI is optional and removable. It is never the execution, job, or artifact
-  authority.
-- ControlFoley source and model materials are external operator dependencies and
-  are not redistributed by this project.
-- The checked-in WSGI/Compose stack is a CPU reference environment, not a
-  production HTTP/TLS boundary.
+- 远程请求只接受已验证的资产标识，绝不接受服务器本地路径、源码目录、权重、Python 模块或任意部署标志。
+- 持久化数据库是任务状态权威；仅模型执行成功绝不发布结果。
+- ComfyUI 可选且可拆除。它从来不是执行、任务或产物权威。
+- ControlFoley 源码与模型材料是外部运营依赖，本项目不重新分发。
+- 入库的 WSGI/Compose 栈是 CPU 参考环境，不是生产 HTTP/TLS 边界。
 
-See `docs/durable-operations.md` for secret loading, token rotation, recovery,
-logging, and backup rules. Security fixes must retain fail-closed cancellation,
-integrity validation, fencing, no-overwrite publication, bounded input/output,
-and dependency-direction tests.
+密钥加载、token 轮换、恢复、日志与备份规则见 `docs/durable-operations.md`。安全修复必须保留失败即关闭的取消、完整性校验、隔离（fencing）、禁止覆盖的发布、有界输入/输出，以及依赖方向测试。

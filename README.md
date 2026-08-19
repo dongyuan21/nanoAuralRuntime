@@ -1,42 +1,32 @@
 # nanoAuralRuntime
 
-nanoAuralRuntime is an audio-native, model-agnostic Runtime Core, adapter SDK,
-and durable serving stack. ControlFoley is its first adapter and vertical
-workflow; it is not the system boundary.
+nanoAuralRuntime 是一套音频原生、模型无关的 Runtime Core、适配器 SDK 与持久化服务栈。ControlFoley 是第一个适配器与垂直工作流，它不是系统边界。
 
-Status: active pre-alpha. The software/CPU phases are implemented, but this is
-not a completed release. The required RTX 4090 parity, benchmark, worker,
-remote, and UI evidence remains **DEFERRED** and release-blocking. No parity,
-quality, acceleration, or performance claim is made from skipped tests.
+状态：活跃的 pre-alpha。软件/CPU 阶段已实现，但**不是**已完成的发行。所需的 RTX 4090 对齐、基准、Worker、远程与 UI 证据仍为 **延期（DEFERRED）**，并阻塞发行。不得根据跳过的测试声称对齐、质量、加速或性能。
 
-## Architecture and authority
+## 架构与权威
 
-Dependencies point down through the fixed layers:
+依赖方向固定向下：
 
 ```text
 Frontend -> Workflow -> Durable Service / Local Executor
          -> Runtime Core -> Model Adapter -> Original Model Backend
 ```
 
-The Runtime Core has no ControlFoley, PostgreSQL, storage, API, or ComfyUI
-dependency. ComfyUI is an optional removable frontend, and the durable database
-remains the authority for asset, job, attempt, and artifact state.
+Runtime Core 不依赖 ControlFoley、PostgreSQL、存储、API 或 ComfyUI。ComfyUI 是可选、可拆除的前端；持久化数据库仍是资产、任务、尝试与产物状态的权威。
 
-Authoritative project documents:
+权威文档：
 
-- [Project charter](PROJECT_CHARTER.md)
-- [Architecture](ARCHITECTURE.md)
-- [Roadmap](ROADMAP.md)
-- [Phase status and gates](plans/STATUS.md)
-- [ADR 0003: isolated Worker environments](docs/decisions/0003-model-specific-worker-environments.md)
-- [ADR 0004: adapter plugin and Worker routing](docs/decisions/0004-adapter-plugin-and-worker-routing.md)
+- [项目章程](PROJECT_CHARTER.md)
+- [架构](ARCHITECTURE.md)
+- [路线图](ROADMAP.md)
+- [阶段状态与 Gate](plans/STATUS.md)
+- [ADR 0003：隔离的 Worker 环境](docs/decisions/0003-model-specific-worker-environments.md)
+- [ADR 0004：适配器插件与 Worker 路由](docs/decisions/0004-adapter-plugin-and-worker-routing.md)
 
-## Install an audited development artifact
+## 安装经审计的开发产物
 
-Build the headless Python artifacts offline with the pinned setuptools 82.0.1
-backend. The command creates an isolated source snapshot, accepts only the eight
-declared Python package trees and five migration resources, audits every wheel
-and sdist member, refuses overwrite, and reports artifact SHA-256 values.
+使用钉死的 setuptools 82.0.1 离线构建无头 Python 产物。该命令会创建隔离的源码快照，只接受已声明的八个 Python 包树与五份迁移资源，审计每一个 wheel / sdist 成员，拒绝覆盖，并报告产物 SHA-256。
 
 ```sh
 mkdir -p dist
@@ -45,33 +35,18 @@ python -m pip install --no-index --no-deps \
   dist/nano_aural_runtime-0.1.0.dev0-py3-none-any.whl
 ```
 
-The base distribution has no mandatory third-party dependency. PostgreSQL
-runtime support is the explicit `durable-postgres` extra; test and development
-dependencies remain separate.
+基础发行包没有强制第三方依赖。PostgreSQL 运行时支持是显式的 `durable-postgres` extra；测试与开发依赖保持分离。
 
 ```sh
 python -m pip install '.[durable-postgres]'
 python -m pip install -e '.[dev,postgres-test]'
 ```
 
-ControlFoley source, dependencies, weights, checkpoints, fixtures, and caches
-are operator-supplied external materials. They are not installed by any extra
-and are not included in a wheel, sdist, optional frontend archive, or reference
-container. The official ControlFoley repository identifies its source code as
-[Apache-2.0](https://github.com/xiaomi-research/controlfoley), while its official
-model card identifies the weights as
-[CC BY-NC 4.0](https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md),
-which includes a NonCommercial restriction. This project grants no rights to
-those external materials. Operators must verify the license at their exact
-pinned source revision and the current model-card terms at acquisition and use;
-see [NOTICE](NOTICE). Stable Audio 3 Small-SFX and Woosh V2A weights are likewise
-operator-supplied, gated or CC BY-NC materials; they are not in the wheel. See
-[second-adapter license boundary](docs/second-adapter-license-boundary.md).
+ControlFoley 源码、依赖、权重、checkpoint、夹具与缓存均为运营方提供的外部材料。任何 extra 都不会安装它们，也不会打进 wheel、sdist、可选前端归档或参考容器。官方 ControlFoley 仓库将源码标识为 [Apache-2.0](https://github.com/xiaomi-research/controlfoley)，官方模型卡将权重标识为 [CC BY-NC 4.0](https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md)，含非商业限制。本项目不授予这些外部材料的任何权利。运营方必须在钉死的源码修订与获取/使用时的模型卡条款上自行核验许可；见 [NOTICE](NOTICE)。Stable Audio 3 Small-SFX 与 Woosh V2A 权重同样是运营方提供、受门控或 CC BY-NC 约束的材料，不在 wheel 中。见 [第二适配器许可边界](docs/second-adapter-license-boundary.md)。
 
-## Headless commands
+## 无头命令
 
-Help must work without model weights, API credentials, PostgreSQL, or network
-access:
+下列帮助必须在没有模型权重、API 凭据、PostgreSQL 或网络的情况下可用：
 
 ```sh
 nano-aural --help
@@ -84,54 +59,30 @@ python -m nano_aural_runtime.durable.reference_worker --help
 python -m nano_aural_runtime.durable.recovery --help
 ```
 
-`nano-aural controlfoley local` is the local operator-controlled path.
-`nano-aural-remote` exchanges verified asset, job, and artifact identifiers
-with the public durable API. Consult the command help and the
-[durable operations guide](docs/durable-operations.md) before supplying
-deployment or service configuration.
+`nano-aural controlfoley local` 是本地、由运营方控制的路径。`nano-aural-remote` 与公开的持久化 API 交换已验证的资产、任务与产物标识。在提供部署或服务配置前，请阅读命令帮助与 [持久化运维指南](docs/durable-operations.md)。
 
-## Optional ComfyUI source archives
+## 可选 ComfyUI 源码归档
 
-The main wheel intentionally contains no `integrations` package. It is not a
-silent omission: the three optional source trees have separate, removable,
-deterministic release carriers.
+主 wheel 有意不含 `integrations` 包。这不是静默遗漏：三棵可选源码树各自有可拆除、确定性的发行载体。
 
 ```sh
 mkdir -p dist/comfyui
 python tools/release_comfyui_archives.py --output-dir dist/comfyui
 ```
 
-This produces independently versioned Embedded, Remote, and Compat zip files.
-Each contains one importable custom-node-style package, `LICENSE`, `NOTICE`,
-and `RELEASE-MANIFEST.json` with the exact member SHA-256 and size. Extract only
-the frontend required by the host. Removing any or all archives leaves the
-headless wheel unaffected. See the
-[compatibility and removal guide](docs/comfyui-compatibility-removal.md).
+这会生成独立版本的 Embedded、Remote 与 Compat zip。每个包含一个可导入的 custom-node 风格包、`LICENSE`、`NOTICE`，以及带精确成员 SHA-256 与大小的 `RELEASE-MANIFEST.json`。只解压宿主需要的前端。拆除任一或全部归档，无头 wheel 不受影响。见 [兼容与拆除指南](docs/comfyui-compatibility-removal.md)。
 
-## Durable reference environment boundary
+## 持久化参考环境边界
 
-`compose.yaml` and `ops/Dockerfile.api` are a CPU fake-publication reference
-environment. The image copies only `nano_aural_runtime`, runs as a non-root user,
-uses mounted secret files, and excludes ControlFoley, torch, CUDA, weights, and
-ComfyUI. The reference build is explicitly `linux/amd64`; its Python base uses
-a tag plus digest and its resolved Python dependencies use exact wheel hashes
-with binary-only installation. Its standard-library WSGI server is not a
-production HTTP/TLS server. Production exposure requires an independently
-supported reverse proxy/server, TLS, request timeouts, concurrency limits, and
-an operational security review.
+`compose.yaml` 与 `ops/Dockerfile.api` 是 CPU 假发布参考环境。镜像只复制 `nano_aural_runtime`，以非 root 用户运行，使用挂载的密钥文件，并排除 ControlFoley、torch、CUDA、权重与 ComfyUI。参考构建明确为 `linux/amd64`；其 Python 基础镜像使用 tag 加 digest，解析后的 Python 依赖使用精确 wheel 哈希且仅安装二进制包。其标准库 WSGI 服务器不是生产 HTTP/TLS 服务器。生产暴露需要独立支持的反向代理/服务器、TLS、请求超时、并发限制与运维安全审查。
 
-Docker daemon validation is environment-conditional and remains unrun when no
-container CLI/daemon is available. The inert `gpu-deferred` profile is not a GPU
-worker and cannot satisfy a hardware Gate.
+Docker daemon 验证取决于环境：没有容器 CLI/daemon 时保持未跑。惰性的 `gpu-deferred` profile 不是 GPU Worker，不能满足硬件 Gate。
 
-## Release and security
+## 发行与安全
 
-- [Release readiness and artifact contract](docs/release-readiness.md)
-- [Changelog](CHANGELOG.md)
-- [Security policy](SECURITY.md)
-- [License](LICENSE) and [notices](NOTICE)
+- [发行就绪与产物契约](docs/release-readiness.md)
+- [变更日志](CHANGELOG.md)
+- [安全策略](SECURITY.md)
+- [许可证](LICENSE) 与 [声明](NOTICE)
 
-Release artifacts must not contain weights, media, caches, secrets, private
-paths, generated evidence, or archived research. Report security issues through
-the private process in `SECURITY.md`, never through a public issue containing a
-credential or private deployment detail.
+发行产物不得包含权重、媒体、缓存、密钥、私有路径、生成证据或归档研究。安全问题请通过 `SECURITY.md` 中的私有流程报告，切勿在公开 issue 中放入凭据或私有部署细节。

@@ -1,46 +1,27 @@
-# Changelog
+# 变更日志
 
-All notable changes are recorded here. The project follows semantic versioning
-once a release version is declared; the current `0.1.0.dev0` identifier is a
-pre-release development snapshot, not a completed release.
+所有显著变更记录于此。一旦声明发行版本，项目将遵循语义化版本；当前 `0.1.0.dev0` 标识是预发行开发快照，不是已完成的发行。
 
-## Unreleased
+## 未发布
 
-### Added
+### 新增
 
-- A model-agnostic Runtime Core with explicit lifecycle, cancellation,
-  single-flight execution, and generic profile/cache reports.
-- A sealed ControlFoley adapter/local CLI and explicitly non-default staged,
-  profiling, L0/L1, and L2 condition-cache experiments.
-- Durable verified uploads, fenced attempts, verified publication, authorized
-  download, remote client/CLI, CPU reference worker, recovery commands, and a
-  PostgreSQL 16 reference schema.
-- Optional Embedded and Remote ComfyUI frontends plus coexistence/removal
-  diagnostics.
-- Strict offline wheel/sdist construction, deterministic independent ComfyUI
-  archives, fresh-install release tests, license/notice material, and pinned CI
-  action definitions.
-- Checksum-sealed migrations, least-privilege runtime database credentials, and
-  restartable PostgreSQL/canonical-object backup and restore with a real
-  PostgreSQL 16 recovery drill.
+- 模型无关的 Runtime Core：显式生命周期、取消、单飞执行，以及通用 profile/cache 报告。
+- 密封的 ControlFoley 适配器/本地 CLI，以及显式非默认的分阶段、profiling、L0/L1 与 L2 条件缓存实验。
+- 持久化已验证上传、带隔离的尝试、已验证发布、授权下载、远程客户端/CLI、CPU 参考 Worker、恢复命令，以及 PostgreSQL 16 参考 schema。
+- 可选 Embedded 与 Remote ComfyUI 前端，以及共存/拆除诊断。
+- 严格离线 wheel/sdist 构建、确定性独立 ComfyUI 归档、全新安装发行测试、许可/声明材料，以及钉死的 CI action 定义。
+- 校验和密封的迁移、最小权限运行时数据库凭据，以及可重启的 PostgreSQL/规范对象备份恢复（含真实 PostgreSQL 16 恢复演练）。
 
-### Security
+### 安全
 
-- Release archives use explicit file allowlists, reject symlinks and unsafe
-  member paths, refuse overwrite, and report full-file SHA-256 values.
-- Reference container images use reviewed tag-plus-digest identities; the
-  Linux/amd64 API dependency closure uses exact versions, reviewed wheel
-  SHA-256 values, binary-only resolution, and hash-required installation.
-- Credentials, model weights, private fixtures, generated media, caches, and
-  benchmark evidence are excluded from published artifacts.
+- 发行归档使用显式文件允许列表，拒绝符号链接与不安全成员路径，拒绝覆盖，并报告全文件 SHA-256。
+- 参考容器镜像使用经审查的 tag 加 digest 身份；Linux/amd64 API 依赖闭包使用精确版本、经审查的 wheel SHA-256、仅二进制解析，以及必须带哈希的安装。
+- 凭据、模型权重、私有夹具、生成媒体、缓存与基准证据排除在已发布产物之外。
 
-### Deferred release evidence
+### 延期的发行证据
 
-- RTX 4090 baseline/parity, durable worker/remote closed loops, experimental
-  benchmark measurements, and Embedded/Remote ComfyUI UI smokes remain
-  **DEFERRED** and release-blocking.
-- Real Docker daemon validation is environment-blocked when a container CLI and
-  daemon are unavailable.
+- RTX 4090 基线/对齐、持久化 Worker/远程闭环、实验性基准测量，以及 Embedded/Remote ComfyUI UI 冒烟仍为 **延期**，并阻塞发行。
+- 没有容器 CLI 与 daemon 时，真实 Docker daemon 验证被环境阻塞。
 
-No parity, quality, speedup, or production-readiness claim is attached to this
-development snapshot.
+本开发快照不附带任何对齐、质量、加速或生产就绪声称。
