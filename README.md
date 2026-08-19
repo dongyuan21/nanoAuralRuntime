@@ -1,6 +1,6 @@
 # nanoAuralRuntime
 
-nanoAuralRuntime 是一套音频原生、模型无关的 Runtime Core、适配器 SDK 与持久化服务栈。ControlFoley 是第一个适配器与垂直工作流，它不是系统边界。
+nanoAuralRuntime 是一套音频原生、模型无关的 Runtime Core、适配器 SDK 与持久化服务栈。ControlFoley 是首个垂直工作流；当前生产适配器还包括 Stable Audio 3 Small-SFX（`audio.text_to_sfx`）与 Woosh V2A（`audio.video_to_sfx`）。单一模型或 UI 框架不是系统边界。
 
 状态：活跃的 pre-alpha。软件/CPU 阶段已实现，但**不是**已完成的发行。所需的 RTX 4090 对齐、基准、Worker、远程与 UI 证据仍为 **延期（DEFERRED）**，并阻塞发行。不得根据跳过的测试声称对齐、质量、加速或性能。
 

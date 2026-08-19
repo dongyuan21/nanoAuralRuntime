@@ -4,13 +4,19 @@
 
 nanoAuralRuntime 是面向音频基础模型的音频原生、模型无关、适配器优先的运行时、工作流 SDK 与持久化服务栈。它让模型执行可复现、可观测、可取消、可安全发布，同时不把任何单一模型或 UI 框架当作系统边界。
 
-ControlFoley 是第一个模型适配器，也是第一条完整垂直工作流。它证明架构可行，但不是产品定义。
+ControlFoley 是首个模型适配器，也是第一条完整垂直工作流；它验证架构可行，但不是产品定义。当前已落地的生产适配器线有三条：
+
+- **ControlFoley** — foley 与多任务 video-conditioned 生成；首个垂直切片与参考实现。
+- **Stable Audio 3 Small-SFX** — `audio.text_to_sfx`（text-to-SFX）。
+- **Woosh V2A** — `audio.video_to_sfx`（video-to-SFX）；部署为 `dvflow-8s`（默认）与 `vflow-8s`。
+
+工作流映射见 [SFX 工作流](docs/sfx-workflows.md)。上游权重与许可由运营方按各适配器文档自行提供；见 [第二适配器许可边界](docs/second-adapter-license-boundary.md)。
 
 ## 结果
 
 - 本地执行路径可以加载已声明的模型部署、调用它，并在没有 Web 服务或 ComfyUI 的情况下产出已验证产物。
 - 持久化执行路径可以接受已验证资产、管理任务与尝试、隔离过期 Worker，并且只暴露一个已验证的获胜结果。
-- 模型特定语义放在适配器与任务模式之后，从而可以加入第二个音频模型而不扩大 Runtime Core 契约。
+- 模型特定语义放在适配器与任务模式之后，从而可以在不扩大 Runtime Core 契约的前提下接入更多音频模型。ControlFoley、Stable Audio 3 Small-SFX 与 Woosh V2A 已证明该扩展路径。
 - CLI、HTTP API 与 ComfyUI 都是可替换前端。拆除 ComfyUI 不得影响 Runtime Core、CLI、API、Worker 或其测试。
 
 ## 架构承诺
@@ -37,4 +43,4 @@ ControlFoley 是第一个模型适配器，也是第一条完整垂直工作流�
 
 ## 成功标准
 
-当已声明的适配器可以在本地与持久化路径上被调用；每一个对外结果都已验证且属于一个获胜尝试；模型特定选项仍留在 Core 之外；删除可选 ComfyUI 集成后无头路径仍然完整——本计划即告成功。
+当已声明的适配器（至少包括上述三条生产线）可以在本地与持久化路径上被调用；每一个对外结果都已验证且属于一个获胜尝试；模型特定选项仍留在 Core 之外；删除可选 ComfyUI 集成后无头路径仍然完整——本计划即告成功。
