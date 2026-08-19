@@ -1,154 +1,75 @@
-# Release readiness and artifact contract
+# 发行就绪与产物契约
 
-## Current decision
+## 当前决策
 
-Phase 6 non-hardware hardening has passed its independently reviewed software
-Gate. This document defines build and validation mechanics; it does not declare
-the overall release Gate passed. The required RTX 4090 and real ComfyUI evidence
-is still **DEFERRED** and release-blocking. Real PostgreSQL 16 backup/restore has
-been executed; Docker daemon validation remains **UNRUN** on this host and must
-not be inferred from static tests.
+阶段 6 非硬件加固已通过独立审查的软件 Gate。本文定义构建与校验机制；它不宣布整体发行 Gate 已通过。所需的 RTX 4090 与真实 ComfyUI 证据仍为 **DEFERRED**，并阻塞发行。真实 PostgreSQL 16 备份/恢复已执行；本宿主上的 Docker daemon 校验仍为 **UNRUN**，不得由静态测试推断。
 
-## Headless distribution allowlist
+## 无头发行允许列表
 
-`tools/release_artifacts.py` requires the active interpreter to provide exactly
-setuptools 82.0.1, matching the build-system pin, and then runs that backend
-without build isolation or network access. Reproducibility evidence applies to
-this pinned backend rather than to a range of setuptools implementations. The
-tool copies a temporary source snapshot containing only:
+`tools/release_artifacts.py` 要求活动解释器恰好提供 setuptools 82.0.1，以匹配构建系统钉死版本，然后在无构建隔离、无网络的情况下运行该后端。可复现性证据适用于此钉死后端，而不是某一范围的 setuptools 实现。该工具复制一份临时源码快照，仅包含：
 
-- `pyproject.toml`, `README.md`, `LICENSE`, and `NOTICE`;
-- Python files beneath `nano_aural_runtime`,
-  `nano_aural_runtime_cli`, `nano_aural_runtime_controlfoley`,
-  `nano_aural_runtime_remote`, `nano_aural_runtime_stable_audio_3`,
-  `nano_aural_runtime_woosh`, `nano_aural_runtime_workflows`, and
-  `nano_aural_runtime_workers`;
-- the five declared `nano_aural_runtime/durable/sql/*.sql` migration resources.
+- `pyproject.toml`、`README.md`、`LICENSE` 与 `NOTICE`；
+- `nano_aural_runtime`、
+  `nano_aural_runtime_cli`、`nano_aural_runtime_controlfoley`、
+  `nano_aural_runtime_remote`、`nano_aural_runtime_stable_audio_3`、
+  `nano_aural_runtime_woosh`、`nano_aural_runtime_workflows` 与
+  `nano_aural_runtime_workers` 下的 Python 文件；
+- 五份已声明的 `nano_aural_runtime/durable/sql/*.sql` 迁移资源。
 
-Unexpected package files, unknown migration resources, symlinks, special files,
-unsafe archive paths, duplicate wheel members, unexpected setuptools metadata,
-or a pre-existing output cause a fail-closed build. Wheel auditing verifies
-every `RECORD` row, member hash and size, its empty self-entry, exact console
-entry points, and metadata/dependency semantics against `pyproject.toml`.
-Sdist auditing rejects duplicate names, binds all four root metadata files to
-repository bytes, and requires both `PKG-INFO` copies and all egg-info semantics
-to match the audited wheel and project contract.
+意外的包文件、未知迁移资源、符号链接、特殊文件、不安全归档路径、重复的 wheel 成员、意外的 setuptools 元数据，或已存在的输出，都会导致失败即关闭的构建。wheel 审计校验每一个 `RECORD` 行、成员哈希与大小、其空的自身条目、精确的控制台入口点，以及相对 `pyproject.toml` 的元数据/依赖语义。sdist 审计拒绝重复名称，将全部四份根元数据文件绑定到仓库字节，并要求两份 `PKG-INFO` 副本与全部 egg-info 语义匹配经审计的 wheel 与项目契约。
 
-The completed wheel and sdist are audited before publication. Both destination
-names are preflighted before either is created; staging files and final links
-are synchronized as one collection. A link or directory-sync failure removes
-only targets created by that invocation, preserves unrelated or pre-existing
-files, and synchronizes the rollback. Setuptools' sdist content is rewritten in
-sorted order with a fixed
-timestamp, owner, group, and mode inside a fixed-time gzip envelope; the wheel
-uses the same fixed source epoch. Two builds from identical bytes must produce
-identical wheel and sdist bytes. The command emits only artifact basenames,
-SHA-256, sizes, and an explicit blocked/deferred status—never a release or
-hardware claim.
+完成后的 wheel 与 sdist 在发布前接受审计。两个目标名称在任一产物创建前预先检查；暂存文件与最终链接作为同一集合同步。链接或目录同步失败时，仅删除该次调用创建的目标，保留无关或既有文件，并同步回滚。setuptools 的 sdist 内容按排序顺序重写，并在固定时间 gzip 包络内使用固定时间戳、所有者、组与模式；wheel 使用同一固定源 epoch。由相同字节进行的两次构建必须产出相同的 wheel 与 sdist 字节。该命令只发出产物基名、SHA-256、大小，以及显式的 blocked/deferred 状态——从不发出发行或硬件声称。
 
-Neither artifact contains `integrations`, tests, benchmarks, archived research,
-weights, checkpoints, model/Hugging Face caches, media, secrets, generated
-evidence, or repository-local build/cache state.
+两份产物均不含 `integrations`、测试、基准、归档研究、权重、checkpoint、模型/Hugging Face 缓存、媒体、密钥、生成证据，或仓库本地构建/缓存状态。
 
-## Fresh-install acceptance
+## 全新安装验收
 
-For every advertised Python version, create a new virtual environment and
-install the audited wheel with `--no-index --no-deps`. Acceptance requires:
+对每个对外声明的 Python 版本，创建新的虚拟环境，并用 `--no-index --no-deps` 安装经审计的 wheel。验收要求：
 
-1. `nano-aural --help` and `nano-aural-remote --help` execute without operator
-   configuration or third-party model dependencies.
-2. the local adapter, public remote client, durable service/worker/recovery help,
-   and all four headless package families import without ComfyUI or torch;
-3. `importlib.resources` exposes exactly the five SQL migrations;
-4. `integrations.comfyui*` is absent;
-5. the installed distribution includes the Apache `LICENSE`, `NOTICE`, and two
-   declared console entry points.
+1. `nano-aural --help` 与 `nano-aural-remote --help` 在没有运营方配置或第三方模型依赖的情况下执行；
+2. 本地适配器、公开远程客户端、持久化服务/Worker/恢复帮助，以及全部四个无头包家族在没有 ComfyUI 或 torch 的情况下可导入；
+3. `importlib.resources` 恰好暴露五份 SQL 迁移；
+4. `integrations.comfyui*` 不存在；
+5. 已安装发行包含 Apache `LICENSE`、`NOTICE`，以及两个已声明的控制台入口点。
 
-The base wheel has no mandatory third-party dependency. PostgreSQL support is
-tested separately using `.[durable-postgres]` or `.[postgres-test]`. The
-ControlFoley backend and model material remain operator-managed external
-dependencies rather than a Python extra.
+基础 wheel 没有强制第三方依赖。PostgreSQL 支持使用 `.[durable-postgres]` 或 `.[postgres-test]` 单独测试。ControlFoley 后端与模型材料是运营方管理的外部依赖，而不是 Python extra。
 
-## Optional ComfyUI carriers
+## 可选 ComfyUI 载体
 
-`tools/release_comfyui_archives.py` builds exactly three independent archives:
+`tools/release_comfyui_archives.py` 恰好构建三份独立归档：
 
-- `nano-aural-comfyui-embedded-<version>.zip`;
-- `nano-aural-comfyui-remote-<version>.zip`;
-- `nano-aural-comfyui-compat-<version>.zip`.
+- `nano-aural-comfyui-embedded-<version>.zip`；
+- `nano-aural-comfyui-remote-<version>.zip`；
+- `nano-aural-comfyui-compat-<version>.zip`。
 
-Each archive has one distinct import/package root, exact source-file allowlist,
-fixed timestamp and Unix mode, stored bytes with no compressor variance, and a
-canonical `RELEASE-MANIFEST.json`. The manifest binds distribution/version,
-every member SHA-256/size, and explicit statements that ControlFoley source,
-weights, and hardware evidence are absent. `LICENSE` and `NOTICE` travel with
-every carrier. All three destinations are preflighted and published as one
-failure-atomic, directory-synchronized collection. Building twice from
-identical bytes must produce identical zip bytes.
+每份归档有一个互不相同的导入/包根、精确的源文件允许列表、固定时间戳与 Unix 模式、无压缩器方差的 stored 字节，以及规范的 `RELEASE-MANIFEST.json`。该清单绑定发行/版本、每个成员的 SHA-256/大小，以及 ControlFoley 源码、权重与硬件证据均不存在的显式声明。`LICENSE` 与 `NOTICE` 随每份载体一起提供。全部三个目标预先检查，并作为一次失败原子、目录同步的集合发布。由相同字节构建两次必须产出相同的 zip 字节。
 
-These archives are source carriers, not PyPI dependencies and not business-state
-authorities. Embedded still requires the installed headless wheel plus sealed
-operator source/weight configuration. Remote requires the installed headless
-wheel and public service configuration but no model package. Compat is optional
-diagnostic support. Any or all can be deleted without changing the headless
-installation.
+这些归档是源码载体，不是 PyPI 依赖，也不是业务状态权威。Embedded 仍需要已安装的无头 wheel 加上密封的运营方源码/权重配置。Remote 需要已安装的无头 wheel 与公开服务配置，但不需要模型包。Compat 是可选诊断支持。删除任一或全部都不会改变无头安装。
 
-## Container and HTTP boundary
+## 容器与 HTTP 边界
 
-The reference Dockerfile intentionally copies only `src/nano_aural_runtime`,
-while the audited wheel contains that exact tree plus separately layered local
-adapter/worker/client packages. Packaging tests prove the wheel's Core/durable
-bytes equal the Docker build-context source. The `durable-postgres` library
-extra remains the compatible range `psycopg[binary]>=3.1,<4`; the separate
-container requirements file is its Python 3.12/Linux x86_64 resolved subset,
-with exact versions, reviewed wheel SHA-256 values, `--require-hashes`, and
-binary-only resolution. Compose fixes every service built from the Dockerfile
-to `linux/amd64`, and the Python base tag is pinned to a reviewed Docker Hub
-index digest. This does not claim other architectures. The Docker image is not
-a substitute for the general wheel, and a source-copy image must be rebuilt
-from the same reviewed revision as its wheel artifacts.
+参考 Dockerfile 有意只复制 `src/nano_aural_runtime`，而经审计的 wheel 包含该精确树，外加分层放置的本地适配器/Worker/客户端包。打包测试证明 wheel 的 Core/持久化字节等于 Docker 构建上下文源码。`durable-postgres` 库 extra 仍是兼容范围 `psycopg[binary]>=3.1,<4`；单独的容器需求文件是其 Python 3.12/Linux x86_64 解析子集，带精确版本、经审查的 wheel SHA-256 值、`--require-hashes`，以及仅二进制解析。Compose 将从该 Dockerfile 构建的每个服务固定为 `linux/amd64`，且 Python 基础 tag 钉死到经审查的 Docker Hub index digest。这不声称其他架构。Docker 镜像不是通用 wheel 的替代，源码复制镜像必须从与其 wheel 产物相同的经审查修订重建。
 
-The standard-library WSGI server and Compose topology are CPU recovery/reference
-tools. They do not provide a production TLS, proxy, multi-process, slow-client,
-or Internet-edge security boundary. A production claim requires a separately
-reviewed server/proxy deployment, timeouts, concurrency/resource limits,
-graceful shutdown evidence, backup/restore drill, and real daemon validation.
+标准库 WSGI 服务器与 Compose 拓扑是 CPU 恢复/参考工具。它们不提供生产 TLS、代理、多进程、慢客户端或 Internet 边缘安全边界。生产声称需要另行审查的服务器/代理部署、超时、并发/资源限制、优雅关闭证据、备份/恢复演练，以及真实 daemon 校验。
 
-## CI evidence and conditional environments
+## CI 证据与条件环境
 
-The clean-checkout workflow pins third-party actions to commit SHAs and is
-configured to run:
+干净检出工作流将第三方 action 钉死到 commit SHA，并配置为运行：
 
-- Python 3.9–3.12 CPU tests plus per-version wheel/sdist/fresh-venv packaging;
-- Ruff format/check and Pyright across source, optional integrations, tools, and
-  tests;
-- PostgreSQL 16 migration, service loopback, and publication suites when the
-  runner exposes the declared PG16 binaries;
-- a separate, explicitly opted-in Docker reference job;
-- a separate, explicitly opted-in self-hosted RTX 4090 evidence-collection job.
+- Python 3.9–3.12 CPU 测试，以及按版本的 wheel/sdist/全新 venv 打包；
+- 对源码、可选集成、工具与测试的 Ruff format/check 与 Pyright；
+- 当 runner 暴露已声明 PG16 二进制时的 PostgreSQL 16 迁移、服务回环与发布套件；
+- 单独、显式选择加入的 Docker 参考作业；
+- 单独、显式选择加入的自托管 RTX 4090 证据收集作业。
 
-The PostgreSQL 16 service image used by both Compose and CI retains its readable
-`postgres:16.3-bookworm` tag and pins the reviewed Docker Hub index digest.
-Static audit coverage rejects missing or malformed digests in these formal
-`image` fields. This is declaration evidence, not a registry or daemon check.
+Compose 与 CI 使用的 PostgreSQL 16 服务镜像保留其可读的 `postgres:16.3-bookworm` tag，并钉死经审查的 Docker Hub index digest。静态审计覆盖拒绝这些正式 `image` 字段中缺失或畸形的 digest。这是声明证据，不是 registry 或 daemon 检查。
 
-Docker and GPU jobs are not silently converted to success when unavailable.
-The GPU job is evidence collection only: output still requires independent
-review against every Roadmap hardware Gate. A skipped test is never a passing
-hardware result.
+Docker 与 GPU 作业在不可用时不会被静默转为成功。GPU 作业仅用于证据收集：输出仍需对照每一项路线图硬件 Gate 独立审查。skip 的测试永远不是通过的硬件结果。
 
-## Outstanding release blockers
+## 未决发行阻塞项
 
-- Complete and independently review every deferred RTX 4090 runbook/evidence
-  set, including real Embedded and Remote ComfyUI host execution.
-- Execute the Docker job on a real daemon and record startup, migration, fake
-  closed loop, restart, secret/log, volume, and shutdown evidence.
-- Repeat the successful wheel/sdist, SPDX validation, API-lock vulnerability
-  audit, CycloneDX generation, secret scan, dependency/license review, and
-  artifact checksum capture from the exact approved release revision. The
-  current evidence belongs to the `0.1.0.dev0` pre-alpha candidate.
-- Resolve or explicitly accept every remaining final-candidate finding,
-  including archive identity for range-based library/build declarations and
-  any `NOASSERTION` license field, before making a release claim.
-- Replace `0.1.0.dev0` only when the candidate version and release notes are
-  approved. Do not remove the pre-alpha or experimental wording before then.
+- 完成并独立审查每一套延期的 RTX 4090 runbook/证据，包括真实 Embedded 与 Remote ComfyUI 宿主执行。
+- 在真实 daemon 上执行 Docker 作业，并记录启动、迁移、假闭环、重启、密钥/日志、卷与关闭证据。
+- 从精确批准的发行修订重复成功的 wheel/sdist、SPDX 校验、API-lock 漏洞审计、CycloneDX 生成、密钥扫描、依赖/许可审查，以及产物校验和捕获。当前证据属于 `0.1.0.dev0` pre-alpha 候选。
+- 在作出发行声称前，解决或显式接受每一个剩余最终候选发现，包括基于范围的库/构建声明的归档身份，以及任何 `NOASSERTION` 许可字段。
+- 仅在候选版本与发行说明获批准后替换 `0.1.0.dev0`。在此之前不要移除 pre-alpha 或实验性措辞。
