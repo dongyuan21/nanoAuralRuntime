@@ -42,7 +42,7 @@ python -m pip install '.[durable-postgres]'
 python -m pip install -e '.[dev,postgres-test]'
 ```
 
-ControlFoley 源码、依赖、权重、checkpoint、夹具与缓存均为运营方提供的外部材料。任何 extra 都不会安装它们，也不会打进 wheel、sdist、可选前端归档或参考容器。官方 ControlFoley 仓库将源码标识为 [Apache-2.0](https://github.com/xiaomi-research/controlfoley)，官方模型卡将权重标识为 [CC BY-NC 4.0](https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md)，含非商业限制。本项目不授予这些外部材料的任何权利。运营方必须在钉死的源码修订与获取/使用时的模型卡条款上自行核验许可；见 [NOTICE](NOTICE)。Stable Audio 3 Small-SFX 与 Woosh V2A 权重同样是运营方提供、受门控或 CC BY-NC 约束的材料，不在 wheel 中。见 [第二适配器许可边界](docs/second-adapter-license-boundary.md)。
+ControlFoley 源码、依赖、权重、checkpoint、夹具与缓存均为运营方提供的外部材料。任何 extra 都不会安装它们，也不会打进 wheel、sdist 或参考容器。官方 ControlFoley 仓库将源码标识为 [Apache-2.0](https://github.com/xiaomi-research/controlfoley)，官方模型卡将权重标识为 [CC BY-NC 4.0](https://huggingface.co/YJX-Xiaomi/ControlFoley/blob/main/README.md)，含非商业限制。本项目不授予这些外部材料的任何权利。运营方必须在钉死的源码修订与获取/使用时的模型卡条款上自行核验许可；见 [NOTICE](NOTICE)。Stable Audio 3 Small-SFX 与 Woosh V2A 权重同样是运营方提供、受门控或 CC BY-NC 约束的材料，不在 wheel 中。见 [第二适配器许可边界](docs/second-adapter-license-boundary.md)。
 
 ## 无头命令
 
@@ -61,17 +61,6 @@ python -m nano_aural_runtime.durable.recovery --help
 
 `nano-aural controlfoley local` 是本地、由运营方控制的路径。`nano-aural-remote` 与公开的持久化 API 交换已验证的资产、任务与产物标识。在提供部署或服务配置前，请阅读命令帮助与 [持久化运维指南](docs/durable-operations.md)。
 
-## 可选 ComfyUI 源码归档
-
-主 wheel 有意不含 `integrations` 包。这不是静默遗漏：三棵可选源码树各自有可拆除、确定性的发行载体。
-
-```sh
-mkdir -p dist/comfyui
-python tools/release_comfyui_archives.py --output-dir dist/comfyui
-```
-
-这会生成独立版本的 Embedded、Remote 与 Compat zip。每个包含一个可导入的 custom-node 风格包、`LICENSE`、`NOTICE`，以及带精确成员 SHA-256 与大小的 `RELEASE-MANIFEST.json`。只解压宿主需要的前端。拆除任一或全部归档，无头 wheel 不受影响。见 [兼容与拆除指南](docs/comfyui-compatibility-removal.md)。
-
 ## 持久化参考环境边界
 
 `compose.yaml` 与 `ops/Dockerfile.api` 是 CPU 假发布参考环境。镜像只复制 `nano_aural_runtime`，以非 root 用户运行，使用挂载的密钥文件，并排除 ControlFoley、torch、CUDA、权重与 ComfyUI。参考构建明确为 `linux/amd64`；其 Python 基础镜像使用 tag 加 digest，解析后的 Python 依赖使用精确 wheel 哈希且仅安装二进制包。其标准库 WSGI 服务器不是生产 HTTP/TLS 服务器。生产暴露需要独立支持的反向代理/服务器、TLS、请求超时、并发限制与运维安全审查。
@@ -81,6 +70,7 @@ Docker daemon 验证取决于环境：没有容器 CLI/daemon 时保持未跑。
 ## 发行与安全
 
 - [发行就绪与产物契约](docs/release-readiness.md)
+- [ComfyUI 兼容与拆除](docs/comfyui-compatibility-removal.md)
 - [变更日志](CHANGELOG.md)
 - [安全策略](SECURITY.md)
 - [许可证](LICENSE) 与 [声明](NOTICE)

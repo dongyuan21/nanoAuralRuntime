@@ -34,17 +34,7 @@
 
 基础 wheel 没有强制第三方依赖。PostgreSQL 支持使用 `.[durable-postgres]` 或 `.[postgres-test]` 单独测试。ControlFoley 后端与模型材料是运营方管理的外部依赖，而不是 Python extra。
 
-## 可选 ComfyUI 载体
-
-`tools/release_comfyui_archives.py` 恰好构建三份独立归档：
-
-- `nano-aural-comfyui-embedded-<version>.zip`；
-- `nano-aural-comfyui-remote-<version>.zip`；
-- `nano-aural-comfyui-compat-<version>.zip`。
-
-每份归档有一个互不相同的导入/包根、精确的源文件允许列表、固定时间戳与 Unix 模式、无压缩器方差的 stored 字节，以及规范的 `RELEASE-MANIFEST.json`。该清单绑定发行/版本、每个成员的 SHA-256/大小，以及 ControlFoley 源码、权重与硬件证据均不存在的显式声明。`LICENSE` 与 `NOTICE` 随每份载体一起提供。全部三个目标预先检查，并作为一次失败原子、目录同步的集合发布。由相同字节构建两次必须产出相同的 zip 字节。
-
-这些归档是源码载体，不是 PyPI 依赖，也不是业务状态权威。Embedded 仍需要已安装的无头 wheel 加上密封的运营方源码/权重配置。Remote 需要已安装的无头 wheel 与公开服务配置，但不需要模型包。Compat 是可选诊断支持。删除任一或全部都不会改变无头安装。
+需要 ComfyUI 前端时，用 `tools/release_comfyui_archives.py` 单独打 zip（Embedded / Remote / Compat），细节见 [ComfyUI 兼容与拆除](comfyui-compatibility-removal.md)。这些 zip 不是 wheel 的一部分，也不参与无头路径。
 
 ## 容器与 HTTP 边界
 
