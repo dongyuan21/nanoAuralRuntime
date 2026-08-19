@@ -1,14 +1,14 @@
-# Programme Plan 0006 — Stable Audio 3 Small-SFX and Woosh V2A
+# 计划 0006 — Stable Audio 3 Small-SFX 与 Woosh V2A
 
-Status: ready after Phase 1 and the completed ControlFoley non-hardware Gates.
-This programme plan contains independently gated Roadmap Phases 7A–11; each
-Roadmap Phase is exactly one PR. ControlFoley remains the first adapter. Stable
-Audio 3 Small-SFX and Sony Woosh V2A are additional adapters. They are not Core
-abstractions and they do not reopen Phase 6.
+状态：阶段 1 以及已完成的 ControlFoley 非硬件 Gate 之后即可开始。
+本计划包含独立 Gate 的路线图阶段 7A–11；每个
+路线图阶段恰好对应一个 PR。ControlFoley 仍为第一个适配器。Stable
+Audio 3 Small-SFX 与 Sony Woosh V2A 为额外适配器。它们不是 Core
+抽象，也不重新打开阶段 6。
 
-`docs/source-plans/` remains archived research and must not be edited.
+`docs/source-plans/` 仍为归档研究，不得编辑。
 
-## Product split
+## 产品划分
 
 ```text
 Text-to-SFX:
@@ -16,145 +16,145 @@ Text-to-SFX:
 
 Video-to-SFX:
   ControlFoley
-  Woosh-DVFlow-8s   (default Woosh production backend)
-  Woosh-VFlow-8s    (selectable reference/quality backend)
+  Woosh-DVFlow-8s   (默认 Woosh 生产后端)
+  Woosh-VFlow-8s    (可选参考/质量后端)
 ```
 
-## Scope
+## 范围
 
-Add two new model families behind the existing Runtime Core:
+在既有 Runtime Core 之后增加两个新模型族：
 
-- Stable Audio 3 V1: operation `audio.text_to_sfx` only, official PyTorch
-  Small-SFX path, 44.1 kHz stereo WAV, variable length up to 120 seconds.
-- Woosh V1: one adapter `woosh-v2a`, one operation `audio.video_to_sfx`, two
-  sealed Deployment backends `dvflow-8s` and `vflow-8s`. Fixed 8-second window,
-  48 kHz mono WAV. Shared Woosh-AE, TextConditionerV, and Synchformer video
-  conditioning.
+- Stable Audio 3 V1：仅操作 `audio.text_to_sfx`，官方 PyTorch
+  Small-SFX 路径，44.1 kHz stereo WAV，可变长度最长 120 秒。
+- Woosh V1：一个适配器 `woosh-v2a`，一个操作 `audio.video_to_sfx`，两个
+  封印的 Deployment 后端 `dvflow-8s` 与 `vflow-8s`。固定 8 秒窗口，
+  48 kHz mono WAV。共享 Woosh-AE、TextConditionerV 与 Synchformer 视频
+  条件。
 
-Phase 7A is documentation only. Phase 7B adds plugin metadata, builder
-registry, Worker capability routing, and a generic CLI dispatcher without any
-new model backend. Later lettered slices add provenance, local adapters,
-durable Workers, optional profiler/cache, optional workflows, and hardware
-evidence.
+阶段 7A 仅为文档。阶段 7B 增加插件元数据、builder
+注册表、Worker 能力路由以及通用 CLI 分发器，不含任何
+新模型后端。后续字母切片增加溯源、本地适配器、
+持久化 Worker、可选 profiler/缓存、可选工作流以及硬件
+证据。
 
-## Non-goals
+## 非目标
 
-- No change to Runtime Core `load()` / `invoke()` / `unload()`.
-- No Core fields named `prompt`, `video_path`, `duration_seconds`, `num_steps`,
-  `cfg`, `solver`, `renoise`, Synchformer, SAME, T5Gemma, VFlow, or DVFlow.
-- No torch, Hugging Face, or upstream model dependency on the root package.
-- No single virtualenv or universal GPU Worker image for all three families.
-- No Woosh-Flow, Woosh-DFlow, Woosh text-to-audio, TextConditionerA, 5-second
-  Woosh T2A, or a unified Woosh T2A/V2A adapter.
-- No Stable Audio audio-to-audio, inpainting, continuation, LoRA, TensorRT,
-  TFLite, MLX, or `batch_size > 1` in V1.
-- No implicit multi-segment Woosh video handling, silent padding, last-frame
-  freeze, or in-adapter mux.
-- No weights, caches, generated media, Hugging Face tokens, or private paths
-  committed to the repository.
-- No parity, quality, or performance claim from skipped or deferred GPU tests.
-- No combining lettered slices into one PR, and no treating Phase 6 hardware
-  deferral as a passed Gate.
+- 不更改 Runtime Core `load()` / `invoke()` / `unload()`。
+- Core 中无名为 `prompt`、`video_path`、`duration_seconds`、`num_steps`、
+  `cfg`、`solver`、`renoise`、Synchformer、SAME、T5Gemma、VFlow 或 DVFlow 的字段。
+- 根包无 torch、Hugging Face 或上游模型依赖。
+- 不为全部三个族使用单一 virtualenv 或通用 GPU Worker 镜像。
+- 无 Woosh-Flow、Woosh-DFlow、Woosh text-to-audio、TextConditionerA、5 秒
+  Woosh T2A，或统一的 Woosh T2A/V2A 适配器。
+- V1 中无 Stable Audio audio-to-audio、inpainting、continuation、LoRA、TensorRT、
+  TFLite、MLX 或 `batch_size > 1`。
+- 无隐式多段 Woosh 视频处理、静音填充、末帧
+  冻结，或适配器内 mux。
+- 不将权重、缓存、生成媒体、Hugging Face token 或私有路径
+  提交到仓库。
+- 不由跳过或延期的 GPU 测试得出对齐、质量或性能声称。
+- 不将字母切片合并为一个 PR，也不将阶段 6 硬件
+  延期视为已通过的 Gate。
 
-## Deliverables
+## 交付物
 
-### Roadmap Phase 7A (one PR) — multi-adapter architecture freeze
+### 路线图阶段 7A（一个 PR）— 多适配器架构冻结
 
-Documentation only: this programme plan, ADR 0003, ADR 0004, Roadmap and Status
-updates, and the source/dependency/license research note. No production Python.
+仅为文档：本计划、ADR 0003、ADR 0004、Roadmap 与 Status
+更新，以及源/依赖/许可证研究说明。无生产 Python。
 
-### Roadmap Phase 7B (one PR) — plugin, builder registry, Worker routing
+### 路线图阶段 7B（一个 PR）— 插件、builder 注册表、Worker 路由
 
-Torch-free adapter plugin metadata, `DurableInvocationBuilder` registry,
-Worker capability descriptors, deployment-aware claim filtering, generic
-`nano-aural` dispatcher, and ControlFoley compatibility. No new model adapter.
+无 torch 的适配器插件元数据、`DurableInvocationBuilder` 注册表、
+Worker 能力描述符、感知部署的领取过滤、通用
+`nano-aural` 分发器以及 ControlFoley 兼容性。无新模型适配器。
 
-### Roadmap Phase 8A (one PR) — Stable Audio 3 baseline/provenance
+### 路线图阶段 8A（一个 PR）— Stable Audio 3 基线/溯源
 
-Official direct runner lock, source/HF revision lock, gated-model prepare
-runbook, weight manifest schema, and 5s / 30s / 120s baseline configs.
-Conditional GPU tests skip when prerequisites are absent.
+官方 direct runner 锁定、源/HF revision 锁定、门控模型准备
+runbook、权重清单 schema 以及 5s / 30s / 120s 基线配置。
+条件 GPU 测试在前置条件缺失时跳过。
 
-### Roadmap Phase 8B (one PR) — Stable Audio 3 local adapter
+### 路线图阶段 8B（一个 PR）— Stable Audio 3 本地适配器
 
-`nano_aural_runtime_stable_audio_3`, `audio.text_to_sfx` task schema,
-in-process session, local CLI, WAV serialization, 44.1 kHz stereo validation,
-and execute-time source/weight revalidation.
+`nano_aural_runtime_stable_audio_3`、`audio.text_to_sfx` 任务模式、
+进程内会话、本地 CLI、WAV 序列化、44.1 kHz stereo 校验，
+以及执行时源码/权重再校验。
 
-### Roadmap Phase 8C (one PR) — Stable Audio 3 durable Worker
+### 路线图阶段 8C（一个 PR）— Stable Audio 3 持久化 Worker
 
-Invocation builder, isolated Worker environment, capability routing, durable
-execution, artifact publication, remote CLI, and recovery tests.
+调用构建器、隔离 Worker 环境、能力路由、持久化
+执行、产物发布、远程 CLI 以及恢复测试。
 
-### Roadmap Phase 8D (one PR, optional) — Stable Audio 3 editing
+### 路线图阶段 8D（一个 PR，可选）— Stable Audio 3 编辑
 
-`audio_to_audio`, inpaint, and continuation. Does not block Woosh V2A.
+`audio_to_audio`、inpaint 与 continuation。不阻塞 Woosh V2A。
 
-### Roadmap Phase 8E (one PR, optional) — Stable Audio 3 profiler/cache
+### 路线图阶段 8E（一个 PR，可选）— Stable Audio 3 profiler/缓存
 
-Experimental, default-off observation and text-conditioning cache. Does not
-block Woosh V2A.
+实验性、默认关闭的观测与文本条件缓存。不
+阻塞 Woosh V2A。
 
-### Roadmap Phase 9A (one PR) — Woosh VFlow/DVFlow baseline/provenance
+### 路线图阶段 9A（一个 PR）— Woosh VFlow/DVFlow 基线/溯源
 
-Pin SonyResearch/Woosh, release/tag provenance, Woosh-AE, TextConditionerV,
-Woosh-VFlow-8s, Woosh-DVFlow-8s, and the MMAudio Synchformer checkpoint.
-Official direct-run harness, 8-second video fixture contract, optional prompt,
-fixed-seed comparison. Do not inspect or adapt Woosh-Flow, Woosh-DFlow, or T2A.
+钉扎 SonyResearch/Woosh、release/tag 溯源、Woosh-AE、TextConditionerV、
+Woosh-VFlow-8s、Woosh-DVFlow-8s 以及 MMAudio Synchformer checkpoint。
+官方直接运行 harness、8 秒视频夹具契约、可选 prompt、
+固定 seed 比较。不检查或适配 Woosh-Flow、Woosh-DFlow 或 T2A。
 
-### Roadmap Phase 9B (one PR) — Woosh V2A local adapter
+### 路线图阶段 9B（一个 PR）— Woosh V2A 本地适配器
 
-One package, one task, two backends. Local CLI, 8-second window from 0,
-reject videos shorter than 8 seconds, DVFlow default, VFlow selectable,
-48 kHz mono WAV, no mux inside the adapter.
+一个包、一个任务、两个后端。本地 CLI、自 0 起的 8 秒窗口，
+拒绝短于 8 秒的视频，DVFlow 默认，VFlow 可选，
+48 kHz mono WAV，适配器内无 mux。
 
-### Roadmap Phase 9C (one PR) — Woosh durable Worker
+### 路线图阶段 9C（一个 PR）— Woosh 持久化 Worker
 
-`WooshV2ADurableInvocationBuilder`, isolated environment, verified video
-materialization, Runtime invoke, publication, fencing/recovery, remote CLI.
+`WooshV2ADurableInvocationBuilder`、隔离环境、已验证视频
+物化、Runtime invoke、发布、围栏/恢复、远程 CLI。
 
-### Roadmap Phase 9D (one PR) — Woosh profiler/cache
+### 路线图阶段 9D（一个 PR）— Woosh profiler/缓存
 
-Experimental, default-off. Cache only video preprocessing, Synchformer
-features, text tokens, and empty/unconditional conditions. No ODE trajectory
-cache, latent reuse, step skipping, or cross-seed reuse.
+实验性、默认关闭。仅缓存视频预处理、Synchformer
+特征、文本 token 以及 empty/unconditional 条件。无 ODE 轨迹
+缓存、latent 复用、step 跳过或跨 seed 复用。
 
-### Roadmap Phase 10A (one PR) — unified workflow and optional ComfyUI mapping
+### 路线图阶段 10A（一个 PR）— 统一工作流与可选 ComfyUI 映射
 
-Workflows `sfx.text_generate`, `sfx.video_generate`, and explicit
-`sfx.generate_and_mux`. Mux is not a Woosh adapter step. ComfyUI remains
-optional and removable.
+工作流 `sfx.text_generate`、`sfx.video_generate` 以及显式
+`sfx.generate_and_mux`。Mux 不是 Woosh 适配器步骤。ComfyUI 仍为
+可选且可拆除。
 
-### Roadmap Phase 10B (one PR) — RTX 4090 evidence
+### 路线图阶段 10B（一个 PR）— RTX 4090 证据
 
-Deferred until the designated host is available. Not a software-slice blocker.
+延期至指定主机可用。不是软件切片阻塞项。
 
-### Roadmap Phase 11 (one PR) — adapter-family release hardening
+### 路线图阶段 11（一个 PR）— 适配器族发行加固
 
-License notices, gated HF token handling, Synchformer/MMAudio attribution, and
-release evidence. The ControlFoley Phase 6 hardware Gate remains independent
-and still release-blocking for a combined product release.
+许可证声明、门控 HF token 处理、Synchformer/MMAudio 归属以及
+发行证据。ControlFoley 阶段 6 硬件 Gate 保持独立，
+对合并产品发行仍为发行阻塞。
 
-## Tests
+## 测试
 
-- Phase 7A: terminology review. Core remains model-neutral. Woosh T2A terms
-  appear only in explicit out-of-scope lists. One-Phase/one-PR mapping is
-  complete.
-- Phase 7B: plugin discovery without torch; ControlFoley CLI `--help` and
-  local path remain; builder registry rejects sealed-field leaks; Worker
-  capability mismatches fail closed; Core import-boundary scan stays green.
-- Later phases: CPU schema/provenance tests always run; GPU/source/weight
-  tests skip when declared prerequisites are absent; skipped tests are never
-  recorded as passed.
+- 阶段 7A：术语审查。Core 保持模型中立。Woosh T2A 术语
+  仅出现在显式范围外列表中。一阶段/一 PR 映射
+  完整。
+- 阶段 7B：无 torch 的插件发现；ControlFoley CLI `--help` 与
+  本地路径保持；builder 注册表拒绝封印字段泄漏；Worker
+  能力不匹配失败即关闭；Core import-boundary 扫描保持通过。
+- 后续阶段：CPU schema/溯源测试始终运行；GPU/源码/权重
+  测试在声明的前置条件缺失时跳过；跳过的测试永不
+  记录为通过。
 
 ## Gate
 
-- Phase 7A: documents agree on the product split, isolated Worker
-  environments, Woosh V2A-only scope, DVFlow default, VFlow selectable,
-  8-second fail-closed window, and the one-Phase/one-PR rule. No production
-  Python lands in this PR.
-- Later non-hardware Gates follow the Roadmap. RTX 4090 evidence is
-  `DEFERRED`, never passed, and does not block independent software slices
-  the Roadmap marks as unblocked.
-- Absence of Woosh T2A/Flow/DFlow code is an invariant of every Gate in this
-  programme.
+- 阶段 7A：文档就产品划分、隔离 Worker
+  环境、仅 Woosh V2A 范围、DVFlow 默认、VFlow 可选、
+  8 秒失败即关闭窗口以及一阶段/一 PR 规则达成一致。本 PR 无生产
+  Python 落地。
+- 后续非硬件 Gate 遵循路线图。RTX 4090 证据为
+  `DEFERRED`，从未通过，且不阻塞路线图标为未阻塞的
+  独立软件切片。
+- 不存在 Woosh T2A/Flow/DFlow 代码是本计划中每个 Gate 的
+  不变量。

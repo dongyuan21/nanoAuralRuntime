@@ -1,44 +1,44 @@
-# Programme Plan 0004 — Runtime Observability and Cache (Roadmap Phases 4A–4D)
+# 计划 0004 — Runtime 可观测性与缓存（路线图阶段 4A–4D）
 
-Status: blocked on the Phase 2B `upstream_parity` adapter implementation. This programme plan contains independent Roadmap Phases 4A–4D, each exactly one PR. During the hardware deferral, it may implement only non-default staged/profile/cache plumbing; runtime profiling/caching must retain upstream parity as the oracle.
+状态：阻塞于阶段 2B `upstream_parity` 适配器实现。本计划包含独立的路线图阶段 4A–4D，每个恰好对应一个 PR。硬件延期期间，仅可实现非默认的分阶段/分析/缓存管线；运行时分析/缓存必须以上游对齐为权威对照。
 
-## Scope
+## 范围
 
-Introduce non-default ControlFoley staged/profile/cache plumbing that remains behind explicit opt-in until it can be measured against upstream parity. Add stage-level timing/VRAM observability and bounded, content-addressed caches for metadata, preprocessing, and condition encoder features. Cache keys incorporate input digest, preprocessing version, source revision, deployment/checkpoint fingerprint, task parameters, precision, and relevant code version.
+引入非默认的 ControlFoley 分阶段/分析/缓存管线，在对照上游对齐完成测量之前保持显式选择启用。增加阶段级时序/VRAM 可观测性，以及有界、内容寻址的元数据、预处理与条件编码器特征缓存。缓存键纳入输入摘要、预处理版本、源 revision、部署/checkpoint 指纹、任务参数、precision 以及相关代码版本。
 
-## Non-goals
+## 非目标
 
-- No cache for Flow Matching steps/latents, step skipping, altered solver/default steps, or changed model behavior.
-- No CUDA/Triton/TensorRT/ONNX/FP8 kernel work, benchmark-based speed claims without measurements, or ComfyUI cache dependence.
-- No cache of unsafe/untrusted pickle data; use safe formats such as `safetensors` for disk tensors.
+- 不为 Flow Matching steps/latents 做缓存、不跳过 step、不改动 solver/默认 steps，或改变模型行为。
+- 无 CUDA/Triton/TensorRT/ONNX/FP8 kernel 工作、无未经测量的基准速度声称，或不依赖 ComfyUI 缓存。
+- 不缓存不安全/不受信的 pickle 数据；磁盘张量使用 `safetensors` 等安全格式。
 
-## Deliverables
+## 交付物
 
-### Roadmap Phase 4A (one PR) — staged parity path
+### 路线图阶段 4A（一个 PR）— 分阶段对齐路径
 
-Split only ControlFoley-specific stages (media resolution/preprocess, condition encoders/projection, integration, decode/vocoder) behind the adapter. Make `upstream_parity` selectable and authoritative until measured parity permits staged use.
+仅将 ControlFoley 特定阶段（媒体解析/预处理、条件编码器/投影、integration、decode/vocoder）拆分到适配器之后。在测量对齐允许分阶段使用之前，使 `upstream_parity` 可选且具权威。
 
-### Roadmap Phase 4B (one PR) — profiler
+### 路线图阶段 4B（一个 PR）— profiler
 
-Add structured stage profile reports, CPU timings, and CUDA Event timings/allocated/reserved/peak memory when CUDA exists. Ensure timing synchronization and capability absence are explicit rather than synthetic.
+在 CUDA 存在时增加结构化阶段分析报告、CPU 计时以及 CUDA Event 计时/allocated/reserved/peak 内存。确保计时同步与能力缺失为显式，而非合成。
 
-### Roadmap Phase 4C (one PR) — L0/L1 cache
+### 路线图阶段 4C（一个 PR）— L0/L1 缓存
 
-Implement metadata and deterministic preprocessing cache with byte-bounded LRU, metrics, invalidation/versioning, and cache reports.
+实现带字节有界 LRU、指标、失效/版本以及缓存报告的元数据与确定性预处理缓存。
 
-### Roadmap Phase 4D (one PR) — L2 condition cache and benchmark tooling
+### 路线图阶段 4D（一个 PR）— L2 条件缓存与基准工具
 
-Add video/reference/text encoder feature cache, safe disk persistence, lifecycle cleanup, hit/miss accounting, encoder counters, and reproducible benchmark-matrix tooling.
+增加视频/参考/文本编码器特征缓存、安全磁盘持久化、生命周期清理、命中/未命中记账、编码器计数器以及可复现的基准矩阵工具。
 
-## Tests
+## 测试
 
-- Stage contracts and staged-versus-upstream comparison plumbing without invented tolerance values.
-- Profiler reports valid CPU data; CUDA fields are absent/marked unavailable on CPU.
-- Cache key mutation tests, corruption/miss handling, eviction/byte-limit tests, invalidation across deployment/source/preprocess changes, and cache-on/off equivalence tests.
-- With a suitable GPU fixture, record measured parity envelope, then run warm/cold cache and encoder-counter tests. Missing GPU prerequisites yield skips.
+- 阶段契约以及分阶段对上游比较管线，不臆造容差值。
+- Profiler 报告有效 CPU 数据；在 CPU 上 CUDA 字段缺失/标记为不可用。
+- 缓存键变更测试、损坏/未命中处理、驱逐/字节上限测试、跨部署/源码/预处理变更的失效，以及缓存开/关等价性测试。
+- 在合适 GPU 夹具下记录测得的对齐包络，然后运行热/冷缓存与编码器计数器测试。缺少 GPU 前置条件则跳过。
 
 ## Gate
 
-- 4A: staged execution is not made default before measured upstream parity is accepted; it stays explicit opt-in while hardware evidence is deferred.
-- 4B–4D: cache changes never alter validated output; same asset warm L2 invocation has encoder counter zero; cache metrics are truthful. Without real parity evidence, all plumbing remains non-default and must not be described as result-preserving in release documentation.
-- All 4090 parity/performance benchmarks are **DEFERRED and release-blocking** under the current hardware deferral. No acceleration or parity claim may be published until those measurements exist; the Phase 6 release Gate remains blocked.
+- 4A：在接受测得的上游对齐之前，分阶段执行不得设为默认；硬件证据延期期间保持显式选择启用。
+- 4B–4D：缓存变更永不改变已校验输出；同一资产的热 L2 调用的编码器计数器为零；缓存指标如实。无真实对齐证据时，全部管线保持非默认，且不得在发行文档中描述为结果保持。
+- 在当前硬件延期下，全部 4090 对齐/性能基准为 **DEFERRED 且发行阻塞**。在这些测量存在之前不得发布加速或对齐声称；阶段 6 发行 Gate 仍阻塞。

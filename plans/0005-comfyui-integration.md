@@ -1,41 +1,41 @@
-# Programme Plan 0005 — Optional ComfyUI Integration (Roadmap Phases 5A–5C)
+# 计划 0005 — 可选 ComfyUI 集成（路线图阶段 5A–5C）
 
-Status: blocked on the relevant local Runtime and durable-service phases. This programme plan contains independent Roadmap Phases 5A–5C, each exactly one PR. ComfyUI is a removable frontend, never a model/job/artifact authority.
+状态：阻塞于相关本地 Runtime 与持久化服务阶段。本计划包含独立的路线图阶段 5A–5C，每个恰好对应一个 PR。ComfyUI 是可拆除的前端，绝非模型/任务/产物权威。
 
-## Scope
+## 范围
 
-Provide thin optional integrations for two routes: Embedded nodes call the local Runtime/ControlFoley adapter; Remote nodes use upload, submit, status/wait, and verified-artifact download APIs. Package them separately from Core, API, Worker, and CLI.
+为两条路径提供薄层可选集成：Embedded 节点调用本地 Runtime/ControlFoley 适配器；Remote 节点使用上传、提交、status/wait 以及已验证产物下载 API。将其与 Core、API、Worker 和 CLI 分开打包。
 
-## Non-goals
+## 非目标
 
-- No ComfyUI dependency in Runtime Core, ControlFoley adapter, API, Worker, durable schema, or remote-node model installation.
-- No import of official `nodes.py` as a Runtime API, no ComfyUI execution cache as a source of truth, and no separate job/artifact state machine.
-- No new model optimization, model-weight distribution, or replacement of direct headless paths.
+- Runtime Core、ControlFoley 适配器、API、Worker、持久化 schema 或 Remote 节点模型安装中无 ComfyUI 依赖。
+- 不将官方 `nodes.py` 作为 Runtime API 导入，不以 ComfyUI 执行缓存为事实来源，且无独立的任务/产物状态机。
+- 无新的模型优化、模型权重分发，或不替代直接无头路径。
 
-## Deliverables
+## 交付物
 
-### Roadmap Phase 5A (one PR) — embedded nodes
+### 路线图阶段 5A（一个 PR）— Embedded 节点
 
-Thin node wrappers, local input/output mapping, cancellation/error conversion, source-module origin conflict guard, model lifecycle ownership rules, and example workflows. They call the established local path without absorbing Core concerns.
+薄层节点包装、本地输入/输出映射、取消/错误转换、源模块来源冲突守卫、模型生命周期所有权规则以及示例工作流。它们调用既有本地路径，不吸收 Core 关注点。
 
-### Roadmap Phase 5B (one PR) — remote nodes
+### 路线图阶段 5B（一个 PR）— Remote 节点
 
-Upload/submit/wait/fetch nodes using the public client/API, progress/status presentation, short-lived download authorization, and workflows. Remote package contains no model dependency.
+使用公开客户端/API 的 upload/submit/wait/fetch 节点、进度/状态呈现、短时下载授权以及工作流。Remote 包不含模型依赖。
 
-### Roadmap Phase 5C (one PR) — coexistence and removability hardening
+### 路线图阶段 5C（一个 PR）— 共存与可拆除性加固
 
-Official-plugin A/B workflow checks, module-origin diagnostics, compatibility documentation, and a CI test proving that removing `integrations/comfyui/` leaves Core, CLI, API, and Worker checks passing.
+官方插件 A/B 工作流检查、模块来源诊断、兼容性文档，以及证明移除 `integrations/comfyui/` 后 Core、CLI、API 与 Worker 检查仍通过的 CI 测试。
 
-## Tests
+## 测试
 
-- Unit tests for node parameter mapping, invalid media/error behavior, cancellation, and absence of UI types below the integration boundary.
-- Integration tests for embedded local invocation (conditional GPU) and remote upload/job/fetch using the Fake Runtime path.
-- Packaging/import tests prove Remote does not import torch/model code and Core/Service do not import ComfyUI.
-- Conditional 4090 smoke tests skip when absent; do not report pass from an unsupported environment.
+- 节点参数映射、无效媒体/错误行为、取消以及集成边界以下无 UI 类型的单元测试。
+- Embedded 本地调用（条件 GPU）以及使用 Fake Runtime 路径的远程 upload/job/fetch 集成测试。
+- 打包/导入测试证明 Remote 不导入 torch/模型代码，且 Core/Service 不导入 ComfyUI。
+- 条件 4090 smoke 测试在缺失时跳过；不从未受支持的环境报告通过。
 
 ## Gate
 
-- Embedded and Remote paths use existing Runtime and durable contracts without becoming state authorities.
-- The official plugin can coexist or its conflict is detected with actionable refusal; no silent module mixing.
-- Delete/omit the integration package and run Core/CLI/API/Worker regression checks successfully.
-- 4090 UI smoke evidence is **DEFERRED** until the designated host is available; it cannot be substituted with a claim of success.
+- Embedded 与 Remote 路径使用既有 Runtime 与持久化契约，自身不成状态权威。
+- 官方插件可共存，或其冲突被检测并以可操作方式拒绝；无静默模块混用。
+- 删除/省略集成包后成功运行 Core/CLI/API/Worker 回归检查。
+- 4090 UI smoke 证据在指定主机可用前为 **DEFERRED**；不能以成功声称替代。
