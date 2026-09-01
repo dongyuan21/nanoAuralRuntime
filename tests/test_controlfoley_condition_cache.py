@@ -554,7 +554,10 @@ def test_two_store_instances_share_conditional_first_writer_and_conflict_fuses(
 ) -> None:
     root = _root(tmp_path)
     base = _base_policy()
-    policy = _condition_policy(root)
+    # Incomplete data/meta pairs older than grace are treated as orphans.
+    # Concurrent first-writers must outlive that window or one instance
+    # deletes the other's in-progress payload (fault + rejected).
+    policy = _condition_policy(root, cleanup_grace_seconds=2.0)
     cache = ControlFoleyConditionCache(base, policy)
     configuration = _configuration(base, policy)
     parent = cache.parent_key(
