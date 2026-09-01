@@ -6,7 +6,7 @@
 Audio 3 Small-SFX 与 Sony Woosh V2A 为额外适配器。它们不是 Core
 抽象，也不重新打开阶段 6。
 
-`docs/source-plans/` 仍为归档研究，不得编辑。
+`docs/source-plans/` 仍为归档研究，不是实现规格。
 
 ## 产品划分
 

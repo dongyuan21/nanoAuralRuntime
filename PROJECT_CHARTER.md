@@ -37,7 +37,7 @@ ControlFoley 是首个模型适配器，也是第一条完整垂直工作流；�
 
 ## 规划材料的权威性
 
-`docs/source-plans/controlfoley-runtime-research.md` 与 `docs/source-plans/headless-durable-serving-research.md` 是归档研究输入。它们被有意保留，不是实现权威，也不得为跟踪项目而改写。本章程、`ARCHITECTURE.md`、ADR 以及带 Gate 的 `ROADMAP.md` 才是权威引导集合。
+`docs/source-plans/` 是归档研究输入，不是实现权威。本章程、`ARCHITECTURE.md`、ADR 以及带 Gate 的 `ROADMAP.md` 才是权威引导集合。归档快照只保留研究结论，不要把它改写成施工日志或按当前进度跟踪。
 
 `plans/0001-runtime-core.md` 到 `plans/0006-stable-audio-3-and-woosh-v2a.md` 是计划文件：提供详细工作拆解。其带字母的 PR 切片与 `ROADMAP.md` 中的交付阶段一一对应；编号文件标题并不授权把带字母切片合并进同一个 PR。`plans/STATUS.md` 是执行索引，不是计划，也不是 Gate 权威。
 
