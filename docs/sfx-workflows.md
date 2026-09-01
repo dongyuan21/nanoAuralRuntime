@@ -1,13 +1,13 @@
-# 统一 SFX 工作流（Phase 10A）
+# 统一 SFX 工作流
 
-这些工作流位于适配器之上。它们不改变 Runtime Core 的
-`load()` / `invoke()` / `unload()`，也不是 ComfyUI 的作业权威。
+工作流在适配器之上组合一次完整任务。它们不实现模型，也不把 ComfyUI 当成作业权威。
 
-| 工作流 | 适配器 | 操作 | Mux |
+| 工作流 | 做什么 | 适配器 | Mux |
 | --- | --- | --- | --- |
-| `sfx.text_generate` | Stable Audio 3 Small-SFX | `audio.text_to_sfx` | 否 |
-| `sfx.video_generate` | ControlFoley、Woosh-DVFlow-8s（默认）、Woosh-VFlow-8s | ControlFoley 任务或 `audio.video_to_sfx` | 否 |
-| `sfx.generate_and_mux` | 相同的视频后端，在 WAV 已存在之后 | 不是适配器操作 | 是 |
+| `sfx.text_generate` | 由文本生成音效 WAV | Stable Audio 3 Small-SFX（`audio.text_to_sfx`） | 否 |
+| `sfx.video_generate` | 由视频生成音效 WAV | ControlFoley，或 Woosh V2A（默认 `dvflow-8s`，可选 `vflow-8s`） | 否 |
+| `sfx.generate_and_mux` | 在已有 WAV 之后与视频封装 | 与视频生成相同的后端；mux 不是适配器步骤 | 是 |
 
-Mux 是显式的适配器后步骤。Woosh 与 Stable Audio 3 适配器仅输出 WAV。
-`integrations/comfyui_compat/sfx_mapping.py` 中的 ComfyUI 节点名称是可选的显示映射；省略 `integrations/` 不得破坏无头路径。本映射不包含任何 Woosh T2A、Flow 或 DFlow 节点。
+Woosh 与 Stable Audio 3 适配器只输出 WAV。需要画面+声音一体文件时，走 `sfx.generate_and_mux`，不要把封装塞进模型调用。
+
+可选 ComfyUI 节点名称是显示映射，见 `integrations/comfyui_compat/sfx_mapping.py`。去掉 `integrations/` 不得破坏无头 CLI/API。本目录不提供 Woosh T2A、Flow 或 DFlow 工作流。
