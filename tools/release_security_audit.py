@@ -1737,6 +1737,15 @@ def _canonical_dependency(value: str) -> str:
     return matched.group(1) + _canonical_specifier(matched.group(2))
 
 
+def _core_metadata_header_value(value: str) -> str:
+    if any(0xDC80 <= ord(character) <= 0xDCFF for character in value):
+        try:
+            return value.encode("ascii", "surrogateescape").decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError("core metadata headers are not UTF-8") from error
+    return value
+
+
 def _expected_metadata_headers(contract: _ReleaseContract) -> Mapping[str, Tuple[str, ...]]:
     requires_dist = []
     for extra, dependencies in contract.optional_dependencies:
@@ -1777,8 +1786,11 @@ def _validate_release_metadata(
     except (TypeError, ValueError):
         raise ArtifactValidationError(display, kind + ".metadata_schema") from None
     observed: dict[str, list[str]] = {}
-    for name, value in message.raw_items():
-        observed.setdefault(name, []).append(value)
+    try:
+        for name, value in message.raw_items():
+            observed.setdefault(name, []).append(_core_metadata_header_value(value))
+    except ValueError:
+        raise ArtifactValidationError(display, kind + ".metadata_encoding") from None
     if {name: tuple(values) for name, values in observed.items()} != _expected_metadata_headers(
         contract
     ):

@@ -321,6 +321,17 @@ def _canonical_dependency(value: str) -> str:
     return match.group(1) + _canonical_specifier(match.group(2))
 
 
+def _core_metadata_header_value(value: str) -> str:
+    # PEP 566 headers are UTF-8. email.compat32 exposes 8-bit bytes as
+    # surrogateescape code points; recover the original Unicode.
+    if any(0xDC80 <= ord(character) <= 0xDCFF for character in value):
+        try:
+            return value.encode("ascii", "surrogateescape").decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ReleaseArtifactError("distribution metadata headers are not UTF-8") from error
+    return value
+
+
 def _expected_metadata_headers(contract: _ProjectContract) -> Mapping[str, Tuple[str, ...]]:
     requires_dist = []
     for extra, dependencies in contract.optional_dependencies:
@@ -356,7 +367,7 @@ def _audit_metadata(content: bytes, contract: _ProjectContract, root: Path) -> N
         raise ReleaseArtifactError("distribution metadata could not be parsed") from error
     observed: dict[str, list[str]] = {}
     for name, value in message.raw_items():
-        observed.setdefault(name, []).append(value)
+        observed.setdefault(name, []).append(_core_metadata_header_value(value))
     expected = _expected_metadata_headers(contract)
     if {name: tuple(values) for name, values in observed.items()} != expected:
         raise ReleaseArtifactError("distribution metadata differs from pyproject.toml")

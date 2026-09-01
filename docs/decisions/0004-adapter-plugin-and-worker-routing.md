@@ -15,7 +15,7 @@ Woosh VFlow 与 DVFlow 共享一个操作，不得变成两个 Adapter ID。
 
 ## 决策
 
-阶段 7B 引入三种通用、模型中立的机制。它们都不位于 Runtime Core，也都不导入 torch 或上游模型包。
+应用层提供三种通用、模型中立的机制。它们都不位于 Runtime Core，也都不导入 torch 或上游模型包。
 
 1. **适配器插件元数据。** 每个适配器包发布无 torch 的描述符，含 `adapter_id`、受支持操作与包位置。发现必须在无头 CPU 环境中成功。最初的 ID 为：
 

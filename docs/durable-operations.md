@@ -1,10 +1,8 @@
 # 持久化服务运维与恢复
 
-## 证据边界
+持久化路径用来把已验证媒体变成可恢复的任务：上传与完整性校验、排队、Worker 认领、产物发布与下载。PostgreSQL 是资产、任务、尝试、租约、发布状态、READY 产物与获胜尝试的权威。规范 BlobStore 只在数据库校验之后才是字节的权威。尝试对象是临时、不可变的发布中间物。
 
-这是路线图阶段 3E 的 CPU 参考环境。PostgreSQL 是资产、任务、尝试、租约、发布状态、READY 产物与获胜尝试的权威。规范 BlobStore 仅在数据库校验之后才是字节的权威。尝试对象是临时、不可变的发布中间物。
-
-所含 Worker 是产出确定性静音 WAV 的 Core `FakeAudioAdapter`。它在没有 torch、CUDA、ControlFoley、模型权重或 ComfyUI 的情况下证明队列、Runtime、隔离、校验、发布与下载恢复。它不是模型质量校验。完整 ControlFoley 远程闭环与 4090 冒烟/恢复仍为 **DEFERRED**，此处不表示为已通过。
+本文的参考 Worker 使用 Core `FakeAudioAdapter` 产出确定性静音 WAV，用来演练队列、隔离、校验、发布与下载。它不评价模型质量。完整 ControlFoley 远程闭环与 4090 冒烟/恢复仍为 **DEFERRED**。
 
 ## Compose 参考启动
 
