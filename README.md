@@ -47,4 +47,4 @@ python -m nano_aural_runtime.durable.service --help
 
 ## 文档
 
-能力、用法与运维见 [docs/README.md](docs/README.md)。架构与章程见 [ARCHITECTURE.md](ARCHITECTURE.md)、[PROJECT_CHARTER.md](PROJECT_CHARTER.md)。安全问题按 [SECURITY.md](SECURITY.md) 私下报告。
+做什么、怎么用见 [docs/README.md](docs/README.md)。系统怎么分层见 [ARCHITECTURE.md](ARCHITECTURE.md)。安全问题按 [SECURITY.md](SECURITY.md) 私下报告。

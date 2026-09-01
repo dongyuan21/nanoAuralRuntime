@@ -1,6 +1,6 @@
 # 文档
 
-本目录说明 nanoAuralRuntime **做什么、怎么用**。路线图、阶段状态与 Agent 规则在仓库根目录的 `ROADMAP.md`、`plans/`、`AGENTS.md`，不是产品说明。
+本目录说明 nanoAuralRuntime 做什么、怎么用。系统分层见仓库根目录的 [ARCHITECTURE.md](../ARCHITECTURE.md)。
 
 ## 能力与用法
 
