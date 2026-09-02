@@ -1,0 +1,29 @@
+name: P12A main source snapshot
+
+on:
+  push:
+    branches:
+      - automation/p12a-main-snapshot
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Pack source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar --exclude=.git --exclude=.github/workflows/p12a-main-snapshot.yml \
+            -czf /tmp/nanoaural-main-source.tgz .
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: nanoaural-main-source
+          path: /tmp/nanoaural-main-source.tgz
+          if-no-files-found: error
+          retention-days: 1
