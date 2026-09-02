@@ -315,14 +315,14 @@ def test_reference_config_hides_dsn_and_document_covers_recovery_matrix(tmp_path
     for point in PublicationFaultPoint:
         assert "`{0}`".format(point.value) in document
     for phrase in (
-        "Upload stuck `VERIFYING`",
-        "Cancellation races",
-        "Reaper races",
+        "过期前上传卡在 `VERIFYING`",
+        "取消与执行/发布竞态",
+        "回收器与心跳竞态",
         "Mandatory dry run",
-        "canonical-blob deletion command",
-        "4090 smoke/recovery remain **DEFERRED**",
-        "Structured event fields",
-        "full-file download SHA-256",
+        "规范 blob 删除命令",
+        "4090 冒烟/恢复仍为 **DEFERRED**",
+        "结构化事件字段",
+        "全文件下载 SHA-256",
     ):
         assert phrase in document
 
