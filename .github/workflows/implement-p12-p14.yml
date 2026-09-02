@@ -1,0 +1,76 @@
+name: Implement P12-P14 runtime contracts
+
+on:
+  push:
+    branches:
+      - feat/p12-p14-runtime-contracts-v2
+    paths:
+      - .github/workflows/implement-p12-p14.yml
+
+permissions:
+  contents: write
+  models: read
+
+concurrency:
+  group: p12-p14-engineering
+  cancel-in-progress: false
+
+jobs:
+  implement:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Check out integration branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/p12-p14-runtime-contracts-v2
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          python-version: '3.12'
+
+      - name: Install repository development dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'setuptools==82.0.1'
+          python -m pip install --no-build-isolation -e '.[dev,postgres-test]'
+
+      - name: Execute the five-phase engineering and gate loop
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NANO_AURAL_ENGINEERING_MODELS: openai/gpt-4.1,openai/gpt-4.1-mini
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/automation/p12_p14_engineer.py 2>&1 | tee /tmp/p12-p14-engineering.log
+
+      - name: Remove temporary automation and record final tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/automation/p12_p14_engineer.py
+          rm .github/workflows/implement-p12-p14.yml
+          rmdir .github/automation 2>/dev/null || true
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: remove temporary P12-P14 engineering automation'
+          test -z "$(git status --porcelain)"
+
+      - name: Push reviewed implementation branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push origin HEAD:feat/p12-p14-runtime-contracts-v2
+
+      - name: Upload engineering log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p12-p14-engineering-log
+          path: /tmp/p12-p14-engineering.log
+          if-no-files-found: warn
+          retention-days: 3
