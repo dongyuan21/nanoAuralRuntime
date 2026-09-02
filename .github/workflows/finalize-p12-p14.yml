@@ -1,0 +1,75 @@
+name: Finalize P12-P14 integration branch
+
+on:
+  push:
+    branches:
+      - feat/p12-p14-runtime-contracts-v2
+    paths:
+      - .github/workflows/finalize-p12-p14.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p12-p14-finalizer
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 340
+    steps:
+      - name: Check out branch control commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/p12-p14-runtime-contracts-v2
+          fetch-depth: 0
+
+      - name: Wait for the engineering branch to become complete
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 200); do
+            git fetch origin feat/p12-p14-runtime-contracts-v2
+            if git cat-file -e origin/feat/p12-p14-runtime-contracts-v2:P12_P14_IMPLEMENTATION_REPORT.md 2>/dev/null \
+               && ! git cat-file -e origin/feat/p12-p14-runtime-contracts-v2:.github/automation/p12_p14_engineer.py 2>/dev/null \
+               && ! git cat-file -e origin/feat/p12-p14-runtime-contracts-v2:.github/workflows/implement-p12-p14.yml 2>/dev/null; then
+              git checkout -B feat/p12-p14-runtime-contracts-v2 origin/feat/p12-p14-runtime-contracts-v2
+              exit 0
+            fi
+            sleep 90
+          done
+          echo 'engineering branch did not reach its completed state' >&2
+          exit 1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          python-version: '3.12'
+
+      - name: Install development dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'setuptools==82.0.1'
+          python -m pip install --no-build-isolation -e '.[dev,postgres-test]'
+
+      - name: Run final software gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff format --check .
+          python -m ruff check .
+          python -m pyright
+          python -m pytest -q -m 'not gpu'
+
+      - name: Remove finalizer and publish a clean branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/finalize-p12-p14.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: finalize P12-P14 integration branch'
+          git push origin HEAD:feat/p12-p14-runtime-contracts-v2
