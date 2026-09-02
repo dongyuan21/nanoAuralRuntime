@@ -1,0 +1,126 @@
+name: Merge verified resumable P12-P14 PR
+
+on:
+  push:
+    branches:
+      - automation/p12-p14-v4-merge-monitor
+    paths:
+      - .github/workflows/p12-p14-v4-merge-monitor.yml
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  monitor-and-merge:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: dongyuan21/nanoAuralRuntime
+      EXPECTED_HEAD: feat/p12-p14-runtime-contracts-ready
+    steps:
+      - name: Wait for the exact canonical ready pull request
+        id: pr
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 220); do
+            payload=$(gh api "repos/$REPO/pulls?state=open&head=dongyuan21:$EXPECTED_HEAD&base=main&per_page=10")
+            count=$(jq 'length' <<<"$payload")
+            if [ "$count" -gt 1 ]; then
+              echo 'multiple open PRs exist for the canonical ready branch' >&2
+              exit 1
+            fi
+            if [ "$count" -eq 1 ]; then
+              number=$(jq -r '.[0].number' <<<"$payload")
+              title=$(jq -r '.[0].title' <<<"$payload")
+              test "$title" = 'feat: complete P12-P14 runtime contracts'
+              echo "number=$number" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 90
+          done
+          echo 'canonical ready PR was not created' >&2
+          exit 1
+
+      - name: Require clean implementation evidence
+        shell: bash
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename')
+          if grep -E '(^|/)p12_p14_engineer\.py$|implement-p12-p14|finalize-p12-p14|publish-p12-p14-ready' <<<"$files"; then
+            echo 'temporary engineering automation is present' >&2
+            exit 1
+          fi
+          grep -Fx 'P12_P14_IMPLEMENTATION_REPORT.md' <<<"$files"
+          grep -Fx 'P12_P14_IMPLEMENTATION_REPORT.json' <<<"$files"
+          sha=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha')
+          gh api "repos/$REPO/contents/P12_P14_IMPLEMENTATION_REPORT.md?ref=$sha" >/dev/null
+          report=$(gh api "repos/$REPO/contents/P12_P14_IMPLEMENTATION_REPORT.json?ref=$sha" --jq '.content' | tr -d '\n' | base64 -d)
+          for phase in P12A P12B P12C P13 P14; do
+            jq -e --arg phase "$phase" '.phases | any(.phase == $phase)' <<<"$report" >/dev/null
+          done
+
+      - name: Wait for all required PR CI jobs
+        shell: bash
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          sha=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha')
+          required=(
+            'Static and boundary checks'
+            'CPU / Python 3.9'
+            'CPU / Python 3.10'
+            'CPU / Python 3.11'
+            'CPU / Python 3.12'
+            'PostgreSQL 16 migrations and recovery'
+          )
+          for attempt in $(seq 1 220); do
+            checks=$(gh api -H 'Accept: application/vnd.github+json' \
+              "repos/$REPO/commits/$sha/check-runs?per_page=100")
+            ready=1
+            for name in "${required[@]}"; do
+              row=$(jq -c --arg name "$name" '[.check_runs[] | select(.name == $name)] | last // empty' <<<"$checks")
+              if [ -z "$row" ]; then ready=0; continue; fi
+              status=$(jq -r '.status' <<<"$row")
+              conclusion=$(jq -r '.conclusion // ""' <<<"$row")
+              if [ "$status" = completed ]; then
+                if [ "$conclusion" != success ]; then
+                  echo "required check failed: $name -> $conclusion" >&2
+                  exit 1
+                fi
+              else
+                ready=0
+              fi
+            done
+            if [ "$ready" -eq 1 ]; then exit 0; fi
+            sleep 60
+          done
+          exit 1
+
+      - name: Squash merge the successful exact head
+        shell: bash
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          sha=$(gh api "repos/$REPO/pulls/$PR_NUMBER" --jq '.head.sha')
+          result=$(gh api -X PUT "repos/$REPO/pulls/$PR_NUMBER/merge" \
+            -f merge_method=squash \
+            -f sha="$sha" \
+            -f commit_title="feat: complete P12-P14 runtime contracts (#$PR_NUMBER)" \
+            -f commit_message='Complete stable artifact slots, bounded streaming media I/O, resumable uploads, persisted retry/session dispositions, canonical deployment seals, and explicit concurrency admission.')
+          test "$(jq -r '.merged' <<<"$result")" = true
+
+      - name: Remove monitor branch
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api -X DELETE "repos/$REPO/git/refs/heads/automation/p12-p14-v4-merge-monitor"
