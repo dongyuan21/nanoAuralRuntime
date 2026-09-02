@@ -1,0 +1,77 @@
+name: Rerun resumable P12-P14 engineering
+
+on:
+  push:
+    branches:
+      - automation/p12-p14-v4-rerun-monitor
+    paths:
+      - .github/workflows/p12-p14-v4-rerun-monitor.yml
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  monitor-and-rerun:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: dongyuan21/nanoAuralRuntime
+      TARGET_BRANCH: feat/p12-p14-runtime-contracts-v4
+      TARGET_WORKFLOW: Implement P12-P14 resumable integration
+    steps:
+      - name: Wait for the engineering run and rerun failures
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id=''
+          for attempt in $(seq 1 60); do
+            run_id=$(gh api "repos/$REPO/actions/runs?branch=$TARGET_BRANCH&event=push&per_page=100" \
+              --jq --arg workflow "$TARGET_WORKFLOW" \
+              '.workflow_runs | map(select(.name == $workflow)) | sort_by(.created_at) | last | .id // empty')
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 30
+          done
+          if [ -z "$run_id" ]; then
+            echo 'P12-P14 v4 engineering run was not found' >&2
+            exit 1
+          fi
+
+          for rerun in 0 1 2 3; do
+            for poll in $(seq 1 360); do
+              payload=$(gh api "repos/$REPO/actions/runs/$run_id")
+              status=$(jq -r '.status' <<<"$payload")
+              conclusion=$(jq -r '.conclusion // ""' <<<"$payload")
+              if [ "$status" = completed ]; then
+                break
+              fi
+              sleep 45
+            done
+
+            payload=$(gh api "repos/$REPO/actions/runs/$run_id")
+            status=$(jq -r '.status' <<<"$payload")
+            conclusion=$(jq -r '.conclusion // ""' <<<"$payload")
+            if [ "$status" != completed ]; then
+              echo 'P12-P14 engineering run did not complete' >&2
+              exit 1
+            fi
+            if [ "$conclusion" = success ]; then
+              gh api -X DELETE "repos/$REPO/git/refs/heads/automation/p12-p14-v4-rerun-monitor"
+              exit 0
+            fi
+            if [ "$rerun" -eq 3 ]; then
+              echo "P12-P14 engineering remained $conclusion after three reruns" >&2
+              gh run view "$run_id" --repo "$REPO" --log-failed | tail -n 500 || true
+              exit 1
+            fi
+            case "$conclusion" in
+              failure|cancelled|timed_out|action_required|startup_failure|stale) ;;
+              *) echo "unexpected run conclusion: $conclusion" >&2; exit 1 ;;
+            esac
+            gh api -X POST "repos/$REPO/actions/runs/$run_id/rerun-failed-jobs" >/dev/null \
+              || gh api -X POST "repos/$REPO/actions/runs/$run_id/rerun" >/dev/null
+            sleep 30
+          done
