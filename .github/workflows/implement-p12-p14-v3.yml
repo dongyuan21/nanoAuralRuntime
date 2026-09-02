@@ -1,0 +1,100 @@
+name: Implement P12-P14 runtime contracts v3
+
+on:
+  push:
+    branches:
+      - feat/p12-p14-runtime-contracts-v3
+    paths:
+      - .github/workflows/implement-p12-p14-v3.yml
+
+permissions:
+  contents: write
+  models: read
+
+concurrency:
+  group: p12-p14-engineering-v3
+  cancel-in-progress: false
+
+jobs:
+  implement-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Check out immutable integration branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/p12-p14-runtime-contracts-v3
+          fetch-depth: 0
+
+      - name: Load the reviewed constrained engineering driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feat/p12-p14-runtime-contracts-v2
+          git show origin/feat/p12-p14-runtime-contracts-v2:.github/automation/p12_p14_engineer.py > /tmp/p12_p14_engineer.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('/tmp/p12_p14_engineer.py')
+          text = path.read_text(encoding='utf-8')
+          old_root = 'ROOT = Path(__file__).resolve().parents[2]'
+          new_root = 'ROOT = Path(os.environ["NANO_AURAL_REPO_ROOT"]).resolve()'
+          if text.count(old_root) != 1:
+              raise SystemExit('reviewed driver root declaration changed')
+          text = text.replace(old_root, new_root)
+          anchor = '        ".github/workflows/implement-p12-p14.yml",\n'
+          addition = anchor + '        ".github/workflows/implement-p12-p14-v3.yml",\n'
+          if text.count(anchor) != 1:
+              raise SystemExit('reviewed driver automation allowlist changed')
+          path.write_text(text.replace(anchor, addition), encoding='utf-8')
+          PY
+          chmod 0500 /tmp/p12_p14_engineer.py
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          python-version: '3.12'
+
+      - name: Install repository development dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'setuptools==82.0.1'
+          python -m pip install --no-build-isolation -e '.[dev,postgres-test]'
+
+      - name: Execute P12A through P14 and mandatory gates
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NANO_AURAL_REPO_ROOT: ${{ github.workspace }}
+          NANO_AURAL_ENGINEERING_MODELS: openai/gpt-4.1,openai/gpt-4.1-mini
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/p12_p14_engineer.py 2>&1 | tee /tmp/p12-p14-engineering-v3.log
+
+      - name: Run independent final gate and publish ready branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff format --check .
+          python -m ruff check .
+          python -m pyright
+          python -m pytest -q -m 'not gpu'
+          test -f P12_P14_IMPLEMENTATION_REPORT.md
+          test -f P12_P14_IMPLEMENTATION_REPORT.json
+          rm .github/workflows/implement-p12-p14-v3.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: publish clean P12-P14 integration tree'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:feat/p12-p14-runtime-contracts-v3
+          git push --force origin HEAD:feat/p12-p14-runtime-contracts-ready-v3
+
+      - name: Upload engineering evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p12-p14-engineering-v3-log
+          path: /tmp/p12-p14-engineering-v3.log
+          if-no-files-found: warn
+          retention-days: 3
