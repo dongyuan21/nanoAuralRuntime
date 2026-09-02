@@ -1,0 +1,129 @@
+name: Verify P12-P14 on main
+
+on:
+  push:
+    branches:
+      - automation/p12-p14-main-verifier
+    paths:
+      - .github/workflows/p12-p14-main-verifier.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p12-p14-main-verifier
+  cancel-in-progress: false
+
+jobs:
+  verify-main:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Check out verifier controller
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Wait for P12-P14 report on main and check out exact head
+        id: main
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 240); do
+            git fetch origin main
+            if git cat-file -e origin/main:P12_P14_IMPLEMENTATION_REPORT.json 2>/dev/null \
+               && git cat-file -e origin/main:P12_P14_IMPLEMENTATION_REPORT.md 2>/dev/null; then
+              sha=$(git rev-parse origin/main)
+              git checkout --detach "$sha"
+              echo "sha=$sha" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 60
+          done
+          echo 'P12-P14 implementation report did not appear on main' >&2
+          exit 1
+
+      - name: Validate implementation report contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '.schema == "nano-aural-p12-p14-implementation-report-v1"' P12_P14_IMPLEMENTATION_REPORT.json >/dev/null
+          for phase in P12A P12B P12C P13 P14; do
+            jq -e --arg phase "$phase" '.phases | any(.phase == $phase and (.commit | type == "string") and (.commit | length == 40))' \
+              P12_P14_IMPLEMENTATION_REPORT.json >/dev/null
+          done
+          jq -e '(.migrations | type == "array") and (.migrations | length >= 5)' P12_P14_IMPLEMENTATION_REPORT.json >/dev/null
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          python-version: '3.12'
+
+      - name: Install development dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'setuptools==82.0.1'
+          python -m pip install --no-build-isolation -e '.[dev,postgres-test]'
+
+      - name: Run independent main software gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > /tmp/p12-p14-main-verification.log
+          {
+            python -m ruff format --check .
+            python -m ruff check .
+            python -m pyright
+            python -m pytest -q -m 'not gpu'
+          } 2>&1 | tee /tmp/p12-p14-main-verification.log
+
+      - name: Publish immutable verification record
+        env:
+          MAIN_SHA: ${{ steps.main.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_sha=$(sha256sum P12_P14_IMPLEMENTATION_REPORT.json | awk '{print $1}')
+          verified_at=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          cat > P12_P14_MAIN_VERIFIED.json <<EOF
+          {
+            "schema": "nano-aural-p12-p14-main-verification-v1",
+            "main_sha": "$MAIN_SHA",
+            "implementation_report_sha256": "$report_sha",
+            "verified_at": "$verified_at",
+            "gates": {
+              "ruff_format": "PASS",
+              "ruff_lint": "PASS",
+              "pyright": "PASS",
+              "pytest_non_gpu": "PASS"
+            },
+            "phases": ["P12A", "P12B", "P12C", "P13", "P14"]
+          }
+          EOF
+          git checkout -B verification/p12-p14-main "$MAIN_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add P12_P14_MAIN_VERIFIED.json
+          git commit -m 'test: record verified P12-P14 main gate'
+          git push --force origin HEAD:verification/p12-p14-main
+
+      - name: Remove verifier controller branch
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api -X DELETE 'repos/dongyuan21/nanoAuralRuntime/git/refs/heads/automation/p12-p14-main-verifier' || true
+
+      - name: Upload main verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p12-p14-main-verification
+          path: |
+            /tmp/p12-p14-main-verification.log
+            P12_P14_MAIN_VERIFIED.json
+          if-no-files-found: warn
+          retention-days: 7
