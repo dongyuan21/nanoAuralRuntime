@@ -1,0 +1,24 @@
+name: P12A source snapshot
+
+on:
+  push:
+    branches:
+      - feat/p12a-artifact-slots
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pack source tree
+        run: |
+          tar --exclude=.git --exclude=.github/workflows/p12a-source-snapshot.yml -czf /tmp/nanoaural-source.tgz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nanoaural-source
+          path: /tmp/nanoaural-source.tgz
+          if-no-files-found: error
+          retention-days: 1
