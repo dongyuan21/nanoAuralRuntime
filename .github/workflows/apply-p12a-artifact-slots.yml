@@ -1,0 +1,39 @@
+name: Apply P12A artifact slot contract
+
+on:
+  push:
+    branches:
+      - feat/p12a-artifact-slot-contract
+    paths:
+      - .github/workflows/apply-p12a-artifact-slots.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/p12a-artifact-slot-contract
+          fetch-depth: 0
+      - name: Verify and apply reviewed P12A patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload=.github/p12a-artifact-slots.patch.gz.b64
+          test "$(sha256sum "$payload" | awk '{print $1}')" = \
+            323c4e3e8e9bce3153f185539886e1e4d1da5cdb5581d11ba2bf3d7aa667a206
+          base64 --decode "$payload" | gzip --decompress > /tmp/p12a.patch
+          test "$(sha256sum /tmp/p12a.patch | awk '{print $1}')" = \
+            54955602130cb7e0a7a7497ab825c88388f0badd2dbc993666236c16027ce066
+          git apply --check /tmp/p12a.patch
+          git apply /tmp/p12a.patch
+          rm "$payload" .github/workflows/apply-p12a-artifact-slots.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: add stable durable artifact slot contracts"
+          git push origin HEAD:feat/p12a-artifact-slot-contract
