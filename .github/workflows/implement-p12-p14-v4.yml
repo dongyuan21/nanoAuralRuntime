@@ -1,0 +1,170 @@
+name: Implement P12-P14 resumable integration
+
+on:
+  push:
+    branches:
+      - feat/p12-p14-runtime-contracts-v4
+    paths:
+      - .github/workflows/implement-p12-p14-v4.yml
+
+permissions:
+  contents: write
+  models: read
+
+concurrency:
+  group: p12-p14-engineering-v4
+  cancel-in-progress: false
+
+jobs:
+  implement-resumably:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      NANO_AURAL_INTEGRATION_BRANCH: feat/p12-p14-runtime-contracts-v4
+    steps:
+      - name: Check out resumable integration branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/p12-p14-runtime-contracts-v4
+          fetch-depth: 0
+
+      - name: Load and harden the constrained engineering driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feat/p12-p14-runtime-contracts-v2
+          git show origin/feat/p12-p14-runtime-contracts-v2:.github/automation/p12_p14_engineer.py > /tmp/p12_p14_engineer.py
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('/tmp/p12_p14_engineer.py')
+          text = path.read_text(encoding='utf-8')
+          replacements = []
+          replacements.append((
+              'ROOT = Path(__file__).resolve().parents[2]',
+              'ROOT = Path(os.environ["NANO_AURAL_REPO_ROOT"]).resolve()',
+          ))
+          anchor = '        ".github/workflows/implement-p12-p14.yml",\n'
+          replacements.append((
+              anchor,
+              anchor + '        ".github/workflows/implement-p12-p14-v4.yml",\n',
+          ))
+          replacements.append((
+              'time.sleep(float(retry_after) if retry_after else delay)',
+              'time.sleep(min(float(retry_after), 30.0) if retry_after else delay)',
+          ))
+          loop_old = '''    for phase in PHASES:
+                  summary = run_agent(phase.label, phase.prompt)
+          '''
+          loop_new = '''    completed_messages = set(
+                  _run(["git", "log", "--format=%s"], timeout=60).stdout.splitlines()
+              )
+              for phase in PHASES:
+                  if phase.commit in completed_messages:
+                      sha = _run(
+                          ["git", "log", "-1", "--format=%H", "--fixed-strings", "--grep", phase.commit],
+                          timeout=60,
+                      ).stdout.strip()
+                      phase_rows.append(
+                          {
+                              "phase": phase.label,
+                              "commit": sha,
+                              "summary": "resumed from an existing phase commit whose mandatory gate passed",
+                          }
+                      )
+                      continue
+                  summary = run_agent(phase.label, phase.prompt)
+          '''
+          replacements.append((loop_old, loop_new))
+          push_old = '''        sha = commit_phase(phase)
+                  phase_rows.append({"phase": phase.label, "commit": sha, "summary": summary})
+          '''
+          push_new = '''        sha = commit_phase(phase)
+                  push = _run(
+                      [
+                          "git",
+                          "push",
+                          "origin",
+                          "HEAD:" + os.environ["NANO_AURAL_INTEGRATION_BRANCH"],
+                      ],
+                      timeout=300,
+                  )
+                  if push.returncode:
+                      raise AgentFailure("phase push failed:\\n" + push.stdout + push.stderr)
+                  phase_rows.append({"phase": phase.label, "commit": sha, "summary": summary})
+          '''
+          replacements.append((push_old, push_new))
+          for old, new in replacements:
+              if text.count(old) != 1:
+                  raise SystemExit('reviewed driver shape changed: ' + old[:80])
+              text = text.replace(old, new)
+          path.write_text(text, encoding='utf-8')
+          PY
+          chmod 0500 /tmp/p12_p14_engineer.py
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+        with:
+          python-version: '3.12'
+
+      - name: Install repository development dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'setuptools==82.0.1'
+          python -m pip install --no-build-isolation -e '.[dev,postgres-test]'
+
+      - name: Execute resumable five-phase engineering
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NANO_AURAL_REPO_ROOT: ${{ github.workspace }}
+          NANO_AURAL_ENGINEERING_MODELS: openai/gpt-4.1-mini,openai/gpt-4.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > /tmp/p12-p14-engineering-v4.log
+          for attempt in 1 2 3; do
+            echo "=== engineering attempt $attempt ===" | tee -a /tmp/p12-p14-engineering-v4.log
+            git reset --hard HEAD
+            git clean -fd -e .github/workflows/implement-p12-p14-v4.yml
+            if python /tmp/p12_p14_engineer.py 2>&1 | tee -a /tmp/p12-p14-engineering-v4.log; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              sleep 300
+            fi
+          done
+          exit 1
+
+      - name: Run independent final software gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m ruff format --check .
+          python -m ruff check .
+          python -m pyright
+          python -m pytest -q -m 'not gpu'
+          test -f P12_P14_IMPLEMENTATION_REPORT.md
+          test -f P12_P14_IMPLEMENTATION_REPORT.json
+
+      - name: Publish clean integration and canonical ready branches
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/implement-p12-p14-v4.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: publish clean resumable P12-P14 tree'
+          test -z "$(git status --porcelain)"
+          git push origin HEAD:feat/p12-p14-runtime-contracts-v4
+          git push --force origin HEAD:feat/p12-p14-runtime-contracts-ready
+
+      - name: Upload engineering evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p12-p14-engineering-v4-log
+          path: /tmp/p12-p14-engineering-v4.log
+          if-no-files-found: warn
+          retention-days: 3
