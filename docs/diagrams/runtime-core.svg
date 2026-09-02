@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="0 0 1920 1200" role="img" aria-labelledby="title desc">
+<title id="title">nano-aural-runtime-core-architecture</title>
+<desc id="desc">nanoAuralRuntime architecture diagram</desc>
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+  </filter>
+  <filter id="shadow-sm" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08"/>
+  </filter>
+  <marker id="arrow-slate" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#475569"/></marker>
+  <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#2563eb"/></marker>
+  <marker id="arrow-indigo" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4f46e5"/></marker>
+  <marker id="arrow-purple" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#7c3aed"/></marker>
+  <marker id="arrow-cyan" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#0891b2"/></marker>
+  <marker id="arrow-green" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#15803d"/></marker>
+  <marker id="arrow-amber" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b45309"/></marker>
+  <marker id="arrow-rose" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#be123c"/></marker>
+  <marker id="arrow-dark" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#172033"/></marker>
+  <linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#4338ca"/>
+    <stop offset="55%" stop-color="#7c3aed"/>
+    <stop offset="100%" stop-color="#0891b2"/>
+  </linearGradient>
+  <linearGradient id="soft-gradient" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#eef2ff"/>
+    <stop offset="100%" stop-color="#ecfeff"/>
+  </linearGradient>
+</defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="70" y="83.4" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="46" font-weight="800" fill="#0f172a" text-anchor="start" opacity="1.0"><tspan x="70" dy="0">Runtime Core：稳定内核与可替换边界</tspan></text>
+<text x="72" y="125.8" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="22" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="72" dy="0">Core 只拥有通用生命周期、值对象与执行不变量；模型语义、前端和持久化状态都留在边界之外</tspan></text>
+<line x1="1620" y1="68.0" x2="1620" y2="86.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1640" y1="60.0" x2="1640" y2="94.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1660" y1="51.0" x2="1660" y2="103.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1680" y1="62.0" x2="1680" y2="92.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1700" y1="42.0" x2="1700" y2="112.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1720" y1="55.0" x2="1720" y2="99.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1740" y1="65.0" x2="1740" y2="89.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1760" y1="47.0" x2="1760" y2="107.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1780" y1="58.0" x2="1780" y2="96.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1800" y1="67.0" x2="1800" y2="87.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<rect x="1676.0" y="110" width="174.0" height="38" rx="19.0" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" opacity="1.0"/>
+<text x="1763.0" y="133.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#b45309" text-anchor="middle" opacity="1.0"><tspan x="1763.0" dy="0">依赖方向固定向下</tspan></text>
+<line x1="70" y1="166" x2="1850" y2="166" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0" stroke-linecap="round"/>
+<rect x="90" y="190" width="205" height="70" rx="20" fill="#dbeafe" stroke="#2563eb" stroke-width="2" opacity="1.0"/>
+<text x="114" y="225.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#2563eb" text-anchor="start" opacity="1.0"><tspan x="114" dy="0">Frontend</tspan></text>
+<polyline points="303,225 333,225" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="347" y="190" width="205" height="70" rx="20" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" opacity="1.0"/>
+<text x="371" y="225.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#7c3aed" text-anchor="start" opacity="1.0"><tspan x="371" dy="0">Workflow</tspan></text>
+<polyline points="560,225 590,225" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="604" y="190" width="240" height="70" rx="20" fill="#cffafe" stroke="#0891b2" stroke-width="2" opacity="1.0"/>
+<text x="628" y="223.95780176643768" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18.84200196270854" font-weight="700" fill="#0891b2" text-anchor="start" opacity="1.0"><tspan x="628" dy="0">Executor / Service</tspan></text>
+<polyline points="852,225 882,225" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="896" y="190" width="205" height="70" rx="20" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2" opacity="1.0"/>
+<text x="920" y="225.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#4f46e5" text-anchor="start" opacity="1.0"><tspan x="920" dy="0">Runtime Core</tspan></text>
+<polyline points="1109,225 1139,225" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1153" y="190" width="205" height="70" rx="20" fill="#dcfce7" stroke="#15803d" stroke-width="2" opacity="1.0"/>
+<text x="1177" y="225.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#15803d" text-anchor="start" opacity="1.0"><tspan x="1177" dy="0">Model Adapter</tspan></text>
+<polyline points="1366,225 1396,225" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1410" y="190" width="240" height="70" rx="20" fill="#fef3c7" stroke="#b45309" stroke-width="2" opacity="1.0"/>
+<text x="1434" y="225.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#b45309" text-anchor="start" opacity="1.0"><tspan x="1434" dy="0">Original Backend</tspan></text>
+<rect x="62" y="298" width="345" height="720" rx="28" fill="#fbfdff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="435" y="298" width="810" height="720" rx="28" fill="#f8f9ff" stroke="#c7d2fe" stroke-width="2" opacity="1.0"/>
+<rect x="1273" y="298" width="585" height="720" rx="28" fill="#f9fffb" stroke="#bbf7d0" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="320" width="159.58" height="34" rx="17.0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="167.79000000000002" y="341.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#2563eb" text-anchor="middle" opacity="1.0"><tspan x="167.79000000000002" dy="0">输入 / 输出契约</tspan></text>
+<rect x="461" y="320" width="381.5999999999998" height="34" rx="17.0" fill="#e0e7ff" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="651.8" y="341.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#4f46e5" text-anchor="middle" opacity="1.0"><tspan x="651.8" dy="0">nano_aural_runtime · dependency-free</tspan></text>
+<rect x="1299" y="320" width="231.32000000000002" height="34" rx="17.0" fill="#dcfce7" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="1414.66" y="341.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="1414.66" dy="0">Adapter SDK 与模型边界</tspan></text>
+<rect x="88" y="380" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="380" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="415.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">ModelDescriptor</tspan></text>
+<text x="122" y="441.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">adapter / model / version /</tspan><tspan x="122" dy="18.2">capabilities</tspan></text>
+<rect x="88" y="476" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="476" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="511.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">ModelDeployment</tspan></text>
+<text x="122" y="537.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">不可变部署选择 + fingerprint</tspan></text>
+<rect x="88" y="572" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="572" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="607.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">ModelInvocation</tspan></text>
+<text x="122" y="633.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">operation + adapter-owned</tspan><tspan x="122" dy="18.2">inputs</tspan></text>
+<rect x="88" y="668" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="668" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="703.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">ExecutionContext</tspan></text>
+<text x="122" y="729.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">request id + cancellation +</tspan><tspan x="122" dy="18.2">metadata</tspan></text>
+<rect x="88" y="764" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="764" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="799.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">InvocationResult</tspan></text>
+<text x="122" y="825.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">artifacts + warnings + profile</tspan><tspan x="122" dy="18.2">+ cache</tspan></text>
+<rect x="88" y="860" width="293" height="82" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="88" y="860" width="8" height="82" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="122" y="895.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">ProducedArtifact</tspan></text>
+<text x="122" y="921.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="122" dy="0">命名输出 + media type +</tspan><tspan x="122" dy="18.2">immutable bytes</tspan></text>
+<rect x="470" y="382" width="230" height="115" rx="20" fill="#ffffff" stroke="#a5b4fc" stroke-width="2" opacity="1.0"/>
+<rect x="470" y="382" width="8" height="115" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="504" y="417.3195266272189" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20.355029585798817" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="504" dy="0">AdapterRegistry</tspan></text>
+<text x="504" y="443.1437869822485" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="504" dy="0">线程安全：adapter_id →</tspan><tspan x="504" dy="16.900000000000002">adapter</tspan></text>
+<rect x="724" y="382" width="244" height="115" rx="20" fill="#ffffff" stroke="#a5b4fc" stroke-width="2" opacity="1.0"/>
+<rect x="724" y="382" width="8" height="115" rx="8" fill="#4f46e5" stroke="#4f46e5" stroke-width="0" opacity="1.0"/>
+<text x="758" y="422.4" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="26" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="758" dy="0">Runtime</tspan></text>
+<text x="758" y="450.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="758" dy="0">lookup · lifecycle ·</tspan><tspan x="758" dy="16.900000000000002">validation</tspan><tspan x="758" dy="16.900000000000002">error isolation</tspan></text>
+<rect x="993" y="382" width="220" height="115" rx="20" fill="#ffffff" stroke="#a5b4fc" stroke-width="2" opacity="1.0"/>
+<rect x="993" y="382" width="8" height="115" rx="8" fill="#0891b2" stroke="#0891b2" stroke-width="0" opacity="1.0"/>
+<text x="1027" y="415.7586206896552" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18.620689655172416" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1027" dy="0">Contract Guards</tspan></text>
+<text x="1027" y="441.11379310344824" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1027" dy="0">类型、invocation_id、re</tspan><tspan x="1027" dy="16.900000000000002">sult 约束</tspan><tspan x="1027" dy="16.900000000000002">异常分类</tspan></text>
+<polyline points="700,434 716,434" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="968,434 985,434" fill="none" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#arrow-indigo)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="474" y="562.5" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="25" font-weight="800" fill="#4f46e5" text-anchor="start" opacity="1.0"><tspan x="474" dy="0">ModelSession 生命周期</tspan></text>
+<ellipse cx="505" cy="615" rx="58" ry="37" fill="#f1f5f9" stroke="#475569" stroke-width="2" opacity="1.0"/>
+<text x="505.0" y="619.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="800" fill="#475569" text-anchor="middle" opacity="1.0"><tspan x="505.0" dy="0">UNLOADED</tspan></text>
+<ellipse cx="650" cy="615" rx="58" ry="37" fill="#dbeafe" stroke="#2563eb" stroke-width="2" opacity="1.0"/>
+<text x="650.0" y="619.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="800" fill="#2563eb" text-anchor="middle" opacity="1.0"><tspan x="650.0" dy="0">LOADING</tspan></text>
+<ellipse cx="790" cy="615" rx="58" ry="37" fill="#dcfce7" stroke="#15803d" stroke-width="2" opacity="1.0"/>
+<text x="790.0" y="619.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="800" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="790.0" dy="0">READY</tspan></text>
+<ellipse cx="930" cy="615" rx="58" ry="37" fill="#fef3c7" stroke="#b45309" stroke-width="2" opacity="1.0"/>
+<text x="930.0" y="619.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="800" fill="#b45309" text-anchor="middle" opacity="1.0"><tspan x="930.0" dy="0">RUNNING</tspan></text>
+<ellipse cx="1075" cy="615" rx="58" ry="37" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" opacity="1.0"/>
+<text x="1075.0" y="619.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="800" fill="#7c3aed" text-anchor="middle" opacity="1.0"><tspan x="1075.0" dy="0">UNLOADING</tspan></text>
+<polyline points="567,615 588,615" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="712,615 728,615" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="852,615 868,615" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="992,615 1013,615" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="930,660 930,690 790,690 790,660" fill="none" stroke="#15803d" stroke-width="2" marker-end="url(#arrow-green)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="810" y="708.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#15803d" text-anchor="start" opacity="1.0"><tspan x="810" dy="0">成功 / 可恢复调用后回到 READY</tspan></text>
+<ellipse cx="1120" cy="735" rx="62" ry="38" fill="#ffe4e6" stroke="#be123c" stroke-width="2" opacity="1.0"/>
+<text x="1120.0" y="739.4" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="16" font-weight="800" fill="#be123c" text-anchor="middle" opacity="1.0"><tspan x="1120.0" dy="0">FAILED</tspan></text>
+<polyline points="967,645 1080,700" fill="none" stroke="#be123c" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#arrow-rose)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="843,645 1080,720" fill="none" stroke="#be123c" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#arrow-rose)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="470" y="776.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="470" dy="0">同一 Session：并发调用排队，single-flight 串行；不同 Session 可并行。等待期间可取消。</tspan></text>
+<rect x="470" y="824" width="225" height="115" rx="20" fill="#ffffff" stroke="#c7d2fe" stroke-width="2" opacity="1.0"/>
+<rect x="470" y="824" width="8" height="115" rx="8" fill="#be123c" stroke="#be123c" stroke-width="0" opacity="1.0"/>
+<text x="504" y="857.4983534577387" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="18.331503841931944" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="504" dy="0">CancellationToken</tspan></text>
+<text x="504" y="884.5812294182217" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="504" dy="0">协作式取消；安全检查点</tspan><tspan x="504" dy="19.5">等待队列也可退出</tspan></text>
+<rect x="713" y="824" width="225" height="115" rx="20" fill="#ffffff" stroke="#c7d2fe" stroke-width="2" opacity="1.0"/>
+<rect x="713" y="824" width="8" height="115" rx="8" fill="#0891b2" stroke="#0891b2" stroke-width="0" opacity="1.0"/>
+<text x="747" y="859.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="747" dy="0">ProfileReport</tspan></text>
+<text x="747" y="886.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="747" dy="0">模型中立的耗时与资源观</tspan><tspan x="747" dy="19.5">测</tspan><tspan x="747" dy="19.5">阶段名由 Adapter</tspan><tspan x="747" dy="19.5">提供</tspan></text>
+<rect x="956" y="824" width="225" height="115" rx="20" fill="#ffffff" stroke="#c7d2fe" stroke-width="2" opacity="1.0"/>
+<rect x="956" y="824" width="8" height="115" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="990" y="859.0" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="990" dy="0">CacheReport</tspan></text>
+<text x="990" y="886.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="990" dy="0">命中 / 未命中 / 字节</tspan><tspan x="990" dy="19.5">/ 失效</tspan><tspan x="990" dy="19.5">缓存不改变调用语义</tspan></text>
+<rect x="1300" y="382" width="530" height="232" rx="24" fill="#ffffff" stroke="#15803d" stroke-width="3" filter="url(#shadow-sm)" opacity="1.0"/>
+<text x="1330" y="431.1" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="29" font-weight="800" fill="#15803d" text-anchor="start" opacity="1.0"><tspan x="1330" dy="0">AudioModelAdapter Protocol</tspan></text>
+<rect x="1332" y="462" width="112.8" height="31" rx="15.5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" opacity="1.0"/>
+<text x="1388.4" y="481.9" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="16" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="1388.4" dy="0">descriptor</tspan></text>
+<text x="1535" y="478.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="1535" dy="0">声明稳定身份与能力</tspan></text>
+<rect x="1332" y="499" width="136.64" height="31" rx="15.5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" opacity="1.0"/>
+<text x="1400.32" y="518.9" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="16" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="1400.32" dy="0">load(session)</tspan></text>
+<text x="1535" y="515.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="1535" dy="0">分配部署资源</tspan></text>
+<rect x="1332" y="536" width="110.08" height="31" rx="15.5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" opacity="1.0"/>
+<text x="1387.04" y="555.9" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="16" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="1387.04" dy="0">invoke(...)</tspan></text>
+<text x="1535" y="552.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="1535" dy="0">解释任务并返回结果</tspan></text>
+<rect x="1332" y="573" width="155.2" height="31" rx="15.5" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" opacity="1.0"/>
+<text x="1409.6" y="592.9" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="16" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="1409.6" dy="0">unload(session)</tspan></text>
+<text x="1535" y="589.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="1535" dy="0">释放会话资源</tspan></text>
+<text x="1300" y="639.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="700" fill="#15803d" text-anchor="start" opacity="1.0"><tspan x="1300" dy="0">实现示例 · 任务语义仍由各适配器拥有</tspan></text>
+<polyline points="1565,614 1565,644" fill="none" stroke="#15803d" stroke-width="2.5" marker-end="url(#arrow-green)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="1300" y="650" width="530" height="76" rx="20" fill="#ffffff" stroke="#86efac" stroke-width="2" opacity="1.0"/>
+<rect x="1300" y="650" width="8" height="76" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="1334" y="683.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">ControlFoley</tspan></text>
+<text x="1334" y="707.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="12" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">V2A · TV2A · TC-V2A · AC-V2A</tspan></text>
+<rect x="1300" y="738" width="530" height="76" rx="20" fill="#ffffff" stroke="#86efac" stroke-width="2" opacity="1.0"/>
+<rect x="1300" y="738" width="8" height="76" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="1334" y="771.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">Stable Audio 3 Small-SFX</tspan></text>
+<text x="1334" y="795.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="12" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">audio.text_to_sfx</tspan></text>
+<rect x="1300" y="826" width="530" height="76" rx="20" fill="#ffffff" stroke="#86efac" stroke-width="2" opacity="1.0"/>
+<rect x="1300" y="826" width="8" height="76" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="1334" y="859.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">Woosh V2A</tspan></text>
+<text x="1334" y="883.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="12" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1334" dy="0">audio.video_to_sfx · dvflow-8s / vflow-8s</tspan></text>
+<rect x="1300" y="914" width="530" height="76" rx="20" fill="#dcfce7" stroke="#86efac" stroke-width="2" opacity="1.0"/>
+<text x="1324" y="947.2" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="700" fill="#15803d" text-anchor="start" opacity="1.0"><tspan x="1324" dy="0">隔离 Worker 环境</tspan></text>
+<text x="1324" y="971.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="12" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1324" dy="0">环境、后端、部署指纹与 max_concurrency 由运营方密封；公开 Job</tspan><tspan x="1324" dy="15.600000000000001">不覆盖源码、权重或求解器。</tspan></text>
+<rect x="62" y="1042" width="1796" height="112" rx="22" fill="#0f172a" stroke="#0f172a" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<text x="88" y="1078.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="800" fill="#f8fafc" text-anchor="start" opacity="1.0"><tspan x="88" dy="0">Runtime Core 有意不知道</tspan></text>
+<rect x="340" y="1056" width="107.25" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="393.625" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="393.625" dy="0">HTTP / API</tspan></text>
+<rect x="459.25" y="1056" width="111.0" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="514.75" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="514.75" dy="0">PostgreSQL</tspan></text>
+<rect x="582.25" y="1056" width="98.55" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="631.525" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="631.525" dy="0">BlobStore</tspan></text>
+<rect x="692.8" y="1056" width="81.15" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="733.375" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="733.375" dy="0">ComfyUI</tspan></text>
+<rect x="785.9499999999999" y="1056" width="128.4" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="850.15" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="850.15" dy="0">torch / CUDA</tspan></text>
+<rect x="926.3499999999999" y="1056" width="237.75" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="1045.225" y="1077.125" font-family="Noto Sans Mono CJK SC, Cascadia Code, monospace" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="1045.225" dy="0">video_path / prompt / CFG</tspan></text>
+<rect x="1176.1" y="1056" width="108.60000000000001" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="1230.3999999999999" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="1230.3999999999999" dy="0">Mux 工作流</tspan></text>
+<rect x="1296.6999999999998" y="1056" width="262.95000000000005" height="34" rx="17.0" fill="#1e293b" stroke="#475569" stroke-width="1.5" opacity="1.0"/>
+<text x="1428.1749999999997" y="1077.125" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="600" fill="#cbd5e1" text-anchor="middle" opacity="1.0"><tspan x="1428.1749999999997" dy="0">模型内部 CLIP / VAE / vocoder</tspan></text>
+<text x="340" y="1116.4" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="16" font-weight="500" fill="#94a3b8" text-anchor="start" opacity="1.0"><tspan x="340" dy="0">扩展新模型：新增插件元数据 + Adapter / task schema + Durable builder + Worker capability；不要修改 Core 的通用值对象。</tspan></text>
+</svg>
