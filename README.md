@@ -4,6 +4,22 @@ nanoAuralRuntime 是一套音频原生、模型无关的 Runtime Core、适配�
 
 状态：活跃的 pre-alpha。软件/CPU 阶段已实现，但**不是**已完成的发行。所需的 RTX 4090 对齐、基准、Worker、远程与 UI 证据仍为 **延期（DEFERRED）**，并阻塞发行。不得根据跳过的测试声称对齐、质量、加速或性能。
 
+## 项目全景
+
+[![nanoAuralRuntime 系统全景](docs/diagrams/system-overview.svg)](docs/diagrams/system-overview.svg)
+
+这张图从 CLI / HTTP / ComfyUI 等入口开始，串联统一 SFX 工作流、Local Executor / Durable Service、Runtime Core、模型适配器与隔离 Worker 环境，并标出状态与字节的权威边界。
+
+- [可编辑的系统全景 Excalidraw](docs/diagrams/system-overview.excalidraw)
+- [Runtime Core 核心架构图](docs/diagrams/runtime-core.svg) · [Excalidraw 源文件](docs/diagrams/runtime-core.excalidraw)
+- [可靠远程执行图](docs/diagrams/durable-execution.svg) · [Excalidraw 源文件](docs/diagrams/durable-execution.excalidraw)
+- [对外汇报单页](docs/diagrams/executive-one-pager.svg) · [Excalidraw 源文件](docs/diagrams/executive-one-pager.excalidraw)
+- [全部图表、用途与维护约定](docs/diagrams/README.md)
+
+## 对外汇报图
+
+[![nanoAuralRuntime 对外汇报单页](docs/diagrams/executive-one-pager.svg)](docs/diagrams/executive-one-pager.svg)
+
 ## 架构与权威
 
 依赖方向固定向下：
