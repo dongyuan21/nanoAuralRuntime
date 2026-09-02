@@ -1,0 +1,71 @@
+name: Create verified P12-P14 pull request
+
+on:
+  push:
+    branches:
+      - automation/p12-p14-pr-creator
+    paths:
+      - .github/workflows/p12-p14-pr-creator.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: p12-p14-pr-creator
+  cancel-in-progress: false
+
+jobs:
+  create-after-ready:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: dongyuan21/nanoAuralRuntime
+      READY_BRANCH: feat/p12-p14-runtime-contracts-ready
+    steps:
+      - name: Check out controller
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Wait for clean canonical ready branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 300); do
+            git fetch origin "$READY_BRANCH" 2>/dev/null || true
+            if git rev-parse --verify "origin/$READY_BRANCH" >/dev/null 2>&1; then
+              sha=$(git rev-parse "origin/$READY_BRANCH")
+              if git cat-file -e "$sha:P12_P14_IMPLEMENTATION_REPORT.md" 2>/dev/null \
+                 && git cat-file -e "$sha:P12_P14_IMPLEMENTATION_REPORT.json" 2>/dev/null \
+                 && ! git cat-file -e "$sha:.github/automation/p12_p14_engineer.py" 2>/dev/null \
+                 && ! git cat-file -e "$sha:.github/workflows/implement-p12-p14-v4.yml" 2>/dev/null; then
+                git show "$sha:P12_P14_IMPLEMENTATION_REPORT.json" > /tmp/report.json
+                for phase in P12A P12B P12C P13 P14; do
+                  jq -e --arg phase "$phase" '.phases | any(.phase == $phase)' /tmp/report.json >/dev/null
+                done
+                exit 0
+              fi
+            fi
+            sleep 60
+          done
+          echo 'canonical ready branch did not become complete' >&2
+          exit 1
+
+      - name: Create exactly one pull request
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload=$(gh api "repos/$REPO/pulls?state=open&head=dongyuan21:$READY_BRANCH&base=main&per_page=10")
+          count=$(jq 'length' <<<"$payload")
+          if [ "$count" -eq 0 ]; then
+            gh api -X POST "repos/$REPO/pulls" \
+              -f title='feat: complete P12-P14 runtime contracts' \
+              -f head="$READY_BRANCH" \
+              -f base=main \
+              -f body='Complete P12A-P14: stable multi-artifact slot contracts, bounded streaming publication, resumable streaming uploads, persisted retry/session dispositions, canonical deployment seals, and explicit concurrency admission. Exact phase commits, migrations, compatibility behavior, and software-gate evidence are recorded in P12_P14_IMPLEMENTATION_REPORT.md and .json. Temporary engineering automation is excluded.' >/dev/null
+          elif [ "$count" -ne 1 ]; then
+            echo 'multiple canonical ready pull requests exist' >&2
+            exit 1
+          fi
