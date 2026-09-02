@@ -19,12 +19,34 @@ jobs:
         with:
           ref: fix/recovery-document-anchors
           fetch-depth: 0
-      - name: Apply reviewed patch and remove staging files
+      - name: Apply reviewed edit and remove staging files
         shell: bash
         run: |
           set -euo pipefail
-          git apply --check .github/patches/fix-security-metadata-utf8.patch
-          git apply .github/patches/fix-security-metadata-utf8.patch
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("tools/release_security_audit.py")
+          text = path.read_text(encoding="utf-8")
+          old_import = "from email.parser import BytesParser\n"
+          new_import = "from email.parser import BytesParser, Parser\n"
+          old_parse = '''    try:
+              message = BytesParser(policy=policy.compat32).parsebytes(payload)
+          except (TypeError, ValueError):
+              raise ArtifactValidationError(display, kind + ".metadata_schema") from None
+          '''
+          new_parse = '''    try:
+              message = Parser(policy=policy.compat32).parsestr(payload.decode("utf-8"))
+          except (UnicodeDecodeError, TypeError, ValueError):
+              raise ArtifactValidationError(display, kind + ".metadata_schema") from None
+          '''
+          if text.count(old_import) != 1 or text.count(old_parse) != 1:
+              raise SystemExit("security metadata audit source shape changed")
+          path.write_text(
+              text.replace(old_import, new_import).replace(old_parse, new_parse),
+              encoding="utf-8",
+          )
+          PY
           rm .github/patches/fix-security-metadata-utf8.patch
           rm .github/workflows/apply-security-metadata-utf8.yml
           rmdir .github/patches 2>/dev/null || true
