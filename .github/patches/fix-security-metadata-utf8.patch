@@ -1,0 +1,22 @@
+diff --git a/tools/release_security_audit.py b/tools/release_security_audit.py
+index 2ee4333..d91ad68 100755
+--- a/tools/release_security_audit.py
++++ b/tools/release_security_audit.py
+@@ -28,7 +28,7 @@ from datetime import datetime, timezone
+ from email import policy
+ from email.message import Message
+-from email.parser import BytesParser
++from email.parser import BytesParser, Parser
+ from pathlib import Path, PurePath, PurePosixPath
+ from typing import Collection, Iterable, Mapping, Optional, Sequence, Tuple, cast
+@@ -1775,8 +1775,8 @@ def _validate_release_metadata(
+     if not separator or body != (source_root / "README.md").read_bytes():
+         raise ArtifactValidationError(display, kind + ".readme_metadata")
+     try:
+-        message = BytesParser(policy=policy.compat32).parsebytes(payload)
+-    except (TypeError, ValueError):
++        message = Parser(policy=policy.compat32).parsestr(payload.decode("utf-8"))
++    except (UnicodeDecodeError, TypeError, ValueError):
+         raise ArtifactValidationError(display, kind + ".metadata_schema") from None
+     observed: dict[str, list[str]] = {}
+     for name, value in message.raw_items():
