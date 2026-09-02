@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+<title id="title">nano-aural-runtime-durable-execution</title>
+<desc id="desc">nanoAuralRuntime architecture diagram</desc>
+<defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+  </filter>
+  <filter id="shadow-sm" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08"/>
+  </filter>
+  <marker id="arrow-slate" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#475569"/></marker>
+  <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#2563eb"/></marker>
+  <marker id="arrow-indigo" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#4f46e5"/></marker>
+  <marker id="arrow-purple" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#7c3aed"/></marker>
+  <marker id="arrow-cyan" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#0891b2"/></marker>
+  <marker id="arrow-green" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#15803d"/></marker>
+  <marker id="arrow-amber" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#b45309"/></marker>
+  <marker id="arrow-rose" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#be123c"/></marker>
+  <marker id="arrow-dark" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 9 4.5 L 0 9 z" fill="#172033"/></marker>
+  <linearGradient id="hero-gradient" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#4338ca"/>
+    <stop offset="55%" stop-color="#7c3aed"/>
+    <stop offset="100%" stop-color="#0891b2"/>
+  </linearGradient>
+  <linearGradient id="soft-gradient" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#eef2ff"/>
+    <stop offset="100%" stop-color="#ecfeff"/>
+  </linearGradient>
+</defs>
+<rect width="100%" height="100%" fill="#f8fafc"/>
+<text x="70" y="85.4" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="46" font-weight="800" fill="#0f172a" text-anchor="start" opacity="1.0"><tspan x="70" dy="0">可靠远程执行：至少一次尝试，恰好一个可见结果</tspan></text>
+<text x="72" y="127.8" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="22" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="72" dy="0">持久化控制面管理资产、任务、尝试、租约与最终化；Runtime Core 仍只负责模型调用契约</tspan></text>
+<line x1="1620" y1="70.0" x2="1620" y2="88.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1640" y1="62.0" x2="1640" y2="96.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1660" y1="53.0" x2="1660" y2="105.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1680" y1="64.0" x2="1680" y2="94.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1700" y1="44.0" x2="1700" y2="114.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1720" y1="57.0" x2="1720" y2="101.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1740" y1="67.0" x2="1740" y2="91.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1760" y1="49.0" x2="1760" y2="109.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1780" y1="60.0" x2="1780" y2="98.0" stroke="#0891b2" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<line x1="1800" y1="69.0" x2="1800" y2="89.0" stroke="#7c3aed" stroke-width="5" opacity="1.0" stroke-linecap="round"/>
+<rect x="1530.82" y="112" width="319.18" height="38" rx="19.0" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5" opacity="1.0"/>
+<text x="1690.4099999999999" y="135.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#b45309" text-anchor="middle" opacity="1.0"><tspan x="1690.4099999999999" dy="0">DB 状态权威 · SHA-256 内容身份</tspan></text>
+<line x1="70" y1="168" x2="1850" y2="168" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0" stroke-linecap="round"/>
+<rect x="54" y="198" width="1812" height="235" rx="26" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2" opacity="1.0"/>
+<rect x="54" y="455" width="1812" height="380" rx="26" fill="#faf5ff" stroke="#ddd6fe" stroke-width="2" opacity="1.0"/>
+<rect x="54" y="857" width="1812" height="165" rx="26" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2" opacity="1.0"/>
+<rect x="80" y="218" width="369.35999999999996" height="34" rx="17.0" fill="#dbeafe" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="264.67999999999995" y="239.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#2563eb" text-anchor="middle" opacity="1.0"><tspan x="264.67999999999995" dy="0">CONTROL PLANE · PostgreSQL 状态权威</tspan></text>
+<rect x="80" y="475" width="475.77999999999946" height="34" rx="17.0" fill="#ede9fe" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="317.88999999999976" y="496.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#7c3aed" text-anchor="middle" opacity="1.0"><tspan x="317.88999999999976" dy="0">EXECUTION / DATA PLANE · Worker + Blob Stores</tspan></text>
+<rect x="80" y="877" width="130.0" height="34" rx="17.0" fill="#dcfce7" stroke="#cbd5e1" stroke-width="1.5" opacity="1.0"/>
+<text x="145.0" y="898.675" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="600" fill="#15803d" text-anchor="middle" opacity="1.0"><tspan x="145.0" dy="0">可恢复不变量</tspan></text>
+<rect x="95" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="95" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="129" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">客户端提交</tspan></text>
+<text x="129" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">Remote CLI / HTTP /</tspan><tspan x="129" dy="19.5">ComfyUI Remote</tspan><tspan x="129" dy="19.5">幂等请求与取消</tspan></text>
+<ellipse cx="113" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="113.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="113.0" dy="0">1</tspan></text>
+<rect x="375" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="375" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="409" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="409" dy="0">上传并验证</tspan></text>
+<text x="409" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="409" dy="0">Staging bytes</tspan><tspan x="409" dy="19.5">全量重读 SHA-256 +</tspan><tspan x="409" dy="19.5">媒体验证</tspan></text>
+<ellipse cx="393" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="393.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="393.0" dy="0">2</tspan></text>
+<rect x="655" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="655" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="689" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="689" dy="0">VERIFIED 资产</tspan></text>
+<text x="689" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="689" dy="0">只有经验证资产</tspan><tspan x="689" dy="19.5">才能成为 Job 输入</tspan></text>
+<ellipse cx="673" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="673.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="673.0" dy="0">3</tspan></text>
+<rect x="935" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="935" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="969" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">创建 Job</tspan></text>
+<text x="969" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">记录 workflow /</tspan><tspan x="969" dy="19.5">adapter / operation</tspan><tspan x="969" dy="19.5">状态 QUEUED</tspan></text>
+<ellipse cx="953" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="953.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="953.0" dy="0">4</tspan></text>
+<rect x="1215" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="1215" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="1249" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1249" dy="0">能力路由</tspan></text>
+<text x="1249" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1249" dy="0">匹配 adapter ·</tspan><tspan x="1249" dy="19.5">backend · env</tspan><tspan x="1249" dy="19.5">fingerprint · device</tspan></text>
+<ellipse cx="1233" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="1233.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="1233.0" dy="0">5</tspan></text>
+<rect x="1495" y="275" width="235" height="125" rx="20" fill="#ffffff" stroke="#93c5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="1495" y="275" width="8" height="125" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="1529" y="310.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1529" dy="0">认领 Attempt</tspan></text>
+<text x="1529" y="338.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1529" dy="0">Worker 获取 lease</tspan><tspan x="1529" dy="19.5">epoch</tspan><tspan x="1529" dy="19.5">任务进入 RUNNING</tspan></text>
+<ellipse cx="1513" cy="275" rx="20" ry="20" fill="#2563eb" stroke="#2563eb" stroke-width="1" opacity="1.0"/>
+<text x="1513.0" y="279.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="1513.0" dy="0">6</tspan></text>
+<polyline points="330,338 367,338" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="610,338 647,338" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="890,338 927,338" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1170,338 1207,338" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1450,338 1487,338" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-blue)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="95" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="95" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="129" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">物化输入</tspan></text>
+<text x="129" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">从 canonical blob 生成</tspan><tspan x="129" dy="19.5">尝试专用 workspace</tspan></text>
+<ellipse cx="113" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="113.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="113.0" dy="0">7</tspan></text>
+<rect x="375" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="375" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="409" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="409" dy="0">Runtime invoke</tspan></text>
+<text x="409" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="409" dy="0">同一 Runtime Core</tspan><tspan x="409" dy="19.5">load / invoke /</tspan><tspan x="409" dy="19.5">unload</tspan></text>
+<ellipse cx="393" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="393.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="393.0" dy="0">8</tspan></text>
+<rect x="655" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="655" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="689" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="689" dy="0">模型 Adapter</tspan></text>
+<text x="689" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="689" dy="0">隔离环境执行</tspan><tspan x="689" dy="19.5">生成 ProducedArtifact</tspan></text>
+<ellipse cx="673" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="673.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="673.0" dy="0">9</tspan></text>
+<rect x="935" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="935" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="969" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">写 Attempt 对象</tspan></text>
+<text x="969" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">不可变、尝试专用键</tspan><tspan x="969" dy="19.5">先记录发布账本</tspan></text>
+<ellipse cx="953" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="953.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="953.0" dy="0">10</tspan></text>
+<rect x="1215" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="1215" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="1249" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1249" dy="0">校验并提升</tspan></text>
+<text x="1249" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1249" dy="0">重读字节 / 媒体契约</tspan><tspan x="1249" dy="19.5">去重提升到 canonical</tspan></text>
+<ellipse cx="1233" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="1233.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="1233.0" dy="0">11</tspan></text>
+<rect x="1495" y="540" width="235" height="145" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2" filter="url(#shadow-sm)" opacity="1.0"/>
+<rect x="1495" y="540" width="8" height="145" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="1529" y="575.9" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="21" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1529" dy="0">CAS 最终化</tspan></text>
+<text x="1529" y="603.75" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1529" dy="0">仅当前 lease epoch</tspan><tspan x="1529" dy="19.5">可赢</tspan><tspan x="1529" dy="19.5">SUCCEEDED + READY</tspan><tspan x="1529" dy="19.5">artifacts</tspan></text>
+<ellipse cx="1513" cy="540" rx="20" ry="20" fill="#7c3aed" stroke="#7c3aed" stroke-width="1" opacity="1.0"/>
+<text x="1513.0" y="544.95" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" opacity="1.0"><tspan x="1513.0" dy="0">12</tspan></text>
+<polyline points="330,612 367,612" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="610,612 647,612" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="890,612 927,612" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1170,612 1207,612" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1450,612 1487,612" fill="none" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-purple)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1730,400 1785,400 1785,515 80,515 80,612 88,612" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="9 7" marker-end="url(#arrow-slate)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1450" y="499.4" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="16" font-weight="600" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="1450" dy="0">控制面决定谁能执行；数据面只处理已授权的尝试。</tspan></text>
+<rect x="165" y="716" width="360" height="88" rx="20" fill="#ffffff" stroke="#a78bfa" stroke-width="2" opacity="1.0"/>
+<rect x="165" y="716" width="8" height="88" rx="8" fill="#0891b2" stroke="#0891b2" stroke-width="0" opacity="1.0"/>
+<text x="199" y="751.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="199" dy="0">Canonical Blob Store</tspan></text>
+<text x="199" y="777.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="199" dy="0">已验证输入与获胜产物字节；由 DB</tspan><tspan x="199" dy="18.2">证据授权读取</tspan></text>
+<rect x="585" y="716" width="360" height="88" rx="20" fill="#ffffff" stroke="#a78bfa" stroke-width="2" opacity="1.0"/>
+<rect x="585" y="716" width="8" height="88" rx="8" fill="#7c3aed" stroke="#7c3aed" stroke-width="0" opacity="1.0"/>
+<text x="619" y="751.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="619" dy="0">Attempt Store</tspan></text>
+<text x="619" y="777.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="619" dy="0">崩溃安全的不可变中间物；可在宽限后清理</tspan></text>
+<rect x="1005" y="716" width="360" height="88" rx="20" fill="#ffffff" stroke="#a78bfa" stroke-width="2" opacity="1.0"/>
+<rect x="1005" y="716" width="8" height="88" rx="8" fill="#4f46e5" stroke="#4f46e5" stroke-width="0" opacity="1.0"/>
+<text x="1039" y="751.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1039" dy="0">Publication Ledger</tspan></text>
+<text x="1039" y="777.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1039" dy="0">RESERVED → OBJECT_WRITTEN →</tspan><tspan x="1039" dy="18.2">VALIDATED → FINALIZED</tspan></text>
+<rect x="1425" y="716" width="330" height="88" rx="20" fill="#ffffff" stroke="#a78bfa" stroke-width="2" opacity="1.0"/>
+<rect x="1425" y="716" width="8" height="88" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="1459" y="751.0" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="20" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1459" dy="0">客户端下载</tspan></text>
+<text x="1459" y="777.6" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="14" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1459" dy="0">按 size + 全文件 SHA-256 再核验</tspan></text>
+<polyline points="1613,685 1613,708" fill="none" stroke="#15803d" stroke-width="2.5" marker-end="url(#arrow-green)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1612,540 1612,505 1375,505" fill="none" stroke="#be123c" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#arrow-rose)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1370" y="468.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="650" fill="#be123c" text-anchor="start" opacity="1.0"><tspan x="1370" dy="0">租约过期 / 取消：旧 Worker 被 fencing，不能心跳、发布或最终化</tspan></text>
+<polyline points="1330,685 1330,842 1000,842 1000,805" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="8 6" marker-end="url(#arrow-amber)" opacity="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1030" y="825.5" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="15" font-weight="650" fill="#b45309" text-anchor="start" opacity="1.0"><tspan x="1030" dy="0">崩溃后从发布账本恢复；不把“模型已返回”误判为任务成功</tspan></text>
+<rect x="95" y="925" width="360" height="68" rx="20" fill="#ffffff" stroke="#2563eb" stroke-width="2" opacity="1.0"/>
+<rect x="95" y="925" width="8" height="68" rx="8" fill="#2563eb" stroke="#2563eb" stroke-width="0" opacity="1.0"/>
+<text x="129" y="957.3" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">At-least-once attempt</tspan></text>
+<text x="129" y="982.25" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="129" dy="0">失败或租约过期可创建更高世代的新 Attempt</tspan></text>
+<rect x="515" y="925" width="360" height="68" rx="20" fill="#ffffff" stroke="#4f46e5" stroke-width="2" opacity="1.0"/>
+<rect x="515" y="925" width="8" height="68" rx="8" fill="#4f46e5" stroke="#4f46e5" stroke-width="0" opacity="1.0"/>
+<text x="549" y="957.3" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="549" dy="0">Exactly-one visible winner</tspan></text>
+<text x="549" y="982.25" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="549" dy="0">最终化 CAS 只允许一个获胜尝试变为可见</tspan></text>
+<rect x="935" y="925" width="360" height="68" rx="20" fill="#ffffff" stroke="#15803d" stroke-width="2" opacity="1.0"/>
+<rect x="935" y="925" width="8" height="68" rx="8" fill="#15803d" stroke="#15803d" stroke-width="0" opacity="1.0"/>
+<text x="969" y="957.3" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">Verified inputs &amp; outputs</tspan></text>
+<text x="969" y="982.25" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="969" dy="0">输入先 VERIFIED；输出全部核验后才 SUCCEEDED</tspan></text>
+<rect x="1355" y="925" width="360" height="68" rx="20" fill="#ffffff" stroke="#b45309" stroke-width="2" opacity="1.0"/>
+<rect x="1355" y="925" width="8" height="68" rx="8" fill="#b45309" stroke="#b45309" stroke-width="0" opacity="1.0"/>
+<text x="1389" y="957.3" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="17" font-weight="700" fill="#172033" text-anchor="start" opacity="1.0"><tspan x="1389" dy="0">Restart / cancel safe</tspan></text>
+<text x="1389" y="982.25" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="13" font-weight="400" fill="#5f6b7a" text-anchor="start" opacity="1.0"><tspan x="1389" dy="0">API、Worker、DB 重启和取消竞态都有恢复路径</tspan></text>
+<text x="95" y="1018.4" font-family="Noto Sans CJK SC, Noto Sans SC, Arial, sans-serif" font-size="16" font-weight="500" fill="#475569" text-anchor="start" opacity="1.0"><tspan x="95" dy="0">权威分工：PostgreSQL 管状态与合法所有者；Blob Store 管核验后的字节；缓存与 UI 都不参与最终裁决。</tspan></text>
+</svg>
