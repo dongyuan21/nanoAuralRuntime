@@ -1,0 +1,29 @@
+diff --git a/tools/release_artifacts.py b/tools/release_artifacts.py
+index 0452c81..78fdcf5 100644
+--- a/tools/release_artifacts.py
++++ b/tools/release_artifacts.py
+@@ -20,7 +20,7 @@ import tempfile
+ import zipfile
+ from dataclasses import dataclass
+ from email import policy
+-from email.parser import BytesParser
++from email.parser import Parser
+ from pathlib import Path, PurePosixPath
+ from typing import Mapping, Optional, Sequence, Tuple
+ 
+@@ -351,8 +351,13 @@ def _audit_metadata(content: bytes, contract: _ProjectContract, root: Path) -> N
+     if not separator or body != (root / "README.md").read_bytes():
+         raise ReleaseArtifactError("distribution metadata description differs from README.md")
+     try:
+-        message = BytesParser(policy=policy.compat32).parsebytes(content)
+-    except (TypeError, ValueError) as error:
++        # Core metadata is UTF-8. Parsing the raw bytes with ``compat32``
++        # preserves non-ASCII header bytes as surrogate escapes, which makes
++        # a legitimate UTF-8 Summary differ from the pyproject contract.
++        # Decode strictly first so duplicate-header auditing still uses
++        # ``raw_items()`` while values retain their declared Unicode text.
++        message = Parser(policy=policy.compat32).parsestr(content.decode("utf-8"))
++    except (UnicodeDecodeError, TypeError, ValueError) as error:
+         raise ReleaseArtifactError("distribution metadata could not be parsed") from error
+     observed: dict[str, list[str]] = {}
+     for name, value in message.raw_items():
